@@ -6,7 +6,7 @@ from paths import *
 
 # ################################################################
 pg.display.set_caption(NAME_OF_THE_GAME)
-VERSION = '0.1'
+VERSION = '1.0'
 LOG = datetime.today().strftime('%d/%m/%Y %H:%M:%S')
 FRAMES = pg.time.Clock()
 MAX_FRAMES = 30
@@ -22,9 +22,7 @@ MAX_RECORDS = 9
 MIN_CHARACTERS_NAME, MAX_CHARACTERS_NAME = 3, 20
 # ################################################################
 
-musicas = [
-    SONGS['orpheus']
-]
+musicas = [SONGS['orpheus']]
 click_sound = SOUNDS['click']
 
 
@@ -60,6 +58,26 @@ class Obj(pg.sprite.Sprite):
         self.rect[1] = y
         self.rect.width = self.image.get_width()
         self.rect.height = self.image.get_height()
+
+
+class DrawStatusBar:
+    """
+    Helper function to draw rectangle with health bar, mana and stamina.
+    surface = (int) -- Creates a surface with width and height.
+    rect = (int) -- Assign rectangle to surface.
+    size_mas (int) -- Pass the fixed value to the boundary of the rectangle.
+    current_size = (int) -- The variable that will constantly change value.
+    """
+
+    def __init__(self, width, height, mutable_variable, max_size):
+        self.surface = pg.surface.Surface((width, height))
+        self.rect = self.surface.get_rect(center=(100, 100))
+        self.size_max = max_size
+        self.current_size = mutable_variable / max_size
+
+    def draw(self, screen, color, x, y, current_value):
+        pg.draw.rect(screen, color, (x, y, self.size_max, 8))
+        pg.draw.rect(screen, color, (x, y, current_value / self.current_size, 8))
 
 
 def save_log():
@@ -105,26 +123,44 @@ def check_records(FOLDER_: str):
     return records
 
 
-def mouse_collision(iterable: bool, list_objects, pos_mouse, select_item: str, item_default: str, check=True):
+def mouse_collision_changing_image(list_objects, pos_mouse, select_item: str, item_default: str, check=True):
     """
     AUXILIARY FUNCTION TO DETECT MOUSE COLLISION WHEN PASSING OVER THE SPECIFIED OBJECT
     :param check: CHECK THE RETURN OF THE ORIGINAL IMAGE
-    :param iterable: BOOL
     :param list_objects: AN OBJECT OR A LIST
     :param pos_mouse: MOUSE POSITION
     :param select_item: PICTURE WHEN PASSING THE MOUSE
     :param item_default: ORIGINAL IMAGE
     :return: RETURNS IMAGE SWITCH ON MOUSE COLLIDE
     """
-    if iterable:
+    if type(list_objects) is list:
         for item in range(len(list_objects)):
             if list_objects[item].rect.collidepoint(pos_mouse):
                 list_objects[item].image = pg.image.load(select_item)
             else:
                 list_objects[item].image = pg.image.load(item_default)
+
     else:
         if list_objects.rect.collidepoint(pos_mouse):
             list_objects.image = pg.image.load(select_item)
         else:
             if check:
                 list_objects.image = pg.image.load(item_default)
+
+
+def mouse_collision_catching_x_y(limbo: int, iterable, object_get_img, pos_mouse):
+    topleft = (limbo, limbo)
+
+    if type(iterable) is dict:
+        for item in iterable:
+            if iterable[item].rect.collidepoint(pos_mouse):
+                topleft = iterable[item].rect.topleft
+
+        object_get_img.rect.topleft = topleft
+
+    elif type(iterable) is list:
+        for item in range(len(iterable)):
+            if iterable[item].rect.collidepoint(pos_mouse):
+                topleft = iterable[item].rect.topleft
+
+        object_get_img.rect.topleft = topleft

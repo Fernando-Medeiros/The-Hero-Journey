@@ -1,4 +1,5 @@
 import pygame as pg
+
 pg.init(), pg.font.init(), pg.mixer.init()
 
 LANGUAGE = 'EN'  # --- > EN or BR
@@ -28,6 +29,53 @@ else:
         'fps': ['30 fps', '60 fps'],
         'sound': ['Ligado', 'Desligado']
     }
+
+DARK_ELF = {
+    'duelist': [3, 2, 2, 1, 1],
+    'mage': [1, 1, 2, 4, 1],
+    'assassin': [2, 4, 1, 1, 1]
+}
+
+GREY_ELF = {
+    'warrior': [3, 1, 3, 1, 1],
+    'mage': [1, 1, 3, 2, 2],
+    'warden': [1, 1, 3, 1, 3]
+}
+
+FOREST_ELF = {
+    'warrior': [2, 2, 2, 1, 2],
+    'mage': [1, 1, 4, 2, 1],
+    'warden': [1, 2, 2, 1, 3]
+}
+
+SKILLS = {
+    'd_duelist': {'EN': ['Duelism', 'Combat with Two Weapons'],
+                  'BR': ['Duelismo', 'Combate com Duas Armas']},
+
+    'd_mage': {'EN': ['Conjuration', 'Arcana Recovery'],
+               'BR': ['Conjuração', 'Recuperação Arcana']},
+
+    'd_assassin': {'EN': ['Supernatural Dodge', 'Lucky Strike'],
+                   'BR': ['Esquiva Sobrenatural', 'Golpe de Sorte']},
+
+    'f_warrior': {'EN': ['Wild Combat Form', 'Wild Form of Elemental'],
+                  'BR': ['Forma Selvagem de Combate', 'Forma Selvagem de Elemental']},
+
+    'f_mage': {'EN': ['Circle Spells', 'Natural Recovery'],
+               'BR': ['Magias de Circulo', 'Recuperação Natural']},
+
+    'f_warden': {'EN': ['Dodge Fortification', 'Hybrid Defense'],
+                 'BR': ['Fortificação de Esquiva', 'Defesa Hibrida']},
+
+    'g_warrior': {'EN': ['Get You Breath Back', 'Combat with Big Weapons'],
+                  'BR': ['Retomar Fôlego', 'Combate com Armas Grandes']},
+
+    'g_mage': {'EN': ['Overlord', 'Arcana Recovery'],
+               'BR': ['Sobrecarga', 'Recuperação Arcana']},
+
+    'g_warden': {'EN': ['Fortification', 'Defense Specialist'],
+                 'BR': ['Fortificação', 'Especialista em Defesa']}
+}
 
 FOLDER = {
     'save': 'save/',

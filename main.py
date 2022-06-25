@@ -6,7 +6,6 @@ road_map_menu = RoadMapMenu()
 
 def draw():
     road_map_menu.draw(MAIN_SCREEN)
-    road_map_menu.update()
 
 
 def events():

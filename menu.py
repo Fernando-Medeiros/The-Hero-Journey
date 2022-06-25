@@ -80,12 +80,7 @@ class Menu:
         POINT COLLISION BETWEEN MOUSE -> (X, Y) <- OBJECT RECT.
         RETURNS SELECTED GUIDE EFFECT WHEN MOUSE OVER
         """
-        y = LIMBO
-        for item in self.objects_1:
-            if self.objects_1[item].rect.collidepoint(pos_mouse):
-                y = self.objects_1[item].rect.y
-
-        self.objects_2['select'].rect.topleft = (self.pos_x, y)
+        mouse_collision_catching_x_y(LIMBO, self.objects_1, self.objects_2['select'], pos_mouse)
 
     def events_menu(self, evento):
         pos_mouse = pg.mouse.get_pos()

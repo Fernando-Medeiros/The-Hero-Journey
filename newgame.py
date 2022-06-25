@@ -62,11 +62,10 @@ class NewGame:
         """
         if event.type == pg.MOUSEBUTTONDOWN:
             if self.add_icon.rect.collidepoint(pos_mouse) and (len(self.NAME) >= MIN_CHARACTERS_NAME):
-
-                record = self.NAME.strip().title() + '\n' + self.ETHNICITY + '\n' + self.CLASS_ + '\n' + '1'
+                features = self.NAME.strip().title() + '\n' + self.ETHNICITY + '\n' + self.CLASS_ + '\n' + '1'
 
                 with open(FOLDER['save'] + self.NAME.casefold(), 'w') as new_record:
-                    new_record.write(record)
+                    new_record.write(features)
                 click_sound.play()
 
     def active_input_box(self, event, pos_mouse):
@@ -109,7 +108,8 @@ class NewGame:
 
         # DRAW USER TEXT INPUT
         draw_texts(
-            MAIN_SCREEN, self.NAME.title(), X=self.boxes[2].x + 5, Y=self.boxes[2].y + 5, size=25, color=COLORS['BLACK'])
+            MAIN_SCREEN, self.NAME.title(), X=self.boxes[2].x + 5, Y=self.boxes[2].y + 5, size=25,
+            color=COLORS['BLACK'])
 
         # DRAW THE BOX FOR TEXT INPUT
         pg.draw.rect(MAIN_SCREEN, COLORS['ACTIVE'], self.boxes[2], 2)
@@ -130,23 +130,12 @@ class NewGame:
         """
         RETURNS IMAGE SWITCH ON MOUSE COLLIDE
         """
+        mouse_collision_catching_x_y(LIMBO, self.ethnicity + self.class_, self.interactive_[2], pos_mouse)
 
-        # ETHNICITY BUTTONS, classes
-        topleft = (LIMBO, LIMBO)
-
-        for item in range(len(self.class_)):
-            if self.class_[item].rect.collidepoint(pos_mouse):
-                topleft = self.class_[item].rect.topleft
-
-        for item in range(len(self.ethnicity)):
-            if self.ethnicity[item].rect.collidepoint(pos_mouse):
-                topleft = self.ethnicity[item].rect.topleft
-
-        self.interactive_[2].rect.topleft = topleft
-
-        # RETURN AND ADD
-        mouse_collision(False, self.return_icon, pos_mouse, IMG_MENU['select_return'], IMG_MENU['return'])
-        mouse_collision(False, self.add_icon, pos_mouse, IMG_LOAD['select_add'], IMG_NEW_GAME['add'], check=False)
+        mouse_collision_changing_image(self.return_icon, pos_mouse, IMG_MENU['select_return'],
+                                       IMG_MENU['return'])
+        mouse_collision_changing_image(self.add_icon, pos_mouse, IMG_LOAD['select_add'], IMG_NEW_GAME['add'],
+                                       check=False)
 
     def events_new_game(self, event):
 
@@ -165,12 +154,11 @@ class NewGame:
             self.active_input_box(event, pos_mouse)
 
     def update(self, *args, **kwargs):
-        # OBJECT UPDATES NEW_GAME/DRAWINGS.
 
         self.check_max_records()
         self.draw_box()
 
-    def _add_information_ethnicity_class(self, ethnicity_name: str, object_ethnicity, heraldry: str,
+    def _add_information_ethnicity_class(self, ethnicity_name, object_ethnicity, heraldry,
                                          info_status: list[str, str, str], pos_mouse):
         """
         USES TWO AUXILIARY FUNCTIONS:
@@ -186,20 +174,18 @@ class NewGame:
         """
 
         # BY CLICKING ON THE ETHNICITY TAB
+        classes = list_class[0] if 'dark' in ethnicity_name else list_class[1]
+
         if object_ethnicity.rect.collidepoint(pos_mouse):
             self._helper_clear_data(heraldry, object_ethnicity.rect.x)
 
-            classes = list_class[0] if 'dark' in ethnicity_name else list_class[1]
+            for index, item in enumerate(classes):
+                self.class_[index].image = pg.image.load(IMG_NEW_GAME[item])
 
-            self.class_[0].image = pg.image.load(IMG_NEW_GAME[classes[0]])
-            self.class_[1].image = pg.image.load(IMG_NEW_GAME[classes[1]])
-            self.class_[2].image = pg.image.load(IMG_NEW_GAME[classes[2]])
-
-        # BY CLICKING ON THE CLASS TAB
         if self.interactive_[0].rect.x == object_ethnicity.rect.x:
-            self._position_classes(self.class_[0], pos_mouse, info_status[0])
-            self._position_classes(self.class_[1], pos_mouse, info_status[1])
-            self._position_classes(self.class_[2], pos_mouse, info_status[2])
+
+            for item in range(len(classes)):
+                self._position_classes(self.class_[item], pos_mouse, info_status[item])
 
             self.ETHNICITY = ethnicity_name.title()
 

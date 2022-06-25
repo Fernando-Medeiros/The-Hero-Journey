@@ -53,7 +53,7 @@ class Load:
         number_of_records = check_records(FOLDER['save'])
 
         for index in range(len(number_of_records)):
-            name, ethnicity, class_, level = number_of_records[index]
+            name, ethnicity, class_, level = number_of_records[index][:4]
             idd = 'ed_' if 'dark' in ethnicity.lower() else 'ef_' if 'forest' in ethnicity.lower() else 'eg_'
 
             self._box[index].image = pg.image.load(IMG_CLASSES[idd + class_.lower()])
@@ -86,9 +86,9 @@ class Load:
         """
         RETURNS IMAGE SWITCH ON MOUSE COLLIDE
         """
-        mouse_collision(True, self._icon_del, pos_mouse, IMG_LOAD['select_del'], IMG_LOAD['del'])
-        mouse_collision(True, self._icon_add, pos_mouse, IMG_LOAD['select_add'], IMG_NEW_GAME['add'])
-        mouse_collision(False, self._return_icon, pos_mouse, IMG_MENU['select_return'], IMG_MENU['return'])
+        mouse_collision_changing_image(self._icon_del, pos_mouse, IMG_LOAD['select_del'], IMG_LOAD['del'])
+        mouse_collision_changing_image(self._icon_add, pos_mouse, IMG_LOAD['select_add'], IMG_NEW_GAME['add'])
+        mouse_collision_changing_image(self._return_icon, pos_mouse, IMG_MENU['select_return'], IMG_MENU['return'])
 
     def events_load(self, evento):
         pos_mouse = pg.mouse.get_pos()
