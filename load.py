@@ -22,6 +22,8 @@ def _help_check_pos_del(icon_del, box_sprite, icon_load, pos_mouse, file):
 
 class Load:
     class_load = True
+    check = ''
+    name_for_loading = ''
 
     def __init__(self, *groups):
         pos_x_y = [
@@ -77,6 +79,13 @@ class Load:
         for item in range(len(file)):
             _help_check_pos_del(self._icon_del[item], self._box[item], self._icon_add[item], pos_mouse, file[item])
 
+    def loading(self, pos_mouse):
+        for icon in range(len(self._icon_add)):
+
+            if self._icon_add[icon].rect.collidepoint(pos_mouse):
+                self.check = 'loading'
+                self.name_for_loading = check_records(FOLDER['save'])[icon][0].strip().casefold()
+
     def return_menu(self, pos_mouse):
         if self._return_icon.rect.collidepoint(pos_mouse):
             self.class_load = False
@@ -96,6 +105,7 @@ class Load:
         if evento.type == pg.MOUSEBUTTONDOWN:
             self.erase_record(pos_mouse)
             self.return_menu(pos_mouse)
+            self.loading(pos_mouse)
 
         if evento.type == pg.MOUSEMOTION:
             self.interactive(pos_mouse)

@@ -3,6 +3,7 @@ from settings import *
 
 class NewGame:
     ETHNICITY, CLASS_, NAME = '', '', ''
+    check, name_for_loading = '', ''
     class_new_game = True
     BLOCK, INBOX = False, False
 
@@ -62,11 +63,16 @@ class NewGame:
         """
         if event.type == pg.MOUSEBUTTONDOWN:
             if self.add_icon.rect.collidepoint(pos_mouse) and (len(self.NAME) >= MIN_CHARACTERS_NAME):
+
                 features = self.NAME.strip().title() + '\n' + self.ETHNICITY + '\n' + self.CLASS_ + '\n' + '1'
 
                 with open(FOLDER['save'] + self.NAME.casefold(), 'w') as new_record:
                     new_record.write(features)
                 click_sound.play()
+
+                sleep(1)
+                self.check = 'loading'
+                self.name_for_loading = self.NAME.strip().casefold()
 
     def active_input_box(self, event, pos_mouse):
 

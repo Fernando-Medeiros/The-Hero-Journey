@@ -6,7 +6,7 @@ from paths import *
 
 # ################################################################
 pg.display.set_caption(NAME_OF_THE_GAME)
-VERSION = '1.0'
+VERSION = '1.2'
 LOG = datetime.today().strftime('%d/%m/%Y %H:%M:%S')
 FRAMES = pg.time.Clock()
 MAX_FRAMES = 30
@@ -22,7 +22,7 @@ MAX_RECORDS = 9
 MIN_CHARACTERS_NAME, MAX_CHARACTERS_NAME = 3, 20
 # ################################################################
 
-musicas = [SONGS['orpheus']]
+soundtrack = [SONGS['orpheus']]
 click_sound = SOUNDS['click']
 
 
@@ -65,19 +65,21 @@ class DrawStatusBar:
     Helper function to draw rectangle with health bar, mana and stamina.
     surface = (int) -- Creates a surface with width and height.
     rect = (int) -- Assign rectangle to surface.
-    size_mas (int) -- Pass the fixed value to the boundary of the rectangle.
+    size_max (int) -- Pass the fixed value to the boundary of the rectangle.
     current_size = (int) -- The variable that will constantly change value.
     """
 
-    def __init__(self, width, height, mutable_variable, max_size):
+    def __init__(self, width, height, fixed_value, max_size):
         self.surface = pg.surface.Surface((width, height))
         self.rect = self.surface.get_rect(center=(100, 100))
         self.size_max = max_size
-        self.current_size = mutable_variable / max_size
+        self.current_size = fixed_value / self.size_max
 
-    def draw(self, screen, color, x, y, current_value):
-        pg.draw.rect(screen, color, (x, y, self.size_max, 8))
-        pg.draw.rect(screen, color, (x, y, current_value / self.current_size, 8))
+    def draw(self, screen, color, x, y, height, current_value):
+        border = 0, 7, 7, 7, 7
+
+        current = pg.draw.rect(screen, color, (x, y, current_value / self.current_size, height), *border)
+        front = pg.draw.rect(screen, COLORS['WHITE'], (x, y, self.size_max, height), 1, *border)
 
 
 def save_log():

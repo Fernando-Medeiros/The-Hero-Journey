@@ -47,6 +47,7 @@ FOREST_ELF = {
     'mage': [1, 1, 4, 2, 1],
     'warden': [1, 2, 2, 1, 3]
 }
+class_progression_melee, class_progression_mage = [1, 1, 1, 1, 1], [1, 1, 1, 1, 1]
 
 SKILLS = {
     'd_duelist': {'EN': ['Duelism', 'Combat with Two Weapons'],
@@ -79,20 +80,24 @@ SKILLS = {
 
 FOLDER = {
     'save': 'save/',
-    'menu': 'images/' + LANGUAGE + '/menu/',
-    'new_game': 'images/' + LANGUAGE + '/menu/newgame/',
-    'load': 'images/' + LANGUAGE + '/menu/load/',
-    'options': 'images/' + LANGUAGE + '/menu/options/',
-    'classes': 'images/' + LANGUAGE + '/classes/',
-    'sound': 'sound/',
-    'soundtrack': 'soundtrack/',
+    'menu': 'assets/images/' + LANGUAGE + '/menu/',
+    'new_game': 'assets/images/' + LANGUAGE + '/menu/newgame/',
+    'load': 'assets/images/' + LANGUAGE + '/menu/load/',
+    'options': 'assets/images/' + LANGUAGE + '/menu/options/',
+    'classes': 'assets/images/' + LANGUAGE + '/classes/',
+    'sound': 'assets/sound/',
+    'soundtrack': 'assets/soundtrack/',
+    'game': 'assets/images/' + LANGUAGE + '/game/'
 
 }
 
 COLORS = {
     'WHITE': (255, 255, 255),
     'BLACK': (0, 0, 0),
-    'RED': (255, 0, 0),
+    'RED': (176, 31, 31),
+    'GREEN': (29, 161, 85),
+    'BLUE': (67, 138, 167),
+    'YELLOW': (235, 197, 70),
     'ACTIVE': 0
 }
 
@@ -100,7 +105,10 @@ GROUPS = {
     'menu': pg.sprite.Group(),
     'new': pg.sprite.Group(),
     'load': pg.sprite.Group(),
-    'options': pg.sprite.Group()
+    'options': pg.sprite.Group(),
+    'char': pg.sprite.Group(),
+    'opponent': pg.sprite.Group(),
+    'game': pg.sprite.Group()
 }
 
 IMG_MENU = {
@@ -162,6 +170,20 @@ IMG_OPTIONS = {
     'bg': FOLDER['options'] + 'bg.png',
     'inactive': FOLDER['options'] + 'inactive.png',
     'active': FOLDER['options'] + 'active.png'
+}
+
+IMG_GAME = {
+    'bg': FOLDER['game'] + 'bg.png',
+    'bg_char': FOLDER['game'] + 'bg_char.png',
+    'map': FOLDER['game'] + 'map.png',
+    'gps': FOLDER['game'] + 'gps.png',
+    'gold': FOLDER['game'] + 'gold.png',
+    'soul': FOLDER['game'] + 'soul.png',
+    'marketplace': FOLDER['game'] + 'marketplace.png',
+    'options': FOLDER['game'] + 'options.png',
+    'save': FOLDER['game'] + 'save.png',
+    'skills': FOLDER['game'] + 'skills.png',
+    'proficiency': FOLDER['game'] + 'proficiency.png'
 }
 
 IMG_CLASSES = {
