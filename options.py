@@ -38,7 +38,7 @@ class Options:
                         pg.display.set_mode((DISPLAY_DEFAULT, 1080), pg.SCALED | pg.FULLSCREEN)
 
                     case 'default':
-                        pg.display.set_mode((DISPLAY_DEFAULT, 1080), pg.SCALED | pg.RESIZABLE)
+                        pg.display.set_mode((DISPLAY_DEFAULT, 1050), pg.SCALED | pg.RESIZABLE)
 
                     case '30fps':
                         self.MAX_FRAMES = 30

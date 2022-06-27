@@ -2,61 +2,57 @@ from settings import *
 
 
 class NewGame:
+
     ETHNICITY, CLASS_, NAME = '', '', ''
     check, name_for_loading = '', ''
+
     class_new_game = True
     BLOCK, INBOX = False, False
 
     def __init__(self, *groups):
-        pos_y_e, pos_y_c = 70, 560
+        self.pos_y_e, self.pos_y_c = 70, 560
 
         self.bg = Obj(IMG_NEW_GAME['bg'], 0, 0, *groups)
 
-        self.ethnicity = [
-            Obj(IMG_NEW_GAME['dark_elf'], 0, pos_y_e, *groups),
-            Obj(IMG_NEW_GAME['forest_elf'], 249, pos_y_e, *groups),
-            Obj(IMG_NEW_GAME['grey_elf'], 498, pos_y_e, *groups)
-        ]
-        self.class_ = [
-            Obj(IMG_NEW_GAME['duelist'], 0, pos_y_c, *groups),
-            Obj(IMG_NEW_GAME['mage'], 249, pos_y_c, *groups),
-            Obj(IMG_NEW_GAME['assassin'], 498, pos_y_c, *groups)
-        ]
+        self.ethnicity = []
+        self.class_ = []
+
         self.boxes = [
             Obj(IMG_NEW_GAME['HERALDRY_BOX'], 0, 111, *groups),
             Obj(IMG_NEW_GAME['BOX_STATUS'], 8, 632, *groups),
-            pg.Rect(183, 982, 376, 35)
+            pg.Rect(183, 942, 376, 35)
         ]
 
         self.interactive_ = [
-            Obj(IMG_NEW_GAME['select'], LIMBO, pos_y_e, *groups),
-            Obj(IMG_NEW_GAME['select'], LIMBO, pos_y_c, *groups),
+            Obj(IMG_NEW_GAME['select'], LIMBO, self.pos_y_e, *groups),
+            Obj(IMG_NEW_GAME['select'], LIMBO, self.pos_y_c, *groups),
             Obj(IMG_NEW_GAME['interactive'], LIMBO, LIMBO, *groups),
         ]
 
         self.max_records = Obj(IMG_NEW_GAME['max_records'], 0, LIMBO, *groups)
-        self.add_icon = Obj(IMG_NEW_GAME['add'], 559, 982, *groups)
-        self.return_icon = Obj(IMG_MENU['return'], 100, 982, *groups)
+        self.add_icon = Obj(IMG_NEW_GAME['add'], 559, 942, *groups)
+        self.return_icon = Obj(IMG_MENU['return'], 100, 942, *groups)
 
-    def select_guides(self, pos_mouse):
+    def _select_guides(self, pos_mouse):
         """
         RETURNS ETHNICITY AND CLASS SELECTION AND ADD NEW REGISTRATION
         """
-        self._add_information_ethnicity_class('dark-elf', self.ethnicity[0], 'info_dark',
-                                              ['info_ed_duelist', 'info_ed_mage', 'info_ed_assassin'], pos_mouse)
+        self._add_information_ethnicity_class(
+            'dark-elf', self.ethnicity[0], 'info_dark', ['info_ed_duelist', 'info_ed_mage', 'info_ed_assassin'], pos_mouse)
 
-        self._add_information_ethnicity_class('forest-elf', self.ethnicity[1], 'info_forest',
-                                              ['info_ef_warrior', 'info_ef_mage', 'info_ef_warden'], pos_mouse)
+        self._add_information_ethnicity_class(
+            'forest-elf', self.ethnicity[1], 'info_forest', ['info_ef_warrior', 'info_ef_mage', 'info_ef_warden'], pos_mouse)
 
-        self._add_information_ethnicity_class('grey-elf', self.ethnicity[2], 'info_grey',
-                                              ['info_eg_warrior', 'info_eg_mage', 'info_eg_warden'], pos_mouse)
+        self._add_information_ethnicity_class(
+            'grey-elf', self.ethnicity[2], 'info_grey', ['info_eg_warrior', 'info_eg_mage', 'info_eg_warden'], pos_mouse)
 
-    def return_menu(self, pos_mouse):
+    def _return_menu(self, pos_mouse):
+
         if self.return_icon.rect.collidepoint(pos_mouse):
             self.class_new_game = False
             self._helper_clear_data()
 
-    def add_record(self, event, pos_mouse):
+    def _add_record(self, event, pos_mouse):
         """
         SELECT NAME AND ADD BOX
         RETURN THE REGISTRATION TO ADD NAME AND CLICK ON ICON
@@ -71,12 +67,14 @@ class NewGame:
                 click_sound.play()
 
                 sleep(1)
+
                 self.check = 'loading'
                 self.name_for_loading = self.NAME.strip().casefold()
 
-    def active_input_box(self, event, pos_mouse):
+    def _active_input_box(self, event, pos_mouse):
 
         if event.type == pg.MOUSEBUTTONDOWN:
+
             if self.boxes[2].collidepoint(pos_mouse):
                 self.INBOX = True, click_sound.play()
             else:
@@ -84,7 +82,7 @@ class NewGame:
 
             COLORS['ACTIVE'] = COLORS['WHITE'] if self.INBOX else COLORS['BLACK']
 
-    def receives_character_name(self, event):
+    def _receives_character_name(self, event):
         """
         NAME RECEIVES THE PRESSED CHARACTERS, REMOVED FROM THE KEY/EVENT.UNICODE
         PREVENTS TEXT FROM BEING GREATER THAN MAX_C CHARACTERS
@@ -99,10 +97,22 @@ class NewGame:
                 else:
                     self.NAME += str(event.unicode).replace('\r', '').replace('\t', '')
 
-        if len(self.NAME) >= MAX_CHARACTERS_NAME:
-            self.NAME = self.NAME[:-1]
+        self.NAME = self.NAME[:-1] if len(self.NAME) >= MAX_CHARACTERS_NAME else self.NAME
 
-    def draw_box(self):
+    def _interactive(self, pos_mouse):
+        """
+        RETURNS IMAGE SWITCH ON MOUSE COLLIDE
+        """
+        mouse_collision_catching_x_y(
+            LIMBO, self.ethnicity + self.class_, self.interactive_[2], pos_mouse)
+
+        mouse_collision_changing_image(
+            self.return_icon, pos_mouse, IMG_MENU['select_return'], IMG_MENU['return'])
+
+        mouse_collision_changing_image(
+            self.add_icon, pos_mouse, IMG_LOAD['select_add'], IMG_NEW_GAME['add'], check=False)
+
+    def _draw_box(self):
         """
         BOX DRAWING TO ADD NAME
         DRAW THE TEXT, BOX -> INSIDE THE SCREEN_MAIN
@@ -120,7 +130,7 @@ class NewGame:
         # DRAW THE BOX FOR TEXT INPUT
         pg.draw.rect(MAIN_SCREEN, COLORS['ACTIVE'], self.boxes[2], 2)
 
-    def check_max_records(self):
+    def _check_max_records(self):
         """
         CHECK LIMIT OF RECORDS AND RETURN LOCK FOLLOWED BY INSTRUCTIONS
         """
@@ -132,37 +142,55 @@ class NewGame:
             self.BLOCK = False
             self.max_records.rect.y = LIMBO
 
-    def interactive(self, pos_mouse):
-        """
-        RETURNS IMAGE SWITCH ON MOUSE COLLIDE
-        """
-        mouse_collision_catching_x_y(LIMBO, self.ethnicity + self.class_, self.interactive_[2], pos_mouse)
+    def _draw_titles(self):
 
-        mouse_collision_changing_image(self.return_icon, pos_mouse, IMG_MENU['select_return'],
-                                       IMG_MENU['return'])
-        mouse_collision_changing_image(self.add_icon, pos_mouse, IMG_LOAD['select_add'], IMG_NEW_GAME['add'],
-                                       check=False)
+        draw_texts(MAIN_SCREEN, f'{title_new_game[0]}', 300 + len(title_new_game[0]), 15, size=27)
+        draw_texts(MAIN_SCREEN, f'{title_new_game[1]}', 300 + len(title_new_game[1]), 510, size=27)
+
+    def _draw_subtitles(self):
+
+        pos_x_txt = [75, 324, 573]
+        pos_x_rect = [0, 249, 498]
+        pos_y_etn, pos_y_clas = 70, 560
+
+        for item in range(3):
+
+            draw_texts(
+                MAIN_SCREEN, f'{list_ethnicities[item]}'.title(), pos_x_txt[item], pos_y_etn + 10, size=20)
+
+            self.ethnicity.append(DrawStatusBar(249, 41, 0, 249, rect=(pos_x_rect[item], pos_y_etn)))
+
+        for item in range(3):
+
+            draw_texts(
+                MAIN_SCREEN, f'{list_class[0][item]}'.title(), pos_x_txt[item] + 20, pos_y_clas + 10, size=20)
+
+            self.class_.append(DrawStatusBar(249, 41, 0, 249, rect=(pos_x_rect[item], pos_y_clas)))
 
     def events_new_game(self, event):
 
         pos_mouse = pg.mouse.get_pos()
 
         if event.type == pg.MOUSEBUTTONDOWN:
-            self.return_menu(pos_mouse)
-            self.select_guides(pos_mouse)
+            self._return_menu(pos_mouse)
+            self._select_guides(pos_mouse)
 
         if event.type == pg.MOUSEMOTION:
-            self.interactive(pos_mouse)
+            self._interactive(pos_mouse)
 
         if not self.BLOCK:
-            self.add_record(event, pos_mouse)
-            self.receives_character_name(event)
-            self.active_input_box(event, pos_mouse)
+            self._add_record(event, pos_mouse)
+            self._receives_character_name(event)
+            self._active_input_box(event, pos_mouse)
 
     def update(self, *args, **kwargs):
 
-        self.check_max_records()
-        self.draw_box()
+        self._check_max_records()
+        self._draw_box()
+        self._draw_titles()
+        self._draw_subtitles()
+
+    #######
 
     def _add_information_ethnicity_class(self, ethnicity_name, object_ethnicity, heraldry,
                                          info_status: list[str, str, str], pos_mouse):

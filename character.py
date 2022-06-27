@@ -1,40 +1,51 @@
 from settings import *
 
 
-class Character(pg.sprite.Sprite):
+class Character:
 
     @staticmethod
-    def _unpack_four_basic_status(index):
+    def _unpack_basic_status(index):
         name, ethnicity, class_, level = check_records(FOLDER['save'])[index][:4]
         ethnicity, class_ = ethnicity.lower(), class_.lower()
 
         return name, ethnicity, class_, level
 
-    def __init__(self, *groups):
-        super().__init__(*groups)
+    show_status_interface = False
+
+    def __init__(self):
 
         self.index = 0
 
-        self.status = {
-            'name': str,
-            'ethnicity': str,
-            'class': str,
-            'level': int,
-            'force': int,
-            'agility': int,
-            'vitality': int,
-            'intelligence': int,
-            'resistance': int,
-            'rank': int,
-            'xp': int
+        self._attributes = {
+            'name': '',
+            'ethnicity': '',
+            'class': '',
+            'level': 1,
+            'force': 1,
+            'agility': 1,
+            'vitality': 1,
+            'intelligence': 1,
+            'resistance': 1,
+            'rank': 1,
+            'xp': 1
         }
-
         self.status_secondary = {
-            'hp': int,
-            'mp': int,
-            'stamina': int
+            'hp': 1,
+            'mp': 1,
+            'stamina': 1
         }
-
+        self.current_status = {
+            'hp': 1,
+            'mp': 1,
+            'stamina': 1
+        }
+        self.status = {
+            'attack': 1,
+            'defense': 1,
+            'dodge': 1,
+            'critical': 1,
+            'luck': 1
+        }
         self.others = {
             'gold': 0,
             'soul': 0,
@@ -44,47 +55,49 @@ class Character(pg.sprite.Sprite):
             'equips': []
         }
 
-        self.current_status = {
-            'hp': int,
-            'mp': int,
-            'stamina': int,
-            'xp': int
-        }
+        self._button_status = DrawStatusBar(373, 30, 100, 373, rect=(15, 190))
 
-        self._assign_status()
-
-    def _assign_status(self):
+    def _assign_basic_attributes(self):
         """
         Load data from specific file, and assign status values.
         """
-        list_keys = [key for key in self.status]
+        list_keys = [key for key in self._attributes]
 
         list_values = check_records(FOLDER['save'])[self.index]
-        status = list_values + self._first_game() if len(list_values[:]) < 4 else list_values
+        status = list_values + self._first_game() if len(list_values[:]) < 5 else list_values
 
         for _index, item in enumerate(status):
             if str(item).isnumeric():
                 item = int(item)
 
-            self.status[list_keys[_index]] = item
+            self._attributes[list_keys[_index]] = item
 
-    def _assign_secondary(self):
+    def _assign_status_secondary(self):
         """
         Assigns secondary status based on instance attributes.
         """
-        self.status_secondary['hp'] = self.status['level'] * self.status['vitality'] * self.status['force']
-        self.status_secondary['mp'] = self.status['level'] * self.status['intelligence'] + self.status['resistance']
-        self.status_secondary['stamina'] = self.status['level'] * self.status['resistance']
+        level, force, agility, vitality, intelligence, resistance = \
+            list(self._attributes.values())[3:9]
+
+        self.status_secondary['hp'] = level * vitality * force * 3.5
+        self.status_secondary['mp'] = level * intelligence + resistance * 1.5
+        self.status_secondary['stamina'] = level * resistance * 1.5
+
+        self.status['attack'] = force * level + (agility / 2)
+        self.status['defense'] = resistance * level + (agility / 2)
+        self.status['dodge'] = (agility + level) / 2
+        self.status['critical'] = agility / 2
+        self.status['luck'] = (level + agility) / 1.5
 
     def _assign_others(self):
-        name, ethnicity, class_, level = self._unpack_four_basic_status(self.index)
+        name, ethnicity, class_, level = self._unpack_basic_status(self.index)
 
         self.others['skills'].append(SKILLS[ethnicity[0] + '_' + class_][LANGUAGE])
 
     def _update_status(self):
 
-        update =\
-            [self.status_secondary['hp'], self.status_secondary['mp'], self.status_secondary['stamina'], self.status['xp']]
+        update = \
+            [self.status_secondary['hp'], self.status_secondary['mp'], self.status_secondary['stamina']]
 
         for index, key in enumerate(self.current_status):
             self.current_status[key] = update[index]
@@ -93,64 +106,53 @@ class Character(pg.sprite.Sprite):
         """
         Checks if it's the first time in the game, if so, returns the base status of the class and skills
         """
-        name, ethnicity, class_, level = self._unpack_four_basic_status(self.index)
+        name, ethnicity, class_, level = self._unpack_basic_status(self.index)
 
         if str(level) == '1':
-            rank, experience = 1, 1
-
             folder = \
-                DARK_ELF[class_] if 'dark' in ethnicity else FOREST_ELF[class_] if 'forest' in ethnicity else GREY_ELF[class_]
-
-            folder.append(rank), folder.append(experience)
+                DARK_ELF[class_] if 'dark' in ethnicity else FOREST_ELF[class_] if 'forest' in ethnicity else GREY_ELF[
+                    class_]
 
             return folder
 
     def _level_up(self):
-        next_level = self.status['level'] * 15
-        if self.status['xp'] >= next_level:
-            self.status['level'] += 1
-            self.status['xp'] = 0
+
+        next_level = self._attributes['level'] * 15
+
+        if self._attributes['xp'] >= next_level:
+            self._attributes['level'] += 1
+            self._attributes['xp'] = 0
             self._level_progression()
 
     def _level_progression(self):
         keys = 'force', 'vitality', 'agility', 'intelligence', 'resistance'
 
         upgrade_status = \
-            class_progression_mage if str(self.status['class']).lower() == 'mage' else class_progression_melee
+            class_progression_mage if str(self._attributes['class']).lower() == 'mage' else class_progression_melee
 
         for index, key in enumerate(keys):
-            self.status[key] += upgrade_status[index]
-
-    def save(self):
-        with open(FOLDER['save'] + str(self.status['name']).lower(), mode='w+', encoding='utf-8') as file:
-
-            for x in self.status.values():
-                file.write(str(x).strip() + '\n')
+            self._attributes[key] += upgrade_status[index]
 
     def _draw_bar_status(self):
 
-        hp = DrawStatusBar(233, 30, self.status_secondary['hp'], 210)
-        mp = DrawStatusBar(233, 30, self.status_secondary['mp'], 210)
-        stamina = DrawStatusBar(233, 30, self.status_secondary['stamina'], 210)
-        xp = DrawStatusBar(233, 30, self.status['xp'] + 1, 210)
+        DrawStatusBar(233, 15, self.status_secondary['hp'], 222) \
+            .draw(MAIN_SCREEN, COLORS['RED'], 173, 36, 15, self.current_status['hp'])
 
-        hp.draw(MAIN_SCREEN, COLORS['RED'], 173, 36, 15, self.current_status['hp'])
-        mp.draw(MAIN_SCREEN, COLORS['BLUE'], 180, 54, 15, self.current_status['mp'])
-        stamina.draw(MAIN_SCREEN, COLORS['GREEN'], 183, 72, 15, self.current_status['stamina'])
-        xp.draw(MAIN_SCREEN, COLORS['YELLOW'], 185, 94, 15, self.current_status['xp'])
+        DrawStatusBar(233, 15, self.status_secondary['mp'], 215) \
+            .draw(MAIN_SCREEN, COLORS['BLUE'], 180, 54, 15, self.current_status['mp'])
 
-    def _draw_sprites_text(self):
+        DrawStatusBar(233, 15, self.status_secondary['stamina'], 212) \
+            .draw(MAIN_SCREEN, COLORS['GREEN'], 183, 72, 15, self.current_status['stamina'])
 
-        name, ethnicity, class_, level = self._unpack_four_basic_status(self.index)
+        DrawStatusBar(233, 15, self._attributes['level'] * 15, 210) \
+            .draw(MAIN_SCREEN, COLORS['YELLOW'], 185, 90, 15, self._attributes['xp'])
+
+    def _draw_sprites(self):
+
+        ethnicity, class_ = self._attributes['ethnicity'], self._attributes['class']
 
         idd = 'ed_' if 'dark' in ethnicity.lower() else 'ef_' if 'forest' in ethnicity.lower() else 'eg_'
 
-        # TEXT
-        draw_texts(MAIN_SCREEN, name, 189, 8, size=20)
-        draw_texts(MAIN_SCREEN, str(self.others['gold']), 477, 28, size=25)
-        draw_texts(MAIN_SCREEN, str(self.others['soul']), 610, 28, size=25)
-
-        # SPRITES
         background = pg.image.load(IMG_GAME['bg_char'])
         sprite = pg.image.load(IMG_CLASSES[idd + class_.lower()])
 
@@ -158,17 +160,70 @@ class Character(pg.sprite.Sprite):
 
         MAIN_SCREEN.blits(drawing)
 
-    def events_character(self):
-        pass
+    def _draw_text(self):
 
-    def update(self, *args, **kwargs) -> None:
+        draw_texts(MAIN_SCREEN, f'Lvl - {self._attributes["level"]}', 189, 110)
+        draw_texts(MAIN_SCREEN, self._attributes['name'], 189, 8, size=20)
+        draw_texts(MAIN_SCREEN, str(self.others['gold']), 477, 28, size=25)
+        draw_texts(MAIN_SCREEN, str(self.others['soul']), 610, 28, size=25)
+
+        draw_texts(
+            MAIN_SCREEN, f'{self.current_status["hp"]:^25.1f}/{self.status_secondary["hp"]:^25.1f}', 185, 36, size=13)
+        draw_texts(
+            MAIN_SCREEN, f'{self.current_status["mp"]:^25.1f}/{self.status_secondary["mp"]:^25.1f}', 185, 54, size=13)
+        draw_texts(
+            MAIN_SCREEN, f'{self.current_status["stamina"]:^25.1f}/{self.status_secondary["stamina"]:^25.1f}', 185, 72,
+            size=13)
+        draw_texts(
+            MAIN_SCREEN, f'{self._attributes["xp"]:^25.1f}/{self._attributes["level"] * 15:^25.1f}', 185, 90, size=13)
+
+    def _draw_status(self):
+
+        self._button_status.draw(MAIN_SCREEN, COLORS['BLUE_2'], 15, 190, 30, 100)
+        draw_texts(MAIN_SCREEN, f'{"Status"}', 170, 190, size=25)
+
+        if self.show_status_interface:
+            DrawStatusBar(1, 1, 100, 373).draw(MAIN_SCREEN, COLORS['BLACK'], 15, 220, 150, 0)
+
+            y = 230
+            for key, value in self._attributes.items():
+                if not key in 'name, level, rank, xp':
+                    draw_texts(MAIN_SCREEN, f'{key.title():<} - {value:>}', 20, y)
+                    y += 20
+
+            y = 230
+            for key, value in self.status.items():
+                draw_texts(MAIN_SCREEN, f'{key.title():<} - {value:>.1f}', 206, y)
+                y += 20
+
+    def _get_mouse_events(self, pos_mouse):
+
+        if self._button_status.rect.collidepoint(pos_mouse):
+            self.show_status_interface = True
+        else:
+            self.show_status_interface = False
+
+    def save(self):
+        with open(FOLDER['save'] + str(self._attributes['name']).lower(), mode='w+', encoding='utf-8') as file:
+            for x in self._attributes.values():
+                file.write(str(x).strip() + '\n')
+
+    def events_character(self, event):
+        pos_mouse = pg.mouse.get_pos()
+
+        if event.type == pg.MOUSEBUTTONDOWN:
+            self._get_mouse_events(pos_mouse)
+
+    def update(self, *args, **kwargs):
 
         if not self.others['skills']:
+            self._assign_basic_attributes()
             self._assign_others()
-            self._assign_status()
 
-        self._level_up()
-        self._assign_secondary()
+        self._assign_status_secondary()
         self._update_status()
         self._draw_bar_status()
-        self._draw_sprites_text()
+        self._draw_sprites()
+        self._draw_text()
+        self._draw_status()
+        self._level_up()

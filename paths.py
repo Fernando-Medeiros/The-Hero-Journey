@@ -20,6 +20,11 @@ if LANGUAGE == 'EN':
         'fps': ['30 fps', '60 fps'],
         'sound': ['on', 'off']
     }
+    list_ethnicities = ['Dark Elves', 'Forest Elves', 'Grey Elves']
+    list_guides_menu = ['new_game  ', ' load', 'credits', 'options', ' quit']
+    title_load = 'Records'
+    title_new_game = 'Ethnicities', 'Classes'
+
 else:
     NAME_OF_THE_GAME = "A Jornada do Herói"
     txt_options = {
@@ -29,6 +34,20 @@ else:
         'fps': ['30 fps', '60 fps'],
         'sound': ['Ligado', 'Desligado']
     }
+    list_ethnicities = ['Elfos Escuros', 'Elfos das Florestas', 'Elfos Cinzentos']
+    list_guides_menu = ['novo_jogo', 'carregar', 'créditos', 'opções', 'sair']
+    title_load = 'Registros'
+    title_new_game = 'Etnias', 'Classes'
+
+LIST_LANDS = [
+    'Strange Island', 'Island of Wolves', 'Marine Point', 'Fields of Slimes', 'River of Vipers', 'Forest of Elves',
+    'Dark Passage', 'Mines of Sória', 'Two Rivers', 'Wind Fields', 'Araan City', 'Lands of Araan'
+    ]
+
+POS_GPS = [
+    (449, 198), (468, 183), (511, 184), (494, 200), (509, 214), (524, 205),
+    (528, 216), (512, 224), (502, 233), (509, 249), (514, 264), (504, 276)
+    ]
 
 DARK_ELF = {
     'duelist': [3, 2, 2, 1, 1],
@@ -80,14 +99,14 @@ SKILLS = {
 
 FOLDER = {
     'save': 'save/',
-    'menu': 'assets/images/' + LANGUAGE + '/menu/',
-    'new_game': 'assets/images/' + LANGUAGE + '/menu/newgame/',
-    'load': 'assets/images/' + LANGUAGE + '/menu/load/',
-    'options': 'assets/images/' + LANGUAGE + '/menu/options/',
-    'classes': 'assets/images/' + LANGUAGE + '/classes/',
+    'menu': 'assets/images/menu/',
+    'new_game': 'assets/images/menu/newgame/',
+    'load': 'assets/images/menu/load/',
+    'options': 'assets/images/menu/options/',
+    'classes': 'assets/images/classes/',
     'sound': 'assets/sound/',
     'soundtrack': 'assets/soundtrack/',
-    'game': 'assets/images/' + LANGUAGE + '/game/'
+    'game': 'assets/images/game/'
 
 }
 
@@ -98,6 +117,7 @@ COLORS = {
     'GREEN': (29, 161, 85),
     'BLUE': (67, 138, 167),
     'YELLOW': (235, 197, 70),
+    'BLUE_2': (6, 0, 56),
     'ACTIVE': 0
 }
 
@@ -113,11 +133,6 @@ GROUPS = {
 
 IMG_MENU = {
     'bg': FOLDER['menu'] + 'bg_menu.png',
-    'new': FOLDER['menu'] + 'new_game.png',
-    'load': FOLDER['menu'] + 'load.png',
-    'credit': FOLDER['menu'] + 'credit.png',
-    'options': FOLDER['menu'] + 'options.png',
-    'quit': FOLDER['menu'] + 'quit.png',
     'return': FOLDER['menu'] + 'return.png',
     'select': FOLDER['menu'] + 'select.png',
     'info_c': FOLDER['menu'] + 'info_credit.png',
@@ -129,9 +144,6 @@ IMG_NEW_GAME = {
     'add': FOLDER['new_game'] + 'add.png',
     'interactive': FOLDER['new_game'] + 'interactive.png',
     'select': FOLDER['new_game'] + 'select.png',
-    'dark_elf': FOLDER['new_game'] + 'dark_elf.png',
-    'grey_elf': FOLDER['new_game'] + 'grey_elf.png',
-    'forest_elf': FOLDER['new_game'] + 'forest_elf.png',
 
     'HERALDRY_BOX': FOLDER['new_game'] + 'heraldry_box.png',
     'info_dark': FOLDER['new_game'] + 'INFO_DARK_ELF.png',
@@ -183,7 +195,11 @@ IMG_GAME = {
     'options': FOLDER['game'] + 'options.png',
     'save': FOLDER['game'] + 'save.png',
     'skills': FOLDER['game'] + 'skills.png',
-    'proficiency': FOLDER['game'] + 'proficiency.png'
+    'proficiency': FOLDER['game'] + 'proficiency.png',
+    'next': FOLDER['game'] + 'next.png',
+    'select_next': FOLDER['game'] + 'select_next.png',
+    'previous': FOLDER['game'] + 'previous.png',
+    'select_previous': FOLDER['game'] + 'select_previous.png'
 }
 
 IMG_CLASSES = {

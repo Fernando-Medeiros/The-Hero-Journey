@@ -69,7 +69,7 @@ class RoadMapMenu:
 class RoadMapGame:
 
     @staticmethod
-    def name_for_loading(name):
+    def _get_index_from_name(name):
         for index, item in enumerate(check_records(FOLDER['save'])):
             if str(name) in item[0].casefold():
                 return index
@@ -77,13 +77,12 @@ class RoadMapGame:
 
     class_road_map_game = True
 
-    group_sprites_char = GROUPS['char']
     group_sprites_opponent = GROUPS['opponent']
     group_sprites_game_interface = GROUPS['game']
 
     game_interface = Game(group_sprites_game_interface)
-    character = Character(group_sprites_char)
-    index = 0
+    character = Character()
+    index_name = 0
 
     def draw(self, main_screen):
 
@@ -93,7 +92,7 @@ class RoadMapGame:
                 self.group_sprites_game_interface.draw(main_screen)
                 self.game_interface.update()
 
-                self.character.index = self.name_for_loading(self.index)
+                self.character.index = self._get_index_from_name(self.index_name)
                 self.character.update()
 
             else:
@@ -104,6 +103,7 @@ class RoadMapGame:
         if self.class_road_map_game:
 
             self.game_interface.events_game(event)
+            self.character.events_character(event)
 
 
 ##########################################################################################
@@ -118,7 +118,7 @@ def draw():
 
     elif road_map_game.class_road_map_game:
 
-        road_map_game.index = road_map_menu.load.name_for_loading + road_map_menu.new.name_for_loading
+        road_map_game.index_name = road_map_menu.load.name_for_loading + road_map_menu.new.name_for_loading
         road_map_game.draw(MAIN_SCREEN)
 
     else:

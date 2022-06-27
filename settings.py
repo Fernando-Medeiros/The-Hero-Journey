@@ -12,7 +12,7 @@ FRAMES = pg.time.Clock()
 MAX_FRAMES = 30
 DISPLAY_DEFAULT = 747
 
-MAIN_SCREEN = pg.display.set_mode((DISPLAY_DEFAULT, 1080), pg.SCALED | pg.RESIZABLE)
+MAIN_SCREEN = pg.display.set_mode((DISPLAY_DEFAULT, 1050), pg.SCALED | pg.RESIZABLE)
 
 FONT_RECORDS = pg.font.SysFont('arial', 15, True)
 FONT_ADD_NAME = pg.font.SysFont('arial', 25, True)
@@ -69,9 +69,9 @@ class DrawStatusBar:
     current_size = (int) -- The variable that will constantly change value.
     """
 
-    def __init__(self, width, height, fixed_value, max_size):
+    def __init__(self, width, height, fixed_value, max_size, rect=(0, 0)):
         self.surface = pg.surface.Surface((width, height))
-        self.rect = self.surface.get_rect(center=(100, 100))
+        self.rect = self.surface.get_rect(topleft=rect)
         self.size_max = max_size
         self.current_size = fixed_value / self.size_max
 
