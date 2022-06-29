@@ -128,7 +128,7 @@ class Character:
         keys = 'force', 'vitality', 'agility', 'intelligence', 'resistance'
 
         upgrade_status = \
-            class_progression_mage if str(self._attributes['class']).lower() == 'mage' else class_progression_melee
+            CLASS_PROGRESSION_MAGE if str(self._attributes['class']).lower() == 'mage' else CLASS_PROGRESSION_MELEE
 
         for index, key in enumerate(keys):
             self._attributes[key] += upgrade_status[index]
