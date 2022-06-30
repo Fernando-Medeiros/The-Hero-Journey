@@ -32,6 +32,7 @@ class NewGame:
         self.max_records = Obj(IMG_NEW_GAME['max_records'], 0, LIMBO, *groups)
         self.add_icon = Obj(IMG_NEW_GAME['add'], 559, 942, *groups)
         self.return_icon = Obj(IMG_MENU['return'], 100, 942, *groups)
+
         self.index_list_class = LIST_CLASSES[0]
 
     def _select_guides(self, pos_mouse):
@@ -55,16 +56,16 @@ class NewGame:
 
             if self.add_icon.rect.collidepoint(pos_mouse) and (len(self.NAME) >= MIN_CHARACTERS_NAME):
 
-                features = self.NAME.strip().title() + '\n' + self.ETHNICITY + '\n' + self.CLASS_ + '\n' + '1'
+                features = self.NAME + '\n' + self.ETHNICITY + '\n' + self.CLASS_ + '\n' + '1'
 
-                with open(FOLDER['save'] + self.NAME.casefold(), 'w') as new_record:
+                with open(FOLDER['save'] + self.NAME, 'w') as new_record:
                     new_record.write(features)
                 click_sound.play()
 
                 sleep(1)
 
                 self.check = 'loading'
-                self.name_for_loading = self.NAME.strip().casefold()
+                self.name_for_loading = self.NAME
 
     def _active_input_box(self, pos_mouse):
 
@@ -92,7 +93,7 @@ class NewGame:
                     if event.key == pg.K_BACKSPACE:
                         self.NAME = self.NAME[:-1]
                     else:
-                        self.NAME += str(event.unicode).replace('\r', '').replace('\t', '')
+                        self.NAME += str(event.unicode).replace('\r', '').replace('\t', '').strip().casefold()
 
         self.NAME = self.NAME[:-1] if len(self.NAME) >= MAX_CHARACTERS_NAME else self.NAME
 
@@ -163,9 +164,9 @@ class NewGame:
 
         try:
             info =\
-                'dark' if 'dark' in self.ETHNICITY.lower() else\
-                'forest' if 'forest' in self.ETHNICITY.lower() else\
-                'grey' if 'grey' in self.ETHNICITY.lower() else None
+                'dark' if 'dark' in self.ETHNICITY else\
+                'forest' if 'forest' in self.ETHNICITY else\
+                'grey' if 'grey' in self.ETHNICITY else None
 
             y = 240
             for line in INFO_HERALDRY[info][LANGUAGE].replace('\n', '').split('\r'):
@@ -179,7 +180,7 @@ class NewGame:
     def _draw_info_classes(self):
         try:
 
-            idd = 'ed_' if 'dark' in self.ETHNICITY.lower() else 'ef_' if 'forest' in self.ETHNICITY.lower() else 'eg_'
+            idd = 'ed_' if 'dark' in self.ETHNICITY else 'ef_' if 'forest' in self.ETHNICITY else 'eg_'
             list_with_attributes = DARK_ELF if idd == 'ed_' else FOREST_ELF if idd == 'ef_' else GREY_ELF
 
             # TITLE
@@ -190,13 +191,13 @@ class NewGame:
             for index, status in enumerate(BASIC_ATTRIBUTES):
 
                 draw_texts(
-                    MAIN_SCREEN, f'{status.title():<} - {list_with_attributes[self.CLASS_.lower()][index]:>.1f}',
+                    MAIN_SCREEN, f'{status.title():<} - {list_with_attributes[self.CLASS_][index]:>.1f}',
                     210, y, color=COLORS['BLACK'], size=20)
 
                 y += 30
 
             # SPRITE OF CLASS
-            sprite = pg.image.load(IMG_CLASSES[idd + self.CLASS_.lower()])
+            sprite = pg.image.load(IMG_CLASSES[idd + self.CLASS_])
             MAIN_SCREEN.blit(sprite, (25, 680))
 
         except Exception as erro:
@@ -204,7 +205,7 @@ class NewGame:
 
         # SKILLS
         y = 680
-        for line in INFO_SKILLS[idd[1:] + self.CLASS_.lower()][LANGUAGE].replace('\n', '').split('\r'):
+        for line in INFO_SKILLS[idd[1:] + self.CLASS_][LANGUAGE].replace('\n', '').split('\r'):
             draw_texts(MAIN_SCREEN, f'{line}', 375, y, color=COLORS['BLACK'])
 
             y += 20
@@ -220,14 +221,14 @@ class NewGame:
             self.boxes[0].image = pg.image.load(IMG_NEW_GAME[bg_ethnicity])
 
             self.index_list_class = classes
-            self.ETHNICITY = name_ethnicity.title()
+            self.ETHNICITY = name_ethnicity.casefold()
 
         if self.interactive_[0].rect.x == var_ethnicity.rect.x:
 
             for index in range(3):
 
                 if self.class_[index].rect.collidepoint(pos_mouse):
-                    self.CLASS_ = classes[index].title()
+                    self.CLASS_ = classes[index].casefold()
 
     def _reset_changes(self):
 

@@ -103,6 +103,11 @@ SKILLS = {
                  'BR': ['Fortificação', 'Especialista em Defesa']}
 }
 
+LIST_ENEMIES = []
+with open('assets/list_enemies.txt', mode='r', encoding='utf-8') as file:
+    for x in file.readlines():
+        LIST_ENEMIES.append(x.replace("\n", "").split(':'))
+
 FOLDER = {
     'save': 'save/',
     'menu': 'assets/images/menu/',
@@ -112,7 +117,8 @@ FOLDER = {
     'classes': 'assets/images/classes/',
     'sound': 'assets/sound/',
     'soundtrack': 'assets/soundtrack/',
-    'game': 'assets/images/game/'
+    'game': 'assets/images/game/',
+    'enemies': 'assets/images/enemies/'
 
 }
 
@@ -132,7 +138,6 @@ GROUPS = {
     'new': pg.sprite.Group(),
     'load': pg.sprite.Group(),
     'options': pg.sprite.Group(),
-    'char': pg.sprite.Group(),
     'opponent': pg.sprite.Group(),
     'game': pg.sprite.Group()
 }
@@ -181,14 +186,23 @@ IMG_GAME = {
     'gps': FOLDER['game'] + 'gps.png',
     'gold': FOLDER['game'] + 'gold.png',
     'soul': FOLDER['game'] + 'soul.png',
+
     'marketplace': FOLDER['game'] + 'marketplace.png',
     'options': FOLDER['game'] + 'options.png',
     'save': FOLDER['game'] + 'save.png',
     'skills': FOLDER['game'] + 'skills.png',
     'proficiency': FOLDER['game'] + 'proficiency.png',
+    'chest': FOLDER['game'] + 'chest.png',
     'next': FOLDER['game'] + 'next.png',
-    'select_next': FOLDER['game'] + 'select_next.png',
     'previous': FOLDER['game'] + 'previous.png',
+
+    'select_save': FOLDER['game'] + 'select_save.png',
+    'select_marketplace': FOLDER['game'] + 'select_marketplace.png',
+    'select_options': FOLDER['game'] + 'select_options.png',
+    'select_skills': FOLDER['game'] + 'select_skills.png',
+    'select_proficiency': FOLDER['game'] + 'select_proficiency.png',
+    'select_chest': FOLDER['game'] + 'select_chest.png',
+    'select_next': FOLDER['game'] + 'select_next.png',
     'select_previous': FOLDER['game'] + 'select_previous.png'
 }
 

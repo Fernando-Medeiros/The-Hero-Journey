@@ -48,6 +48,7 @@ class RoadMapMenu:
                 self.options.class_options = True
 
         else:
+            road_map_menu.menu_.check, road_map_menu.new.check, road_map_menu.load.check = '', '', ''
             self.class_road_map_menu = False
 
     def events(self, event):
@@ -71,39 +72,38 @@ class RoadMapGame:
     @staticmethod
     def _get_index_from_name(name):
         for index, item in enumerate(check_records(FOLDER['save'])):
-            if str(name) in item[0].casefold():
+            if str(name) == item[0]:
                 return index
         return 0
 
     class_road_map_game = True
 
-    group_sprites_opponent = GROUPS['opponent']
     group_sprites_game_interface = GROUPS['game']
 
     game_interface = Game(group_sprites_game_interface)
-    character = Character()
     index_name = 0
 
     def draw(self, main_screen):
 
-        if self.class_road_map_game:
+        if self.game_interface.check == '' and self.class_road_map_game:
 
             if self.game_interface.class_game:
-                self.group_sprites_game_interface.draw(main_screen)
-                self.game_interface.update()
 
-                self.character.index = self._get_index_from_name(self.index_name)
-                self.character.update()
+                self.group_sprites_game_interface.draw(main_screen)
+                self.game_interface.character.index = self._get_index_from_name(self.index_name)
+                self.game_interface.update(main_screen)
 
             else:
-                self.character.save()
-                save_log()
+                self.game_interface.class_game = True
+
+        else:
+            self.class_road_map_game = False
+            road_map_game.game_interface.check = ''
 
     def events(self, event):
-        if self.class_road_map_game:
 
+        if self.class_road_map_game:
             self.game_interface.events_game(event)
-            self.character.events_character(event)
 
 
 ##########################################################################################
@@ -124,6 +124,7 @@ def draw():
     else:
         road_map_menu.class_road_map_menu = True
         road_map_game.class_road_map_game = True
+        road_map_menu.load.name_for_loading, road_map_menu.new.name_for_loading = '', ''
 
 
 def events():

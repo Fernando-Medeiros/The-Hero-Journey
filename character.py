@@ -121,14 +121,14 @@ class Character:
 
         if self._attributes['xp'] >= next_level:
             self._attributes['level'] += 1
-            self._attributes['xp'] = 0
+            self._attributes['xp'] = 1
             self._level_progression()
 
     def _level_progression(self):
         keys = 'force', 'vitality', 'agility', 'intelligence', 'resistance'
 
         upgrade_status = \
-            CLASS_PROGRESSION_MAGE if str(self._attributes['class']).lower() == 'mage' else CLASS_PROGRESSION_MELEE
+            CLASS_PROGRESSION_MAGE if str(self._attributes['class']) == 'mage' else CLASS_PROGRESSION_MELEE
 
         for index, key in enumerate(keys):
             self._attributes[key] += upgrade_status[index]
@@ -151,10 +151,10 @@ class Character:
 
         ethnicity, class_ = self._attributes['ethnicity'], self._attributes['class']
 
-        idd = 'ed_' if 'dark' in ethnicity.lower() else 'ef_' if 'forest' in ethnicity.lower() else 'eg_'
+        idd = 'ed_' if 'dark' in ethnicity else 'ef_' if 'forest' in ethnicity else 'eg_'
 
         background = pg.image.load(IMG_GAME['bg_char'])
-        sprite = pg.image.load(IMG_CLASSES[idd + class_.lower()])
+        sprite = pg.image.load(IMG_CLASSES[idd + class_])
 
         drawing = [(background, (2, 1)), (sprite, (20, 18))]
 
@@ -163,7 +163,7 @@ class Character:
     def _draw_text(self):
 
         draw_texts(MAIN_SCREEN, f'Lvl - {self._attributes["level"]}', 189, 110)
-        draw_texts(MAIN_SCREEN, self._attributes['name'], 189, 8, size=20)
+        draw_texts(MAIN_SCREEN, self._attributes['name'].title(), 189, 8, size=20)
         draw_texts(MAIN_SCREEN, str(self.others['gold']), 477, 28, size=25)
         draw_texts(MAIN_SCREEN, str(self.others['soul']), 610, 28, size=25)
 
@@ -204,11 +204,15 @@ class Character:
             self.show_status_interface = False
 
     def save(self):
+
         with open(FOLDER['save'] + str(self._attributes['name']).lower(), mode='w+', encoding='utf-8') as file:
             for x in self._attributes.values():
                 file.write(str(x).strip() + '\n')
 
+        self.others['skills'].clear()
+
     def events_character(self, event):
+
         pos_mouse = pg.mouse.get_pos()
 
         if event.type == pg.MOUSEBUTTONDOWN:

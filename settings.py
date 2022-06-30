@@ -1,6 +1,7 @@
 from time import sleep
 from os import listdir, remove
 from datetime import datetime
+from random import choice
 from paths import *
 
 
@@ -14,8 +15,6 @@ DISPLAY_DEFAULT = 747
 
 MAIN_SCREEN = pg.display.set_mode((DISPLAY_DEFAULT, 1050), pg.SCALED | pg.RESIZABLE)
 
-FONT_RECORDS = pg.font.SysFont('arial', 15, True)
-FONT_ADD_NAME = pg.font.SysFont('arial', 25, True)
 FONT_SETTINGS = pg.font.SysFont('arial', 25, True)
 LIMBO = -1080
 MAX_RECORDS = 9
@@ -70,16 +69,17 @@ class DrawStatusBar:
     """
 
     def __init__(self, width, height, fixed_value, max_size, rect=(0, 0)):
+
         self.surface = pg.surface.Surface((width, height))
         self.rect = self.surface.get_rect(topleft=rect)
         self.size_max = max_size
         self.current_size = fixed_value / self.size_max
 
-    def draw(self, screen, color, x, y, height, current_value):
+    def draw(self, screen, color, x, y, height, current_value, color_bg=COLORS['WHITE']):
         border = 0, 7, 7, 7, 7
 
         current = pg.draw.rect(screen, color, (x, y, current_value / self.current_size, height), *border)
-        front = pg.draw.rect(screen, COLORS['WHITE'], (x, y, self.size_max, height), 1, *border)
+        front = pg.draw.rect(screen, color_bg, (x, y, self.size_max, height), 1, *border)
 
 
 def save_log():
@@ -88,7 +88,8 @@ def save_log():
     """
     with open('log', 'a') as up_log:
         up_log.write(LOG + ' < // > ' + date_time() + '\n'), up_log.close()
-    click_sound.play(), sleep(1), exit()
+    click_sound.play()
+    sleep(1), pg.quit(), quit()
 
 
 def date_time():

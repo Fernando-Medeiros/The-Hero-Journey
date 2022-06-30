@@ -2,6 +2,7 @@ from settings import *
 
 
 class Options:
+
     class_options = True
     mixer = 'mixer_active'
     pos_center = MAIN_SCREEN.get_width() / 2

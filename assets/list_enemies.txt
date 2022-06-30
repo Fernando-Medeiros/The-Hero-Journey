@@ -1,0 +1,7 @@
+slime_warrior:1:1:1:1:1:1
+slime_mage:1:1:1:1:1:1
+slime_assassin:1:1:1:1:1:1
+slime_magic_warrior:1:1:1:1:1:1
+slime_earth:1:1:1:1:1:1
+slime_mage_corrupted:1:1:1:1:1:1
+slime_warrior_corrupted:1:1:1:1:1:1

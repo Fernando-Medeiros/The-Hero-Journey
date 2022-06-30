@@ -40,18 +40,18 @@ class Load:
         for index in range(len(number_of_records)):
 
             name, ethnicity, class_, level = number_of_records[index][:4]
-            idd = 'ed_' if 'dark' in ethnicity.lower() else 'ef_' if 'forest' in ethnicity.lower() else 'eg_'
+            idd = 'ed_' if 'dark' in ethnicity else 'ef_' if 'forest' in ethnicity else 'eg_'
 
-            self._box[index].image = pg.image.load(IMG_CLASSES[idd + class_.lower()])
+            self._box[index].image = pg.image.load(IMG_CLASSES[idd + class_])
 
             pos_x, pos_y = self._box[index].rect.bottomleft
 
             self._icon_del[index].rect.topleft = (pos_x, pos_y + 90)
             self._icon_add[index].rect.topleft = (pos_x + 85, pos_y + 90)
 
-            draw_texts(MAIN_SCREEN, f'> {name}', pos_x, pos_y + 10, color=COLORS['BLACK'])
-            draw_texts(MAIN_SCREEN, f'> {ethnicity}', pos_x, pos_y + 30, color=COLORS['BLACK'])
-            draw_texts(MAIN_SCREEN, f'> {class_}', pos_x, pos_y + 50, color=COLORS['BLACK'])
+            draw_texts(MAIN_SCREEN, f'> {name}'.title(), pos_x, pos_y + 10, color=COLORS['BLACK'])
+            draw_texts(MAIN_SCREEN, f'> {ethnicity}'.title(), pos_x, pos_y + 30, color=COLORS['BLACK'])
+            draw_texts(MAIN_SCREEN, f'> {class_}'.title(), pos_x, pos_y + 50, color=COLORS['BLACK'])
             draw_texts(MAIN_SCREEN, f'> lvl {level}', pos_x, pos_y + 70, color=COLORS['BLACK'])
 
     def _erase_record(self, pos_mouse):
@@ -76,7 +76,7 @@ class Load:
 
             if self._icon_add[icon].rect.collidepoint(pos_mouse):
                 self.check = 'loading'
-                self.name_for_loading = check_records(FOLDER['save'])[icon][0].strip().casefold()
+                self.name_for_loading = check_records(FOLDER['save'])[icon][0].strip()
 
     def _return_menu(self, pos_mouse):
 
