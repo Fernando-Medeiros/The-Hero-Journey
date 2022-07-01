@@ -3,7 +3,6 @@ from menu import Menu
 from newgame import NewGame
 from load import Load
 from options import Options
-from character import Character
 from game import Game
 
 

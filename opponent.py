@@ -49,7 +49,7 @@ class Enemy(Obj):
 
         list_key = [key for key in self._attributes]
 
-        for index, value in enumerate(self.instance_data):
+        for index, value in enumerate(self.instance_data[1:]):
 
             value = int(value) if str(value).isnumeric() else str(value)
             self._attributes[list_key[index]] = value

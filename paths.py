@@ -27,8 +27,13 @@ if LANGUAGE == 'EN':
     title_load = 'Records'
     title_new_game = 'Ethnicities', 'Classes'
     LIST_LANDS = [
-        'Strange Island', 'Island of Wolves', 'Marine Point', 'Fields of Slimes', 'River of Vipers', 'Forest of Elves',
-        'Dark Passage', 'Mines of Noria', 'Two Rivers', 'Wind Fields', 'Noria City', 'Lands of Noria'
+        'Corrupted Island', 'Island of Beasts', 'Sea North', 'Fields of Slimes', 'River of Vipers', 'Whispering Forest',
+        'Dark Passage', 'Mines of Noria', 'North Road', 'Wind Fields', 'Noria City', 'Lands of Noria',
+        'Domain of Golems', 'Field of Dragons', 'Sea Dragon', 'Desolate Road', 'Draconian Domain', 'Mystical Disorder',
+        'City Ghabul', 'Dragon City', 'Draconian Harbor', 'Isle of Elders', 'Forest of Wild Elves', "No Man's lands",
+
+        'Desert of the Dead', "Hell's Gate", 'Dragons Mountains', 'Ymir City', 'Lizardmans Area', 'Cursed Tower',
+        'Goblin Horde', 'Orc Horde', 'Dark Elves Mountains', 'Gnomes Hideout', 'Storm Wind Valley', 'Fomorian Invasion'
     ]
 
 else:
@@ -45,13 +50,21 @@ else:
     title_load = 'Registros'
     title_new_game = 'Etnias', 'Classes'
     LIST_LANDS = [
-        'Ilha Estranha', 'Ilha dos Lobos', 'Ponto Marinho', 'Campos de Slimes', 'Rio das Víboras', 'Floresta dos Elfos',
-        'Passagem Negra', 'Minas de Noria', 'Dois Rios', 'Campos de Vento', 'Cidade de Noria', 'Terras de Noria'
+        'Ilha Corrompida', 'Ilha das Bestas', 'Mar Norte', 'Campos de Slimes', 'Rio das Víboras', 'Floresta Sussurrante',
+        'Passagem Negra', 'Minas de Noria', 'Estrada do Norte', 'Campos de Vento', 'Cidade de Noria', 'Terras de Noria',
+        'Domínio de Golens', 'Campo de Dragões', 'Dragão do Mar', 'Estrada Desolada', 'Domínio Draconiano', 'Distúrbio Místico',
+        'Cidade Ghabul', 'Cidade Dragão', 'Porto Draconiano', 'Ilha dos Anciões', 'Floresta dos Elfos Silvestres', 'Terras de Ninguém',
+        'Deserto dos Mortos', 'Portão do Inferno', 'Montanhas de Dragões', 'Cidade Ymir', 'Área dos Lizardmans', 'Cidade Amaldiçoada',
+        'Horda de Goblins', 'Horda Crcs', 'Montanhas dos Elfos Negros', 'Esconderijo dos Gnomos', 'Vale Tempestade', 'Invasão Fomorian'
     ]
 
 POS_GPS = [
     (449, 198), (468, 183), (511, 184), (494, 200), (509, 214), (524, 205),
-    (528, 216), (512, 224), (502, 233), (509, 249), (514, 264), (504, 276)
+    (528, 216), (512, 224), (502, 233), (509, 249), (514, 264), (504, 276),
+    (488, 262), (466, 257), (457, 273), (470, 288), (477, 308), (459, 319),
+    (460, 337), (490, 324), (530, 319), (573, 336), (608, 359), (639, 346),
+    (659, 327), (661, 308), (635, 305), (612, 316), (592, 301), (614, 282),
+    (635, 268), (664, 259), (685, 238), (668, 226), (649, 238), (628, 245)
 ]
 
 DARK_ELF = {

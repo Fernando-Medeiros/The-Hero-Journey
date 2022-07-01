@@ -6,6 +6,7 @@ from character import Character
 class Game:
 
     class_game = True
+    respawn_enemies = False
     check = ''
     group_sprites_opponent = GROUPS['opponent']
 
@@ -34,29 +35,51 @@ class Game:
 
         self._list_enemies_in_area = []
 
-        self._gps = 'Fields of Slimes'
+        self._gps = 'Sea North'
 
         self.character = Character()
+        self._enemies_in_the_area()
 
     def _select_land(self, pos_mouse):
+
         index = LIST_LANDS.index(self._gps)
 
         if self._icons['next'].rect.collidepoint(pos_mouse):
 
             index = index if index + 1 >= len(LIST_LANDS) else index + 1
-            self._enemies_in_the_area(), click_sound.play()
+            self.respawn_enemies = True
+            click_sound.play()
 
         elif self._icons['previous'].rect.collidepoint(pos_mouse):
 
             index = 0 if index - 1 <= 0 else index - 1
-            self._enemies_in_the_area(),  click_sound.play()
+            self.respawn_enemies = True
+            click_sound.play()
 
         self._tools['gps'].rect.topleft = (POS_GPS[index])
         self._gps = LIST_LANDS[index]
 
     def _lands(self):
 
-        draw_texts(MAIN_SCREEN, f'{self._gps:^40}', 404, 104, size=25)
+        draw_texts(MAIN_SCREEN, f'{self._gps:^35}', 404, 104, size=25)
+
+    def _check_enemies_for_area(self):
+
+        idd_ = ['corrupted', 'beasts', 'slimes', 'vipers', 'whisper',
+                'dark', 'mines', 'road', 'wind', 'city', 'lands',
+                'golems', 'dragons', 'sea', 'draconian', 'mystical',
+                'elders', 'wild elves', 'dead', 'hell', 'lizardman',
+                'cursed', 'goblin', 'orc', 'dark elves', 'gnomes',
+                'fomorian'
+                ]
+        idd_name = ''
+
+        for index, key in enumerate(idd_):
+            if key in self._gps.casefold():
+                idd_name = key
+                break
+
+        return [data_list for data_list in LIST_ENEMIES if idd_name == data_list[0]]
 
     def _enemies_in_the_area(self):
 
@@ -64,14 +87,18 @@ class Game:
         for sprite in self.group_sprites_opponent.sprites():
             self.group_sprites_opponent.remove(sprite)
 
-        y = 430
-        for n in range(6):
+        try:
+            y = 430
+            for n in range(6):
 
-            enemies = choice(LIST_ENEMIES)
+                enemies = choice(self._check_enemies_for_area())
 
-            self._list_enemies_in_area.append(
-                Enemy(enemies, FOLDER['enemies'] + enemies[0] + '.png', 430, y, self.group_sprites_opponent))
-            y += 95
+                self._list_enemies_in_area.append(
+                    Enemy(enemies, FOLDER['enemies'] + enemies[1] + '.png', 430, y, self.group_sprites_opponent))
+                y += 95
+
+        except IndexError:
+            return -1
 
     def _get_mouse_events(self, pos_mouse):
 
@@ -124,6 +151,12 @@ class Game:
         self.character.events_character(event)
 
     def update(self, main_screen):
+
+        if self.respawn_enemies:
+
+            self._check_enemies_for_area()
+            self._enemies_in_the_area()
+            self.respawn_enemies = False
 
         self._lands()
         self.character.update()
