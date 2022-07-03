@@ -85,19 +85,19 @@ class Menu:
         """
         mouse_collision_catching_x_y(LIMBO, self._guides, self._objects['select'], pos_mouse)
 
-    def events_menu(self, evento):
+    def events_menu(self, event):
         pos_mouse = pg.mouse.get_pos()
 
-        if evento.type == pg.MOUSEBUTTONDOWN and not self.BLOCK:
+        if event.type == pg.MOUSEBUTTONDOWN and not self.BLOCK:
             self._guide_new_game(pos_mouse)
             self._guide_load(pos_mouse)
             self._guide_options(pos_mouse)
             self._guide_quit(pos_mouse)
 
-        if evento.type == pg.MOUSEMOTION and not self.BLOCK:
+        if event.type == pg.MOUSEMOTION and not self.BLOCK:
             self._select_guides(pos_mouse)
 
-        if evento.type == pg.MOUSEBUTTONDOWN:
+        if event.type == pg.MOUSEBUTTONDOWN:
             self._guide_credit(pos_mouse)
 
     def update(self, *args, **kwargs) -> None:

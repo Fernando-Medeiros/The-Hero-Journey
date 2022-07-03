@@ -36,6 +36,7 @@ class Load:
         CHECK ETHNICITY TO ASSIGN IMAGE, AND USE RECT TO SET POSITION
         """
         number_of_records = check_records(FOLDER['save'])
+        black = COLORS['BLACK']
 
         for index in range(len(number_of_records)):
 
@@ -49,25 +50,25 @@ class Load:
             self._icon_del[index].rect.topleft = (pos_x, pos_y + 90)
             self._icon_add[index].rect.topleft = (pos_x + 85, pos_y + 90)
 
-            draw_texts(MAIN_SCREEN, f'> {name}'.title(), pos_x, pos_y + 10, color=COLORS['BLACK'])
-            draw_texts(MAIN_SCREEN, f'> {ethnicity}'.title(), pos_x, pos_y + 30, color=COLORS['BLACK'])
-            draw_texts(MAIN_SCREEN, f'> {class_}'.title(), pos_x, pos_y + 50, color=COLORS['BLACK'])
-            draw_texts(MAIN_SCREEN, f'> lvl {level}', pos_x, pos_y + 70, color=COLORS['BLACK'])
+            draw_texts(MAIN_SCREEN, f'> {name}'.title(), pos_x, pos_y + 10, color=black)
+            draw_texts(MAIN_SCREEN, f'> {ethnicity}'.title(), pos_x, pos_y + 30, color=black)
+            draw_texts(MAIN_SCREEN, f'> {class_}'.title(), pos_x, pos_y + 50, color=black)
+            draw_texts(MAIN_SCREEN, f'> lvl {level}', pos_x, pos_y + 70, color=black)
 
     def _erase_record(self, pos_mouse):
         """
         FUNCTION TO CHECK THE OBJECT POSITION AND DELETE THE FILE
         """
-        file = [x for x in listdir(FOLDER['save'])]
+        file_ = [x_ for x_ in listdir(FOLDER['save'])]
 
-        for item in range(len(file)):
+        for item in range(len(file_)):
 
             if self._icon_del[item].rect.collidepoint(pos_mouse):
 
                 self._icon_add[item].rect.y = LIMBO
                 self._icon_del[item].rect.y = LIMBO
                 self._box[item].image = pg.image.load(IMG_LOAD['box'])
-                remove(FOLDER['save'] + file[item])
+                remove(FOLDER['save'] + file_[item])
                 click_sound.play()
 
     def _loading(self, pos_mouse):

@@ -222,19 +222,24 @@ class NewGame:
 
             self.index_list_class = classes
             self.ETHNICITY = name_ethnicity.casefold()
+            click_sound.play()
 
         if self.interactive_[0].rect.x == var_ethnicity.rect.x:
 
             for index in range(3):
 
                 if self.class_[index].rect.collidepoint(pos_mouse):
+
+                    self.interactive_[1].rect.x = self.class_[index].rect.x
+
                     self.CLASS_ = classes[index].casefold()
+                    click_sound.play()
 
     def _reset_changes(self):
 
         self.NAME, self.ETHNICITY, self.CLASS_ = '', '', ''
 
-        for index in range(1):
+        for index in range(2):
             self.interactive_[index].rect.x = LIMBO
             self.boxes[0].image = pg.image.load(IMG_NEW_GAME['HERALDRY_BOX'])
 

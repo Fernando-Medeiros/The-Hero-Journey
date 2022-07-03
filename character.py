@@ -179,7 +179,7 @@ class Character:
 
     def _draw_status(self):
 
-        self._button_status.draw(MAIN_SCREEN, COLORS['BLUE_2'], 15, 190, 30, 100)
+        self._button_status.draw(MAIN_SCREEN, COLORS['BLACK'], 15, 190, 30, 0)
         draw_texts(MAIN_SCREEN, f'{"Status"}', 170, 190, size=25)
 
         if self.show_status_interface:

@@ -90,17 +90,20 @@ class Enemy(Obj):
 
     def _draw_bar_status(self):
 
+        pos_x, pos_y = self.rect.topleft
+        black, red, green, blue, yellow = list(COLORS.values())[1:6]
+
         DrawStatusBar(100, 8, self._status_secondary['hp'], 100) \
-            .draw(MAIN_SCREEN, COLORS['RED'], self.rect.x + 120, self.rect.y + 40, 8, self._current_status['hp'], color_bg=COLORS['BLACK'])
+            .draw(MAIN_SCREEN, red, pos_x + 120, pos_y + 40, 8, self._current_status['hp'], color_bg=black)
 
         DrawStatusBar(100, 8, self._status_secondary['mp'], 100) \
-            .draw(MAIN_SCREEN, COLORS['BLUE'], self.rect.x + 120, self.rect.y + 48, 8, self._current_status['mp'], color_bg=COLORS['BLACK'])
+            .draw(MAIN_SCREEN, blue, pos_x + 120, pos_y + 48, 8, self._current_status['mp'], color_bg=black)
 
         DrawStatusBar(100, 8, self._status_secondary['stamina'], 100) \
-            .draw(MAIN_SCREEN, COLORS['GREEN'], self.rect.x + 120, self.rect.y + 54, 8, self._current_status['stamina'], color_bg=COLORS['BLACK'])
+            .draw(MAIN_SCREEN, green, pos_x + 120, pos_y + 54, 8, self._current_status['stamina'], color_bg=black)
 
         DrawStatusBar(100, 8, self._attributes['level'] * 15, 100) \
-            .draw(MAIN_SCREEN, COLORS['YELLOW'], self.rect.x + 120, self.rect.y + 62, 8, self._attributes['xp'], color_bg=COLORS['BLACK'])
+            .draw(MAIN_SCREEN, yellow, pos_x + 120, pos_y + 62, 8, self._attributes['xp'], color_bg=black)
 
     def _level_up(self):
 

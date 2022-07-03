@@ -66,15 +66,17 @@ class Game:
     def _check_enemies_for_area(self):
 
         idd_ = ['corrupted', 'beasts', 'slimes', 'vipers', 'whisper',
-                'dark', 'mines', 'road', 'wind', 'city', 'lands',
+                'passage', 'mines', 'road', 'wind', 'city', 'lands',
                 'golems', 'dragons', 'sea', 'draconian', 'mystical',
                 'elders', 'wild elves', 'dead', 'hell', 'lizardman',
-                'cursed', 'goblin', 'orc', 'dark elves', 'gnomes',
-                'fomorian'
+                'cursed', 'goblin', 'orc', 'grey elves', 'gnomes',
+                'fomorian', 'druids', 'mages', 'dark elves', 'mythical',
+                'witches', 'aesir', 'shadow', 'warriors', 'rose', 'noldor',
+                'three'
                 ]
         idd_name = ''
 
-        for index, key in enumerate(idd_):
+        for key in idd_:
             if key in self._gps.casefold():
                 idd_name = key
                 break
