@@ -14,6 +14,7 @@ LIST_CLASSES = [
 BASIC_ATTRIBUTES = ['Force', 'Agility', 'Vitality', 'Intelligence', 'Resistance']
 
 if LANGUAGE == 'EN':
+
     NAME_OF_THE_GAME = "The Hero's Journey"
     txt_options = {
         'title': 'OPTIONS',
@@ -26,6 +27,7 @@ if LANGUAGE == 'EN':
     list_guides_menu = ['new_game  ', ' load', 'credits', 'options', ' quit']
     title_load = 'Records'
     title_new_game = 'Ethnicities', 'Classes'
+
     LIST_LANDS = [
         'Corrupted Island', 'Island of Beasts', 'Sea North', 'Fields of Slimes', 'River of Vipers', 'Whispering Forest',
         'Foggy Passage', 'Mines of Noria', 'West Road', 'Wind Fields', 'Noria City', 'Lands of Noria',
@@ -51,6 +53,7 @@ else:
     list_guides_menu = ['novo_jogo', 'carregar', 'créditos', 'opções', 'sair']
     title_load = 'Registros'
     title_new_game = 'Etnias', 'Classes'
+
     LIST_LANDS = [
         'Ilha Corrompida', 'Ilha das Bestas', 'Mar Norte', 'Campos de Slimes', 'Rio das Víboras', 'Floresta Sussurrante',
         'Passagem Nebulosa', 'Minas de Noria', 'Estrada do Oeste', 'Campos de Vento', 'Cidade de Noria', 'Terras de Noria',
@@ -126,8 +129,10 @@ SKILLS = {
 }
 
 LIST_ENEMIES = []
-with open('assets/list_enemies.txt', mode='r', encoding='utf-8') as file:
+with open('codes/list_enemies', mode='r', encoding='utf-8') as file:
+
     for x in file.readlines():
+
         LIST_ENEMIES.append(x.replace("\n", "").split(':'))
 
 FOLDER = {
@@ -152,6 +157,7 @@ COLORS = {
     'BLUE': (67, 138, 167),
     'YELLOW': (235, 197, 70),
     'BLUE_2': (6, 0, 56),
+    'WOOD': (210, 180, 140),
     'ACTIVE': 0
 }
 
@@ -225,7 +231,13 @@ IMG_GAME = {
     'select_proficiency': FOLDER['game'] + 'select_proficiency.png',
     'select_chest': FOLDER['game'] + 'select_chest.png',
     'select_next': FOLDER['game'] + 'select_next.png',
-    'select_previous': FOLDER['game'] + 'select_previous.png'
+    'select_previous': FOLDER['game'] + 'select_previous.png',
+
+    'b_attack': FOLDER['game'] + 'b_attack.png',
+    'b_defense': FOLDER['game'] + 'b_defense.png',
+    'b_flee': FOLDER['game'] + 'b_flee.png',
+    'b_skills': FOLDER['game'] + 'b_skills.png',
+    'b_items': FOLDER['game'] + 'b_items.png'
 }
 
 IMG_CLASSES = {

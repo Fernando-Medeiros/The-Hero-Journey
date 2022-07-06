@@ -1,8 +1,8 @@
 from settings import *
-from menu import Menu
-from newgame import NewGame
-from load import Load
-from options import Options
+from codes.menu.menu import Menu
+from codes.menu.newgame import NewGame
+from codes.menu.load import Load
+from codes.menu.options import Options
 from game import Game
 
 
@@ -104,8 +104,6 @@ class RoadMapGame:
         if self.class_road_map_game:
             self.game_interface.events_game(event)
 
-
-##########################################################################################
 
 road_map_menu = RoadMapMenu()
 road_map_game = RoadMapGame()

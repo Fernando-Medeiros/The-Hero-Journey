@@ -6,17 +6,17 @@ class Character:
     @staticmethod
     def _unpack_basic_status(index):
         name, ethnicity, class_, level = check_records(FOLDER['save'])[index][:4]
-        ethnicity, class_ = ethnicity.lower(), class_.lower()
 
         return name, ethnicity, class_, level
 
     show_status_interface = False
+    load_char = False
 
     def __init__(self):
 
         self.index = 0
 
-        self._attributes = {
+        self.attributes = {
             'name': '',
             'ethnicity': '',
             'class': '',
@@ -43,6 +43,7 @@ class Character:
             'attack': 1,
             'defense': 1,
             'dodge': 1,
+            'block': 1,
             'critical': 1,
             'luck': 1
         }
@@ -58,26 +59,23 @@ class Character:
         self._button_status = DrawStatusBar(373, 30, 100, 373, rect=(15, 190))
 
     def _assign_basic_attributes(self):
-        """
-        Load data from specific file, and assign status values.
-        """
-        list_keys = [key for key in self._attributes]
+
+        list_keys = [key for key in self.attributes]
 
         list_values = check_records(FOLDER['save'])[self.index]
+
         status = list_values + self._first_game() if len(list_values[:]) < 5 else list_values
 
         for _index, item in enumerate(status):
-            if str(item).isnumeric():
-                item = int(item)
 
-            self._attributes[list_keys[_index]] = item
+            item = int(item) if str(item).isnumeric() else item
+
+            self.attributes[list_keys[_index]] = item
 
     def _assign_status_secondary(self):
-        """
-        Assigns secondary status based on instance attributes.
-        """
+
         level, force, agility, vitality, intelligence, resistance = \
-            list(self._attributes.values())[3:9]
+            list(self.attributes.values())[3:9]
 
         self.status_secondary['hp'] = level * vitality * force * 3.5
         self.status_secondary['mp'] = level * intelligence + resistance * 1.5
@@ -85,27 +83,30 @@ class Character:
 
         self.status['attack'] = force * level + (agility / 2)
         self.status['defense'] = resistance * level + (agility / 2)
-        self.status['dodge'] = (agility + level) / 2
-        self.status['critical'] = agility / 2
-        self.status['luck'] = (level + agility) / 1.5
+        self.status['dodge'] = (agility + level) / 4
+        self.status['block'] = (agility + resistance) / 4
+        self.status['critical'] = agility / 4
+        self.status['luck'] = (level + agility) / 4
 
     def _assign_others(self):
         name, ethnicity, class_, level = self._unpack_basic_status(self.index)
 
         self.others['skills'].append(SKILLS[ethnicity[0] + '_' + class_][LANGUAGE])
 
-    def _update_status(self):
+    def _assign_current_status(self):
 
-        update = \
-            [self.status_secondary['hp'], self.status_secondary['mp'], self.status_secondary['stamina']]
+        self.current_status['hp'] = self.status_secondary['hp']
+        self.current_status['mp'] = self.status_secondary['mp']
+        self.current_status['stamina'] = self.status_secondary['stamina']
 
-        for index, key in enumerate(self.current_status):
-            self.current_status[key] = update[index]
+    def _check_current_status(self):
+
+        if self.current_status['hp'] <= 0: self.status_secondary['hp'] = 0
+        if self.current_status['mp'] <= 0: self.status_secondary['mp'] = 1
+        if self.current_status['stamina'] <= 0: self.status_secondary['stamina'] = 1
 
     def _first_game(self):
-        """
-        Checks if it's the first time in the game, if so, returns the base status of the class and skills
-        """
+
         name, ethnicity, class_, level = self._unpack_basic_status(self.index)
 
         if str(level) == '1':
@@ -117,21 +118,24 @@ class Character:
 
     def _level_up(self):
 
-        next_level = self._attributes['level'] * 15
+        next_level = self.attributes['level'] * 15
 
-        if self._attributes['xp'] >= next_level:
-            self._attributes['level'] += 1
-            self._attributes['xp'] = 1
+        if self.attributes['xp'] >= next_level:
+
+            self.attributes['level'] += 1
+            self.attributes['xp'] = 1
             self._level_progression()
+            self._assign_status_secondary()
 
     def _level_progression(self):
+
         keys = 'force', 'vitality', 'agility', 'intelligence', 'resistance'
 
         upgrade_status = \
-            CLASS_PROGRESSION_MAGE if str(self._attributes['class']) == 'mage' else CLASS_PROGRESSION_MELEE
+            CLASS_PROGRESSION_MAGE if str(self.attributes['class']) == 'mage' else CLASS_PROGRESSION_MELEE
 
         for index, key in enumerate(keys):
-            self._attributes[key] += upgrade_status[index]
+            self.attributes[key] += upgrade_status[index]
 
     def _draw_bar_status(self):
 
@@ -144,12 +148,12 @@ class Character:
         DrawStatusBar(233, 15, self.status_secondary['stamina'], 212) \
             .draw(MAIN_SCREEN, COLORS['GREEN'], 183, 72, 15, self.current_status['stamina'])
 
-        DrawStatusBar(233, 15, self._attributes['level'] * 15, 210) \
-            .draw(MAIN_SCREEN, COLORS['YELLOW'], 185, 90, 15, self._attributes['xp'])
+        DrawStatusBar(233, 15, self.attributes['level'] * 15, 210) \
+            .draw(MAIN_SCREEN, COLORS['YELLOW'], 185, 90, 15, self.attributes['xp'])
 
     def _draw_sprites(self):
 
-        ethnicity, class_ = self._attributes['ethnicity'], self._attributes['class']
+        ethnicity, class_ = self.attributes['ethnicity'], self.attributes['class']
 
         idd = 'ed_' if 'dark' in ethnicity else 'ef_' if 'forest' in ethnicity else 'eg_'
 
@@ -162,8 +166,8 @@ class Character:
 
     def _draw_text(self):
 
-        draw_texts(MAIN_SCREEN, f'Lvl - {self._attributes["level"]}', 189, 110)
-        draw_texts(MAIN_SCREEN, self._attributes['name'].title(), 189, 8, size=20)
+        draw_texts(MAIN_SCREEN, f'Lvl - {self.attributes["level"]}', 189, 110)
+        draw_texts(MAIN_SCREEN, self.attributes['name'].title(), 189, 8, size=20)
         draw_texts(MAIN_SCREEN, str(self.others['gold']), 477, 28, size=25)
         draw_texts(MAIN_SCREEN, str(self.others['soul']), 610, 28, size=25)
 
@@ -175,7 +179,7 @@ class Character:
             MAIN_SCREEN, f'{self.current_status["stamina"]:^25.1f}/{self.status_secondary["stamina"]:^25.1f}', 185, 72,
             size=13)
         draw_texts(
-            MAIN_SCREEN, f'{self._attributes["xp"]:^25.1f}/{self._attributes["level"] * 15:^25.1f}', 185, 90, size=13)
+            MAIN_SCREEN, f'{self.attributes["xp"]:^25.1f}/{self.attributes["level"] * 15:^25.1f}', 185, 90, size=13)
 
     def _draw_status(self):
 
@@ -186,7 +190,7 @@ class Character:
             DrawStatusBar(1, 1, 100, 373).draw(MAIN_SCREEN, COLORS['BLACK'], 15, 220, 150, 0)
 
             y = 230
-            for key, value in self._attributes.items():
+            for key, value in self.attributes.items():
                 if not key in 'name, level, rank, xp':
                     draw_texts(MAIN_SCREEN, f'{key.title():<} - {value:>}', 20, y)
                     y += 20
@@ -205,8 +209,9 @@ class Character:
 
     def save(self):
 
-        with open(FOLDER['save'] + str(self._attributes['name']).lower(), mode='w+', encoding='utf-8') as file:
-            for x in self._attributes.values():
+        with open(FOLDER['save'] + str(self.attributes['name']).lower(), mode='w+', encoding='utf-8') as file:
+
+            for x in self.attributes.values():
                 file.write(str(x).strip() + '\n')
 
         self.others['skills'].clear()
@@ -221,11 +226,14 @@ class Character:
     def update(self, *args, **kwargs):
 
         if not self.others['skills']:
+
             self._assign_basic_attributes()
+            self._assign_status_secondary()
+            self._assign_current_status()
+            self._assign_status_secondary()
             self._assign_others()
 
-        self._assign_status_secondary()
-        self._update_status()
+        self._check_current_status()
         self._draw_bar_status()
         self._draw_sprites()
         self._draw_text()

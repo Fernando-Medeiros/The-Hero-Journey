@@ -1,13 +1,11 @@
 from time import sleep
 from os import listdir, remove
+from random import choice, randint
 from datetime import datetime
-from random import choice
 from paths import *
 
-
-# ################################################################
 pg.display.set_caption(NAME_OF_THE_GAME)
-VERSION = '1.2'
+VERSION = '1.5'
 LOG = datetime.today().strftime('%d/%m/%Y %H:%M:%S')
 FRAMES = pg.time.Clock()
 MAX_FRAMES = 30
@@ -19,7 +17,6 @@ FONT_SETTINGS = pg.font.SysFont('arial', 25, True)
 LIMBO = -1080
 MAX_RECORDS = 9
 MIN_CHARACTERS_NAME, MAX_CHARACTERS_NAME = 3, 20
-# ################################################################
 
 soundtrack = [SONGS['orpheus']]
 click_sound = SOUNDS['click']
@@ -86,13 +83,15 @@ def save_log():
     """
     AUXILIARY FUNCTION TO SAVE LOG AND QUIT THE GAME
     """
-    with open('log', 'a') as up_log:
+    with open('codes/log', 'a') as up_log:
         up_log.write(LOG + ' < // > ' + date_time() + '\n'), up_log.close()
+
     click_sound.play()
     sleep(1), pg.quit(), quit()
 
 
 def date_time():
+
     return datetime.today().strftime('%d/%m/%Y %H:%M:%S')
 
 
