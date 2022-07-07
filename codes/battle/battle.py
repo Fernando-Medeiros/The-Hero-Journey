@@ -22,17 +22,17 @@ class Battle:
         return enemy_attribute, enemy_status, enemy_current, enemy_loots
 
     @staticmethod
-    def damage(char, enemy, block, dodge, critical):
+    def damage(hit, defense, block, dodge, critical):
 
-        dano = char - enemy
+        dano = hit - defense
 
         dano = 0 if dano <= 0 else dano
 
-        if block == 'block':
+        if block:
             return 0
-        if dodge == 'dodge':
+        if dodge:
             return 0
-        if critical == 'critical':
+        if critical:
             return dano * 2
 
         return dano
@@ -40,38 +40,51 @@ class Battle:
     @staticmethod
     def defense():
 
-        chance = 15
-        reduces_damage_by_two = 'success' if randint(0, 100) <= chance else 'fail'
+        chance = 20
+        reduces_damage_by_two = True if randint(0, 100) <= chance else False
 
         return reduces_damage_by_two
 
     @staticmethod
+    def flee():
+
+        result = choice([True, False])
+
+        return result
+
+    @staticmethod
     def block(block):
 
-        result = 'block' if randint(0, 100) <= block else 'fail'
+        result = True if randint(0, 100) <= block else False
 
         return result
 
     @staticmethod
     def parry(dodge):
 
-        result = 'dodge' if randint(0, 100) <= dodge else 'fail'
+        result = True if randint(0, 100) <= dodge else False
 
         return result
 
     @staticmethod
     def critical(critical):
 
-        result = 'critical' if randint(0, 100) <= critical else 'fail'
+        result = True if randint(0, 100) <= critical else False
 
         return result
 
     @staticmethod
+    def energy_used_in_battle(stamina):
+
+        stamina['stamina'] -= 0.1
+
+        return stamina
+
+    @staticmethod
     def kill_sprite_enemy(enemy, index):
 
-        if enemy[index].current_status['hp'] <= 0:
-            enemy[index].kill()
-            del enemy[index]
+        enemy[index].kill()
+        enemy.pop(index)
 
     @staticmethod
     def log_attack(name, damage):
@@ -93,23 +106,21 @@ class Battle:
         return log
 
     @staticmethod
-    def log_flee(name):
+    def log_flee(name, flee):
 
         name = name['name'].replace('_', ' ').title()
 
-        log = f'{name} fled the battle.'
+        if flee:
+            log = f'{name} failed to flee from battle '
+        else:
+            log = f'{name} fled the battle.'
 
         return log
 
     @staticmethod
-    def erase_log(log):
+    def erase_log(*args):
 
-        del log[::]
-
-    @staticmethod
-    def erase_loots(loots):
-
-        loots.clear()
+        [item.clear() for item in args]
 
     @staticmethod
     def take_damage(obj, damage):
@@ -133,7 +144,7 @@ class Battle:
         for index, item in enumerate(args.items()):
             key, value = item
 
-            draw_texts(MAIN_SCREEN, f'{key:^10} - {value:^10}', pos_x, pos_y, color=COLORS['GREEN'])
+            draw_texts(MAIN_SCREEN, f'{key.title()} + {value:<10}', pos_x, pos_y, color=COLORS['GREEN'])
 
             pos_y += 15
 
@@ -146,7 +157,6 @@ class Battle:
             del log[:11]
 
         for index, info in enumerate(log):
-
             c_ = yellow if index % 2 == 0 else blue
 
             draw_texts(MAIN_SCREEN, f'{index} - {info}', pos_x, pos_y, color=c_)
@@ -159,45 +169,71 @@ class Battle:
         name = enemy[index].attributes['name']
         sprite = pg.image.load(FOLDER['enemies'] + name + '.png')
 
-        draw_texts(MAIN_SCREEN, f'{name}'.title().replace('_', ' '), 30, 420, size=20)
+        draw_texts(MAIN_SCREEN, f'{name}'.title().replace('_', ' '), 30, 425, size=20)
         MAIN_SCREEN.blit(sprite, (171, 461))
 
     @staticmethod
-    def draw_bar_status(enemy, index):
+    def draw_bar_status(*args):
+
         pos_x, pos_y = 46, 375
-        black, red, green, blue, yellow = list(COLORS.values())[1:6]
 
-        DrawStatusBar(100, 8, enemy[index].status_secondary['hp'], 310) \
-            .draw(MAIN_SCREEN, red, pos_x, pos_y, 7, enemy[index].current_status['hp'], color_bg=black)
+        colors = [COLORS['RED'], COLORS['BLUE'], COLORS['GREEN']]
 
-        DrawStatusBar(100, 8, enemy[index].status_secondary['mp'], 310) \
-            .draw(MAIN_SCREEN, blue, pos_x, pos_y + 7, 7, enemy[index].current_status['mp'], color_bg=black)
+        for items in args:
 
-        DrawStatusBar(100, 8, enemy[index].status_secondary['stamina'], 310) \
-            .draw(MAIN_SCREEN, green, pos_x, pos_y + 14, 7, enemy[index].current_status['stamina'], color_bg=black)
+            info_0 = [items.status_secondary['hp'], items.status_secondary['mp'], items.status_secondary['stamina']]
+            info_1 = [items.current_status['hp'], items.current_status['mp'],  items.current_status['stamina']]
 
-        DrawStatusBar(100, 8, enemy[index].attributes['level'] * 15, 310) \
-            .draw(MAIN_SCREEN, yellow, pos_x, pos_y + 21, 7, enemy[index].attributes['xp'], color_bg=black)
+            for index in range(len(info_0)):
 
+                draw = DrawStatusBar(100, 8, info_0[index], 310)
+                draw.draw(MAIN_SCREEN, colors[index], pos_x, pos_y, 13, info_1[index], color_bg=COLORS['BLACK'])
 
-def attack_(status_att, status_def):
-    battle = Battle()
+                pos_y += 13
 
-    hit = status_att['attack']
-    defense = status_def['defense']
+    @staticmethod
+    def draw_text(*args):
 
-    block = battle.block(status_att['block'])
-    dodge = battle.parry(status_att['dodge'])
-    critical = battle.critical(status_att['critical'])
+        pos_x, pos_y = 46, 375
 
-    return battle.damage(hit, defense, block, dodge, critical)
+        for items in args:
 
+            info = [
+                f'{items.current_status["hp"]:^45.1f}/{items.status_secondary["hp"]:^45.1f}',
+                f'{items.current_status["mp"]:^45.1f}/{items.status_secondary["mp"]:^45.1f}',
+                f'{items.current_status["stamina"]:^45.1f}/{items.status_secondary["stamina"]:^45.1f}'
+            ]
 
-def defense_(defense):
-    battle = Battle()
+            for index in range(len(info)):
 
-    if battle.defense() == 'success':
+                draw_texts(MAIN_SCREEN, info[index], pos_x, pos_y, size=10)
+                pos_y += 13
 
-        defense['defense'] += (defense['defense'] * 0.15)
+    def ATTACK(self, status_att, status_def, stamina):
 
-    return defense
+        hit = status_att['attack']
+        critical = self.critical(status_att['critical'])
+
+        defense = status_def['defense']
+        block = self.block(status_def['block'])
+        dodge = self.parry(status_def['dodge'])
+
+        self.energy_used_in_battle(stamina)
+
+        return self.damage(hit, defense, block, dodge, critical)
+
+    def DEFENSE(self, defense, stamina):
+
+        if self.defense():
+
+            defense['defense'] += (defense['defense'] * 0.15)
+
+        self.energy_used_in_battle(stamina)
+
+        return defense
+
+    def FLEE(self, stamina):
+
+        self.energy_used_in_battle(stamina)
+
+        return self.flee()

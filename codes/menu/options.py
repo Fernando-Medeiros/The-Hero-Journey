@@ -113,6 +113,9 @@ class Options:
             self.return_menu(pos_mouse)
             self.select_options(pos_mouse)
 
+        mouse_collision_changing_image(
+            self.return_icon, pos_mouse, IMG_MENU['select_return'], IMG_MENU['return'])
+
     def update(self, *args, **kwargs):
         self.draw_options()
 

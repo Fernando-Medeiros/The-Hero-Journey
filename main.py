@@ -84,7 +84,7 @@ class RoadMapGame:
 
     def draw(self, main_screen):
 
-        if self.game_interface.check == '' and self.class_road_map_game:
+        if self.class_road_map_game:
 
             if self.game_interface.class_game:
 
@@ -93,16 +93,17 @@ class RoadMapGame:
                 self.game_interface.update(main_screen)
 
             else:
-                self.game_interface.class_game = True
 
-        else:
-            self.class_road_map_game = False
-            road_map_game.game_interface.check = ''
+                self.class_road_map_game = False
+                self.game_interface.class_game = True
 
     def events(self, event):
 
         if self.class_road_map_game:
-            self.game_interface.events_game(event)
+
+            if self.game_interface.class_game:
+
+                self.game_interface.events_game(event)
 
 
 road_map_menu = RoadMapMenu()

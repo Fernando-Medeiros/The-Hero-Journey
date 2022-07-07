@@ -97,7 +97,7 @@ FOREST_ELF = {
     'warden': [1, 3, 3, 1, 3]
 }
 
-CLASS_PROGRESSION_MELEE, CLASS_PROGRESSION_MAGE = [1, 1, 1.5, 1, 1], [1, 1, 1, 1.5, 1]
+CLASS_PROGRESSION_MELEE, CLASS_PROGRESSION_MAGE = [1, 1, 1, 1, 1], [1, 1, 1, 1, 1]
 
 SKILLS = {
     'd_duelist': {'EN': ['Duelism', 'Combat with Two Weapons'],
@@ -237,7 +237,13 @@ IMG_GAME = {
     'b_defense': FOLDER['game'] + 'b_defense.png',
     'b_flee': FOLDER['game'] + 'b_flee.png',
     'b_skills': FOLDER['game'] + 'b_skills.png',
-    'b_items': FOLDER['game'] + 'b_items.png'
+    'b_items': FOLDER['game'] + 'b_items.png',
+
+    'select_attack': FOLDER['game'] + 'select_attack.png',
+    'select_defense': FOLDER['game'] + 'select_defense.png',
+    'select_flee': FOLDER['game'] + 'select_flee.png',
+    'select_cmd_skills': FOLDER['game'] + 'select_cmd_skills.png',
+    'select_items': FOLDER['game'] + 'select_items.png'
 }
 
 IMG_CLASSES = {

@@ -22,7 +22,10 @@ class Enemy(Obj):
         self.status_secondary = {
             'hp': 1,
             'mp': 1,
-            'stamina': 1
+            'stamina': 1,
+            'regen_hp': 0.001,
+            'regen_mp': 0.001,
+            'regen_stamina': 0.001
         }
         self.current_status = {
             'hp': 1,
@@ -34,8 +37,7 @@ class Enemy(Obj):
             'defense': 1,
             'dodge': 1,
             'block': 1,
-            'critical': 1,
-            'luck': 1
+            'critical': 1
         }
         self.loots = {
             'gold': 1,
@@ -74,7 +76,20 @@ class Enemy(Obj):
         self.status['dodge'] = (agility + level) / 4
         self.status['block'] = (agility + resistance) / 4
         self.status['critical'] = agility / 4
-        self.status['luck'] = (level + agility) / 4
+
+    def _regen(self):
+
+        time = datetime.today().second
+        if time % 2 == 0:
+
+            if self.current_status['hp'] < self.status_secondary['hp']:
+                self.current_status['hp'] += self.status_secondary['regen_hp']
+
+            if self.current_status['mp'] < self.status_secondary['mp']:
+                self.current_status['mp'] += self.status_secondary['regen_mp']
+
+            if self.current_status['stamina'] < self.status_secondary['stamina']:
+                self.current_status['stamina'] += self.status_secondary['regen_stamina']
 
     def _assign_current_status(self):
 
@@ -84,14 +99,11 @@ class Enemy(Obj):
 
     def _check_current_status(self):
 
-        if self.current_status['hp'] <= 0:
-            self.status_secondary['hp'] = 1
+        self.current_status['hp'] = 0 if self.current_status['hp'] <= 0 else self.current_status['hp']
 
-        if self.current_status['mp'] <= 0:
-            self.status_secondary['mp'] = 1
+        self.current_status['mp'] = 0 if self.current_status['mp'] <= 0 else self.current_status['mp']
 
-        if self.current_status['stamina'] <= 0:
-            self.status_secondary['stamina'] = 1
+        self.current_status['stamina'] = 0 if self.current_status['stamina'] <= 0 else self.current_status['stamina']
 
     def _draw_name_level(self):
 
@@ -114,9 +126,6 @@ class Enemy(Obj):
 
         for index, key in enumerate(keys):
             self.attributes[key] += 1
-
-    def _loot(self):
-        pass
 
     def _draw_status(self):
 
@@ -156,3 +165,4 @@ class Enemy(Obj):
         self._check_current_status()
         self._draw_name_level()
         self._draw_status()
+        self._regen()

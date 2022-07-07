@@ -32,7 +32,10 @@ class Character:
         self.status_secondary = {
             'hp': 1,
             'mp': 1,
-            'stamina': 1
+            'stamina': 1,
+            'regen_hp': 0.001,
+            'regen_mp': 0.001,
+            'regen_stamina': 0.001
         }
         self.current_status = {
             'hp': 1,
@@ -101,9 +104,11 @@ class Character:
 
     def _check_current_status(self):
 
-        if self.current_status['hp'] <= 0: self.status_secondary['hp'] = 0
-        if self.current_status['mp'] <= 0: self.status_secondary['mp'] = 1
-        if self.current_status['stamina'] <= 0: self.status_secondary['stamina'] = 1
+        self.current_status['hp'] = 0 if self.current_status['hp'] <= 0 else self.current_status['hp']
+
+        self.current_status['mp'] = 0 if self.current_status['mp'] <= 0 else self.current_status['mp']
+
+        self.current_status['stamina'] = 0 if self.current_status['stamina'] <= 0 else self.current_status['stamina']
 
     def _first_game(self):
 
@@ -115,6 +120,20 @@ class Character:
                     class_]
 
             return folder
+
+    def _regen(self):
+
+        time = datetime.today().second
+        if time % 2 == 0:
+
+            if self.current_status['hp'] < self.status_secondary['hp']:
+                self.current_status['hp'] += self.status_secondary['regen_hp']
+
+            if self.current_status['mp'] < self.status_secondary['mp']:
+                self.current_status['mp'] += self.status_secondary['regen_mp']
+
+            if self.current_status['stamina'] < self.status_secondary['stamina']:
+                self.current_status['stamina'] += self.status_secondary['regen_stamina']
 
     def _level_up(self):
 
@@ -157,29 +176,26 @@ class Character:
 
         idd = 'ed_' if 'dark' in ethnicity else 'ef_' if 'forest' in ethnicity else 'eg_'
 
-        background = pg.image.load(IMG_GAME['bg_char'])
         sprite = pg.image.load(IMG_CLASSES[idd + class_])
 
-        drawing = [(background, (2, 1)), (sprite, (20, 18))]
-
-        MAIN_SCREEN.blits(drawing)
+        MAIN_SCREEN.blit(sprite, (20, 18))
 
     def _draw_text(self):
 
         draw_texts(MAIN_SCREEN, f'Lvl - {self.attributes["level"]}', 189, 110)
-        draw_texts(MAIN_SCREEN, self.attributes['name'].title(), 189, 8, size=20)
+        draw_texts(MAIN_SCREEN, str(self.attributes['name']).title(), 189, 8, size=20)
         draw_texts(MAIN_SCREEN, str(self.others['gold']), 477, 28, size=25)
         draw_texts(MAIN_SCREEN, str(self.others['soul']), 610, 28, size=25)
 
         draw_texts(
-            MAIN_SCREEN, f'{self.current_status["hp"]:^25.1f}/{self.status_secondary["hp"]:^25.1f}', 185, 36, size=13)
+            MAIN_SCREEN, f'{self.current_status["hp"]:^21.1f}/{self.status_secondary["hp"]:^21.1f}', 185, 36, size=13)
         draw_texts(
-            MAIN_SCREEN, f'{self.current_status["mp"]:^25.1f}/{self.status_secondary["mp"]:^25.1f}', 185, 54, size=13)
+            MAIN_SCREEN, f'{self.current_status["mp"]:^21.1f}/{self.status_secondary["mp"]:^21.1f}', 185, 54, size=13)
         draw_texts(
-            MAIN_SCREEN, f'{self.current_status["stamina"]:^25.1f}/{self.status_secondary["stamina"]:^25.1f}', 185, 72,
+            MAIN_SCREEN, f'{self.current_status["stamina"]:^21.1f}/{self.status_secondary["stamina"]:^21.1f}', 185, 72,
             size=13)
         draw_texts(
-            MAIN_SCREEN, f'{self.attributes["xp"]:^25.1f}/{self.attributes["level"] * 15:^25.1f}', 185, 90, size=13)
+            MAIN_SCREEN, f'{self.attributes["xp"]:^21.1f}/{self.attributes["level"] * 15:^21.1f}', 185, 90, size=13)
 
     def _draw_status(self):
 
@@ -212,6 +228,7 @@ class Character:
         with open(FOLDER['save'] + str(self.attributes['name']).lower(), mode='w+', encoding='utf-8') as file:
 
             for x in self.attributes.values():
+
                 file.write(str(x).strip() + '\n')
 
         self.others['skills'].clear()
@@ -230,7 +247,6 @@ class Character:
             self._assign_basic_attributes()
             self._assign_status_secondary()
             self._assign_current_status()
-            self._assign_status_secondary()
             self._assign_others()
 
         self._check_current_status()
@@ -239,3 +255,4 @@ class Character:
         self._draw_text()
         self._draw_status()
         self._level_up()
+        self._regen()

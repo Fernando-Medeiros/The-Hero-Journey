@@ -34,28 +34,28 @@ class Menu:
             pos_y += 90
 
     def _guide_new_game(self, pos_mouse):
+
         if self._guides[0].rect.collidepoint(pos_mouse):
             self.check = 'new'
             self.class_menu = False
             click_sound.play()
 
     def _guide_load(self, pos_mouse):
+
         if self._guides[1].rect.collidepoint(pos_mouse):
             self.check = 'load'
             self.class_menu = False
             click_sound.play()
 
     def _guide_options(self, pos_mouse):
+
         if self._guides[3].rect.collidepoint(pos_mouse):
             self.check = 'options'
             self.class_menu = False
             click_sound.play()
 
     def _guide_credit(self, pos_mouse):
-        """
-        ACTIVATES THE CREDIT GUIDE BY SELECTING AND CLICKING ON THE OPTION
-        RETURNS THE PROJECT CREDITS IMAGE
-        """
+
         if self._guides[2].rect.collidepoint(pos_mouse):
             y, y_ = 0, 942
             self.BLOCK = True
@@ -72,17 +72,12 @@ class Menu:
         click_sound.play()
 
     def _guide_quit(self, pos_mouse):
-        """
-        REGISTER LOG AND END THE GAME
-        """
+
         if self._guides[4].rect.collidepoint(pos_mouse):
             save_log()
 
     def _select_guides(self, pos_mouse):
-        """
-        POINT COLLISION BETWEEN MOUSE -> (X, Y) <- OBJECT RECT.
-        RETURNS SELECTED GUIDE EFFECT WHEN MOUSE OVER
-        """
+
         mouse_collision_catching_x_y(LIMBO, self._guides, self._objects['select'], pos_mouse)
 
     def events_menu(self, event):
@@ -100,7 +95,12 @@ class Menu:
         if event.type == pg.MOUSEBUTTONDOWN:
             self._guide_credit(pos_mouse)
 
+        if event.type == pg.MOUSEMOTION:
+            mouse_collision_changing_image(
+                self._objects['return'], pos_mouse, IMG_MENU['select_return'], IMG_MENU['return'])
+
     def update(self, *args, **kwargs) -> None:
+
         draw_texts(MAIN_SCREEN, NAME_OF_THE_GAME, MAIN_SCREEN.get_width() / 2 - len(NAME_OF_THE_GAME) * 6.5, 100, size=25)
         draw_texts(MAIN_SCREEN, VERSION, MAIN_SCREEN.get_width() / 2 - len(VERSION), 980)
 
