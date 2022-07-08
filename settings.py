@@ -47,7 +47,9 @@ class Obj(pg.sprite.Sprite):
     """
 
     def __init__(self, img, x, y, *groups):
+
         super().__init__(*groups)
+
         self.image = pg.image.load(img)
         self.rect = self.image.get_rect()
         self.rect[0] = x
@@ -80,11 +82,10 @@ class DrawStatusBar:
 
 
 def save_log():
-    """
-    AUXILIARY FUNCTION TO SAVE LOG AND QUIT THE GAME
-    """
+
     with open('codes/log', 'a') as up_log:
-        up_log.write(LOG + ' < // > ' + date_time() + '\n'), up_log.close()
+
+        up_log.write(LOG + ' < // > ' + date_time() + '\n')
 
     click_sound.play()
     sleep(1), pg.quit(), quit()
@@ -96,9 +97,7 @@ def date_time():
 
 
 def draw_texts(screen, TXT: str, X: int, Y: int, font='arial', size=15, color=(255, 255, 255)):
-    """
-    AUXILIARY FUNCTION TO REDUCE CODE LINES / RENDER TEXTS
-    """
+
     txt = pg.font.SysFont(font, size, True)
     t = txt.render(f'{TXT}', True, color)
 

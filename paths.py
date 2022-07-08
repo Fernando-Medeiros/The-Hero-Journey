@@ -67,6 +67,17 @@ else:
         'Guilda Rosa Cruz', 'Noldor', 'Três Coroas'
     ]
 
+ID_AREA = [
+    'corrupted', 'beasts', 'slimes', 'vipers', 'whisper',
+    'passage', 'mines', 'road', 'wind', 'city', 'lands',
+    'golems', 'dragons', 'sea', 'draconian', 'mystical',
+    'elders', 'wild elves', 'dead', 'hell', 'lizardman',
+    'cursed', 'goblin', 'orc', 'grey elves', 'gnomes',
+    'fomorian', 'druids', 'mages', 'dark elves', 'mythical',
+    'witches', 'aesir', 'shadow', 'warriors', 'rose', 'noldor',
+    'three'
+    ]
+
 POS_GPS = [
     (449, 198), (468, 183), (511, 184), (494, 200), (509, 214), (524, 205),
     (528, 216), (512, 224), (502, 233), (509, 249), (514, 264), (504, 276),
@@ -158,6 +169,7 @@ COLORS = {
     'YELLOW': (235, 197, 70),
     'BLUE_2': (6, 0, 56),
     'WOOD': (210, 180, 140),
+    'PURPLE': (38, 1, 36),
     'ACTIVE': 0
 }
 
@@ -239,11 +251,11 @@ IMG_GAME = {
     'b_skills': FOLDER['game'] + 'b_skills.png',
     'b_items': FOLDER['game'] + 'b_items.png',
 
-    'select_attack': FOLDER['game'] + 'select_attack.png',
-    'select_defense': FOLDER['game'] + 'select_defense.png',
-    'select_flee': FOLDER['game'] + 'select_flee.png',
-    'select_cmd_skills': FOLDER['game'] + 'select_cmd_skills.png',
-    'select_items': FOLDER['game'] + 'select_items.png'
+    'select_b_attack': FOLDER['game'] + 'select_b_attack.png',
+    'select_b_defense': FOLDER['game'] + 'select_b_defense.png',
+    'select_b_flee': FOLDER['game'] + 'select_b_flee.png',
+    'select_b_skills': FOLDER['game'] + 'select_b_skills.png',
+    'select_b_items': FOLDER['game'] + 'select_b_items.png'
 }
 
 IMG_CLASSES = {

@@ -29,56 +29,47 @@ class Battle:
         dano = 0 if dano <= 0 else dano
 
         if block:
-            return 0
+            return [0, 'block']
         if dodge:
-            return 0
+            return [0, 'dodge']
         if critical:
-            return dano * 2
-
-        return dano
+            return [dano * 2, 'critical']
+        if dano == 0:
+            return [dano, 'miss']
+        else:
+            return [dano, '']
 
     @staticmethod
     def defense():
 
         chance = 20
-        reduces_damage_by_two = True if randint(0, 100) <= chance else False
 
-        return reduces_damage_by_two
+        return True if randint(0, 100) <= chance else False
 
     @staticmethod
     def flee():
 
-        result = choice([True, False])
-
-        return result
+        return choice([True, False])
 
     @staticmethod
     def block(block):
 
-        result = True if randint(0, 100) <= block else False
-
-        return result
+        return True if randint(0, 100) <= block else False
 
     @staticmethod
     def parry(dodge):
 
-        result = True if randint(0, 100) <= dodge else False
-
-        return result
+        return True if randint(0, 100) <= dodge else False
 
     @staticmethod
     def critical(critical):
 
-        result = True if randint(0, 100) <= critical else False
-
-        return result
+        return True if randint(0, 100) <= critical else False
 
     @staticmethod
     def energy_used_in_battle(stamina):
 
-        stamina['stamina'] -= 0.1
-
-        return stamina
+        stamina['stamina'] -= 0.3
 
     @staticmethod
     def kill_sprite_enemy(enemy, index):
@@ -87,35 +78,43 @@ class Battle:
         enemy.pop(index)
 
     @staticmethod
-    def log_attack(name, damage):
+    def log_attack(char_name, enemy_name, damage):
 
-        name = name['name'].replace('_', ' ').title()
-        damage = f'{damage:.1f}' if damage > 0 else 'Miss'
+        char__name = char_name['name'].replace('_', ' ').title()
+        enemy__name = enemy_name['name'].replace('_', ' ').title()
 
-        log = f'{name} inflicts {damage} damage!'
+        match damage[1]:
 
-        return log
+            case 'block':
+                return f'{enemy__name} BLOCKED the damage!'
+            case 'dodge':
+                return f'{enemy__name} DODGED the damage!'
+            case 'critical':
+                return f'{char__name} inflicted {damage[0]:.1f} CRITICAL damage!!!'
+            case 'miss':
+                return f'{char__name} missed attack!'
+            case '':
+                return f'{char__name} inflicts {damage[0]:.1f} damage!'
 
     @staticmethod
-    def log_defense(name):
+    def log_defense(name, defense):
 
-        name = name['name'].replace('_', ' ').title()
+        name_ = name['name'].replace('_', ' ').title()
 
-        log = f'{name} activate defense mode.'
-
-        return log
+        if defense:
+            return f'{name_} activate defense mode.'
+        else:
+            return f"{name_} couldn't defend itself"
 
     @staticmethod
     def log_flee(name, flee):
 
         name = name['name'].replace('_', ' ').title()
 
-        if flee:
-            log = f'{name} failed to flee from battle '
+        if not flee:
+            return f'{name} fled the battle.'
         else:
-            log = f'{name} fled the battle.'
-
-        return log
+            return f'{name} failed to flee from battle '
 
     @staticmethod
     def erase_log(*args):
@@ -123,11 +122,13 @@ class Battle:
         [item.clear() for item in args]
 
     @staticmethod
-    def take_damage(obj, damage):
+    def take_damage(hp, damage, log):
 
-        obj['hp'] -= damage
+        log = [''] if len(log) == 0 else log
 
-        return obj
+        if not 'defense' in log[-1]:
+
+            hp['hp'] -= damage[0]
 
     @staticmethod
     def take_loots(gold_soul, xp, enemy_loot):
@@ -136,63 +137,43 @@ class Battle:
         gold_soul['soul'] += enemy_loot['soul']
         xp['xp'] += enemy_loot['xp']
 
-    @staticmethod
-    def draw_loots(args):
+    def draw_loots(self, args):
 
-        pos_x, pos_y = 25, 830
+        pos_x, pos_y = 25, 820
 
         for index, item in enumerate(args.items()):
             key, value = item
 
-            draw_texts(MAIN_SCREEN, f'{key.title()} + {value:<10}', pos_x, pos_y, color=COLORS['GREEN'])
+            self.draw_render_status(f'{key.title()} + {value:<10}', pos_x, pos_y, color=COLORS['GREEN'])
 
-            pos_y += 15
+            pos_y += 20
 
-    @staticmethod
-    def draw_battle_info(log, pos_x, pos_y):
+    def draw_battle_info(self, log):
 
-        yellow, blue = COLORS['YELLOW'], COLORS['BLUE']
+        pos_x, pos_y = 25, 540
 
-        if len(log) >= 12:
-            del log[:11]
+        white, wood = COLORS['WHITE'], COLORS['WOOD']
+
+        if len(log) >= 13:
+            del log[:12]
 
         for index, info in enumerate(log):
-            c_ = yellow if index % 2 == 0 else blue
+            c_ = white if index % 2 == 0 else wood
 
-            draw_texts(MAIN_SCREEN, f'{index} - {info}', pos_x, pos_y, color=c_)
+            self.draw_render_status(f'{index} - {info}', pos_x, pos_y, color=c_)
 
             pos_y += 30
 
-    @staticmethod
-    def draw_sprite_enemy(enemy, index):
+    def draw_enemy_sprite(self, enemy, index):
 
         name = enemy[index].attributes['name']
         sprite = pg.image.load(FOLDER['enemies'] + name + '.png')
 
-        draw_texts(MAIN_SCREEN, f'{name}'.title().replace('_', ' '), 30, 425, size=20)
+        self.draw_render_status(f'{name}'.title().replace('_', ' '), 30, 425, size=20)
+
         MAIN_SCREEN.blit(sprite, (171, 461))
 
-    @staticmethod
-    def draw_bar_status(*args):
-
-        pos_x, pos_y = 46, 375
-
-        colors = [COLORS['RED'], COLORS['BLUE'], COLORS['GREEN']]
-
-        for items in args:
-
-            info_0 = [items.status_secondary['hp'], items.status_secondary['mp'], items.status_secondary['stamina']]
-            info_1 = [items.current_status['hp'], items.current_status['mp'],  items.current_status['stamina']]
-
-            for index in range(len(info_0)):
-
-                draw = DrawStatusBar(100, 8, info_0[index], 310)
-                draw.draw(MAIN_SCREEN, colors[index], pos_x, pos_y, 13, info_1[index], color_bg=COLORS['BLACK'])
-
-                pos_y += 13
-
-    @staticmethod
-    def draw_text(*args):
+    def draw_info_status_enemy(self, *args):
 
         pos_x, pos_y = 46, 375
 
@@ -206,10 +187,11 @@ class Battle:
 
             for index in range(len(info)):
 
-                draw_texts(MAIN_SCREEN, info[index], pos_x, pos_y, size=10)
+                self.draw_render_status(info[index], pos_x, pos_y, size=10)
+
                 pos_y += 13
 
-    def ATTACK(self, status_att, status_def, stamina):
+    def ATTACK(self, status_att, status_def):
 
         hit = status_att['attack']
         critical = self.critical(status_att['critical'])
@@ -218,22 +200,30 @@ class Battle:
         block = self.block(status_def['block'])
         dodge = self.parry(status_def['dodge'])
 
-        self.energy_used_in_battle(stamina)
-
         return self.damage(hit, defense, block, dodge, critical)
 
-    def DEFENSE(self, defense, stamina):
+    @staticmethod
+    def draw_bar_status(*args):
 
-        if self.defense():
+        pos_x, pos_y = 46, 375
 
-            defense['defense'] += (defense['defense'] * 0.15)
+        colors = [COLORS['RED'], COLORS['BLUE'], COLORS['GREEN']]
 
-        self.energy_used_in_battle(stamina)
+        for items in args:
 
-        return defense
+            info_0 = [items.status_secondary['hp'], items.status_secondary['mp'], items.status_secondary['stamina']]
+            info_1 = [items.current_status['hp'], items.current_status['mp'], items.current_status['stamina']]
 
-    def FLEE(self, stamina):
+            for index in range(len(info_0)):
+                draw = DrawStatusBar(100, 8, info_0[index], 310)
+                draw.draw(MAIN_SCREEN, colors[index], pos_x, pos_y, 13, info_1[index], color_bg=COLORS['BLACK'])
 
-        self.energy_used_in_battle(stamina)
+                pos_y += 13
 
-        return self.flee()
+    @staticmethod
+    def draw_render_status(TXT: str, X, Y, size=15, color=(255, 255, 255)):
+
+        font = pg.font.SysFont('arial', size, True)
+        text = font.render(f'{TXT}', True, color)
+
+        MAIN_SCREEN.blit(text, (X, Y))

@@ -1,5 +1,5 @@
-from codes.opponent.opponent import Enemy
-from codes.character.character import Character
+from codes.character_opponent.opponent import Enemy
+from codes.character_opponent.character import Character
 from codes.battle.battle import *
 
 
@@ -7,9 +7,7 @@ class Game:
 
     class_game = True
     respawn_enemies, block_battle = False, False
-    turn_player, turn_enemy = False, False
-
-    index_battle = 0
+    turn_enemy = False
 
     group_sprites_opponent = GROUPS['opponent']
 
@@ -17,6 +15,7 @@ class Game:
     character = Character()
 
     gps = 'Sea North'
+    index_battle = 0
 
     def __init__(self, *groups):
 
@@ -24,7 +23,7 @@ class Game:
 
         self._tools = {
             'map': Obj(IMG_GAME['map'], 432, 180, *groups),
-            'gps': Obj(IMG_GAME['gps'], 494, 200, *groups)
+            'gps': Obj(IMG_GAME['gps'], 511, 184, *groups)
         }
         self._loots = {
             'gold': Obj(IMG_GAME['gold'], 435, 6, *groups),
@@ -41,11 +40,11 @@ class Game:
             'previous': Obj(IMG_GAME['previous'], 404, 104, *groups),
         }
         self.commands_battle = {
-            'attack': Obj(IMG_GAME['b_attack'], 15, 890, *groups),
-            'defense': Obj(IMG_GAME['b_defense'], 139, 890, *groups),
-            'flee': Obj(IMG_GAME['b_flee'], 263, 890, *groups),
-            'skills': Obj(IMG_GAME['b_skills'], 75, 925, *groups),
-            'items': Obj(IMG_GAME['b_items'], 200, 925, *groups),
+            'b_attack': Obj(IMG_GAME['b_attack'], 15, 890, *groups),
+            'b_defense': Obj(IMG_GAME['b_defense'], 139, 890, *groups),
+            'b_flee': Obj(IMG_GAME['b_flee'], 263, 890, *groups),
+            'b_skills': Obj(IMG_GAME['b_skills'], 75, 925, *groups),
+            'b_items': Obj(IMG_GAME['b_items'], 200, 925, *groups),
         }
         self._list_enemies_in_area = []
 
@@ -68,11 +67,13 @@ class Game:
     def _return_menu(self, pos_mouse):
 
         if self._icons['options'].rect.collidepoint(pos_mouse):
+
             self.character.save()
+            self.gps = 'Sea North'
+
             self._check_enemies_for_area(), self._enemies_in_the_area()
             self.battle.erase_log(self.log_battle, self.loots_for_enemy)
 
-            self.gps = 'Sea North'
             self.class_game = False
 
     def _select_land(self, pos_mouse):
@@ -115,42 +116,32 @@ class Game:
 
     def _check_enemies_for_area(self):
 
-        idd_ = ['corrupted', 'beasts', 'slimes', 'vipers', 'whisper',
-                'passage', 'mines', 'road', 'wind', 'city', 'lands',
-                'golems', 'dragons', 'sea', 'draconian', 'mystical',
-                'elders', 'wild elves', 'dead', 'hell', 'lizardman',
-                'cursed', 'goblin', 'orc', 'grey elves', 'gnomes',
-                'fomorian', 'druids', 'mages', 'dark elves', 'mythical',
-                'witches', 'aesir', 'shadow', 'warriors', 'rose', 'noldor',
-                'three'
-                ]
-        idd_name = ''
+        id_name = ''
 
-        for key in idd_:
+        for key in ID_AREA:
 
             if key in self.gps.casefold():
-                idd_name = key
+                id_name = key
                 break
 
-        return [data_list for data_list in LIST_ENEMIES if idd_name == data_list[0]]
+        return [data_list for data_list in LIST_ENEMIES if id_name == data_list[0]]
 
     def _enemies_in_the_area(self):
 
         del self._list_enemies_in_area[::]
+
         for sprite in self.group_sprites_opponent.sprites():
+
             self.group_sprites_opponent.remove(sprite)
 
-        try:
-            y = 430
-            for n in range(6):
-                enemies = choice(self._check_enemies_for_area())
+        y = 430
+        for n in range(6):
+            enemies = choice(self._check_enemies_for_area())
 
-                self._list_enemies_in_area.append(
-                    Enemy(enemies, FOLDER['enemies'] + enemies[1] + '.png', 430, y, self.group_sprites_opponent))
-                y += 95
+            enemy_obj = Enemy(enemies, FOLDER['enemies'] + enemies[1] + '.png', 430, y, self.group_sprites_opponent)
 
-        except IndexError:
-            return -1
+            self._list_enemies_in_area.append(enemy_obj)
+            y += 95
 
     def _check_index_enemy(self):
 
@@ -162,71 +153,83 @@ class Game:
 
     def _change_command(self, pos_mouse):
 
-        if self.char_current['hp'] > 0:
+        if self.char_current['hp'] > 0.1 and self.char_current['stamina'] >= 0.3 and self.enemy_current['hp'] > 0:
 
-            if self.commands_battle['attack'].rect.collidepoint(pos_mouse):
+            for key in self.commands_battle.keys():
 
-                self._commands_attack(), self.battle.erase_log(self.loots_for_enemy)
-                self.turn_enemy, self.block_battle = True, True
+                if self.commands_battle[key].rect.collidepoint(pos_mouse):
 
-            elif self.commands_battle['defense'].rect.collidepoint(pos_mouse):
+                    self.block_battle = True
 
-                self._commands_defense(), self.battle.erase_log(self.loots_for_enemy)
-                self.turn_enemy, self.block_battle = True, True
+                    match key:
 
-            elif self.commands_battle['flee'].rect.collidepoint(pos_mouse):
+                        case 'b_attack':
+                            self._commands_attack()
 
-                self._commands_flee(), self.battle.erase_log(self.loots_for_enemy)
-                self.turn_enemy = True
+                        case 'b_defense':
+                            self._commands_defense()
 
-            elif self.commands_battle['skills'].rect.collidepoint(pos_mouse):
+                        case 'b_flee':
+                            self._commands_flee()
 
-                self.battle.erase_log(self.loots_for_enemy)
-                self.turn_enemy, self.block_battle = True, True
+                        case 'b_skills':
+                            pass
 
-            elif self.commands_battle['items'].rect.collidepoint(pos_mouse):
+                        case 'b_items':
+                            pass
 
-                self.battle.erase_log(self.loots_for_enemy)
-                self.turn_enemy, self.block_battle = True, True
+                    self.turn_enemy = True
+                    self.battle.erase_log(self.loots_for_enemy)
 
     def _commands_attack(self):
 
-        damage_char = self.battle.ATTACK(self.char_status, self.enemy_status, self.char_current)
+        damage_char = self.battle.ATTACK(self.char_status, self.enemy_status)
 
-        self.battle.take_damage(self.enemy_current, damage_char)
+        self.battle.energy_used_in_battle(self.char_current)
 
-        self.log_battle.append(self.battle.log_attack(self.char_attribute, damage_char))
+        self.battle.take_damage(self.enemy_current, damage_char, self.log_battle)
+
+        self.log_battle.append(self.battle.log_attack(self.char_attribute, self.enemy_attribute, damage_char))
 
     def _commands_defense(self):
 
-        self.battle.DEFENSE(self.char_status, self.char_current)
+        defense = self.battle.defense()
 
-        self.log_battle.append(self.battle.log_defense(self.char_attribute))
+        self.battle.energy_used_in_battle(self.char_current)
+
+        self.log_battle.append(self.battle.log_defense(self.char_attribute, defense))
 
     def _commands_flee(self):
 
-        self.block_battle = self.battle.FLEE(self.char_current)
+        self.block_battle = self.battle.flee()
+
+        self.battle.energy_used_in_battle(self.char_current)
 
         self.log_battle.append(self.battle.log_flee(self.char_attribute, self.block_battle))
 
     def _commands_enemy_battle(self):
 
-        if self.turn_enemy and self.enemy_current['hp'] > 0:
+        if self.turn_enemy and self.enemy_current['hp'] > 0.1 and self.enemy_current['stamina'] >= 0.3:
 
-            choose_movement = choice(['attack', 'defense'])
+            choose_movement = choice(['attack', 'attack', 'defense'])
 
             match choose_movement:
 
                 case 'attack':
-                    damage_enemy = self.battle.ATTACK(self.enemy_status, self.char_status, self.enemy_current)
+                    damage_enemy = self.battle.ATTACK(self.enemy_status, self.char_status)
 
-                    self.battle.take_damage(self.char_current, damage_enemy)
+                    self.battle.energy_used_in_battle(self.enemy_current)
 
-                    self.log_battle.append(self.battle.log_attack(self.enemy_attribute, damage_enemy))
+                    self.battle.take_damage(self.char_current, damage_enemy, self.log_battle)
+
+                    self.log_battle.append(self.battle.log_attack(self.enemy_attribute, self.char_attribute, damage_enemy))
 
                 case 'defense':
-                    self.battle.DEFENSE(self.enemy_status, self.enemy_current)
-                    self.log_battle.append(self.battle.log_defense(self.enemy_attribute))
+                    defense = self.battle.defense()
+
+                    self.battle.energy_used_in_battle(self.enemy_current)
+
+                    self.log_battle.append(self.battle.log_defense(self.enemy_attribute, defense))
 
     def _battle(self):
 
@@ -239,8 +242,11 @@ class Game:
         if self.enemy_current['hp'] <= 0:
 
             self.loots_for_enemy = dict(self.enemy_loots)
+            self.block_battle = False
+
             self.battle.erase_log(self.log_battle)
             self.battle.take_loots(self.char_others, self.char_attribute, self.enemy_loots)
+
             self.battle.kill_sprite_enemy(self._list_enemies_in_area, self.index_battle)
 
         self.turn_enemy = False
@@ -250,15 +256,14 @@ class Game:
         draw_texts(MAIN_SCREEN, f'{self.gps:^35}', 404, 104, size=25)
 
     def _draw_battle(self):
-        pos_x, pos_y = 25, 560
 
         self.battle.draw_loots(self.loots_for_enemy)
-        self.battle.draw_battle_info(self.log_battle, pos_x, pos_y)
+        self.battle.draw_battle_info(self.log_battle)
 
         self.battle.draw_bar_status(self._list_enemies_in_area[self.index_battle])
-        self.battle.draw_text(self._list_enemies_in_area[self.index_battle])
+        self.battle.draw_info_status_enemy(self._list_enemies_in_area[self.index_battle])
 
-        self.battle.draw_sprite_enemy(self._list_enemies_in_area, self.index_battle)
+        self.battle.draw_enemy_sprite(self._list_enemies_in_area, self.index_battle)
 
         color_block = COLORS['YELLOW'] if self.block_battle else COLORS['WHITE']
 
@@ -266,40 +271,25 @@ class Game:
 
     def _get_mouse_events(self, pos_mouse):
 
-        mouse_collision_changing_image(
-            self._icons['next'], pos_mouse, IMG_GAME['select_next'], IMG_GAME['next'])
-        mouse_collision_changing_image(
-            self._icons['previous'], pos_mouse, IMG_GAME['select_previous'], IMG_GAME['previous'])
+        for key in self._icons.keys():
 
-        mouse_collision_changing_image(
-            self._icons['save'], pos_mouse, IMG_GAME['select_save'], IMG_GAME['save'])
-        mouse_collision_changing_image(
-            self._icons['options'], pos_mouse, IMG_GAME['select_options'], IMG_GAME['options'])
+            if self._icons[key].rect.collidepoint(pos_mouse):
 
-        mouse_collision_changing_image(
-            self._icons['skills'], pos_mouse, IMG_GAME['select_skills'], IMG_GAME['skills'])
-        mouse_collision_changing_image(
-            self._icons['marketplace'], pos_mouse, IMG_GAME['select_marketplace'], IMG_GAME['marketplace'])
+                __img = 'select_' + key
+            else:
+                __img = key
 
-        mouse_collision_changing_image(
-            self._icons['proficiency'], pos_mouse, IMG_GAME['select_proficiency'], IMG_GAME['proficiency'])
-        mouse_collision_changing_image(
-            self._icons['chest'], pos_mouse, IMG_GAME['select_chest'], IMG_GAME['chest'])
+            self._icons[key].image = pg.image.load(IMG_GAME[__img])
 
-        mouse_collision_changing_image(
-            self.commands_battle['attack'], pos_mouse, IMG_GAME['select_attack'], IMG_GAME['b_attack'])
+        for key in self.commands_battle.keys():
 
-        mouse_collision_changing_image(
-            self.commands_battle['defense'], pos_mouse, IMG_GAME['select_defense'], IMG_GAME['b_defense'])
+            if self.commands_battle[key].rect.collidepoint(pos_mouse):
 
-        mouse_collision_changing_image(
-            self.commands_battle['flee'], pos_mouse, IMG_GAME['select_flee'], IMG_GAME['b_flee'])
+                __img = 'select_' + key
+            else:
+                __img = key
 
-        mouse_collision_changing_image(
-            self.commands_battle['skills'], pos_mouse, IMG_GAME['select_cmd_skills'], IMG_GAME['b_skills'])
-
-        mouse_collision_changing_image(
-            self.commands_battle['items'], pos_mouse, IMG_GAME['select_items'], IMG_GAME['b_items'])
+            self.commands_battle[key].image = pg.image.load(IMG_GAME[__img])
 
     def _update_status(self):
 
