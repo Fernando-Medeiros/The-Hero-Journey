@@ -141,10 +141,10 @@ class Battle:
 
         pos_x, pos_y = 25, 820
 
-        for index, item in enumerate(args.items()):
-            key, value = item
+        for __item__ in args.items():
+            __key__, __value__ = __item__
 
-            self.draw_render_status(f'{key.title()} + {value:<10}', pos_x, pos_y, color=COLORS['GREEN'])
+            self.draw_render_status(f'{__key__.title()} + {__value__:<10}', pos_x, pos_y, color=COLORS['GREEN'])
 
             pos_y += 20
 
@@ -157,10 +157,11 @@ class Battle:
         if len(log) >= 13:
             del log[:12]
 
-        for index, info in enumerate(log):
-            c_ = white if index % 2 == 0 else wood
+        for __index__, __info__ in enumerate(log):
 
-            self.draw_render_status(f'{index} - {info}', pos_x, pos_y, color=c_)
+            _color_ = white if __index__ % 2 == 0 else wood
+
+            self.draw_render_status(f'{__index__} - {__info__}', pos_x, pos_y, color=_color_)
 
             pos_y += 30
 
@@ -177,17 +178,17 @@ class Battle:
 
         pos_x, pos_y = 46, 375
 
-        for items in args:
+        for __items__ in args:
 
             info = [
-                f'{items.current_status["hp"]:^45.1f}/{items.status_secondary["hp"]:^45.1f}',
-                f'{items.current_status["mp"]:^45.1f}/{items.status_secondary["mp"]:^45.1f}',
-                f'{items.current_status["stamina"]:^45.1f}/{items.status_secondary["stamina"]:^45.1f}'
+                f'{__items__.current_status["hp"]:^45.1f}/{__items__.status_secondary["hp"]:^45.1f}',
+                f'{__items__.current_status["mp"]:^45.1f}/{__items__.status_secondary["mp"]:^45.1f}',
+                f'{__items__.current_status["stamina"]:^45.1f}/{__items__.status_secondary["stamina"]:^45.1f}'
             ]
 
-            for index in range(len(info)):
+            for __index__ in range(len(info)):
 
-                self.draw_render_status(info[index], pos_x, pos_y, size=10)
+                self.draw_render_status(info[__index__], pos_x, pos_y, size=10)
 
                 pos_y += 13
 
@@ -202,21 +203,28 @@ class Battle:
 
         return self.damage(hit, defense, block, dodge, critical)
 
-    @staticmethod
-    def draw_bar_status(*args):
+    def draw_bar_status(self, *args):
 
         pos_x, pos_y = 46, 375
 
         colors = [COLORS['RED'], COLORS['BLUE'], COLORS['GREEN']]
 
-        for items in args:
+        for __items__ in args:
 
-            info_0 = [items.status_secondary['hp'], items.status_secondary['mp'], items.status_secondary['stamina']]
-            info_1 = [items.current_status['hp'], items.current_status['mp'], items.current_status['stamina']]
+            secondary = [
+                __items__.status_secondary['hp'],
+                __items__.status_secondary['mp'],
+                __items__.status_secondary['stamina']
+            ]
+            current = [
+                __items__.current_status['hp'],
+                __items__.current_status['mp'],
+                __items__.current_status['stamina']
+            ]
 
-            for index in range(len(info_0)):
-                draw = DrawStatusBar(100, 8, info_0[index], 310)
-                draw.draw(MAIN_SCREEN, colors[index], pos_x, pos_y, 13, info_1[index], color_bg=COLORS['BLACK'])
+            for __index__ in range(len(secondary)):
+
+                self.draw_status_bar(13, secondary[__index__], 310, colors[__index__], (pos_x, pos_y), current[__index__])
 
                 pos_y += 13
 
@@ -227,3 +235,14 @@ class Battle:
         text = font.render(f'{TXT}', True, color)
 
         MAIN_SCREEN.blit(text, (X, Y))
+
+    @staticmethod
+    def draw_status_bar(height, fixed_value, max_size, color, rect: (int, int), current_value):
+
+        __size_max = max_size
+        __current_size = fixed_value / __size_max
+
+        border = 0, 7, 7, 7, 7
+
+        pg.draw.rect(MAIN_SCREEN, color, (*rect, current_value / __current_size, height), *border)
+        pg.draw.rect(MAIN_SCREEN, COLORS['BLACK'], (*rect, __size_max, height), 1, *border)

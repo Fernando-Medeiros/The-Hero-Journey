@@ -49,6 +49,7 @@ class Game:
         self._list_enemies_in_area = []
 
         self.log_battle = []
+
         self.loots_for_enemy = {}
 
         self._enemies_in_the_area()
@@ -62,6 +63,7 @@ class Game:
     def _save_and_exit(self, pos_mouse):
 
         if self._icons['save'].rect.collidepoint(pos_mouse):
+
             self.character.save(), save_log()
 
     def _return_menu(self, pos_mouse):
@@ -72,6 +74,7 @@ class Game:
             self.gps = 'Sea North'
 
             self._check_enemies_for_area(), self._enemies_in_the_area()
+
             self.battle.erase_log(self.log_battle, self.loots_for_enemy)
 
             self.class_game = False
@@ -80,7 +83,7 @@ class Game:
 
         index = LIST_LANDS.index(self.gps)
 
-        if self.char_current['stamina'] > 1:
+        if self.char_current['stamina'] >= 0.5:
 
             if self._icons['next'].rect.collidepoint(pos_mouse):
 
@@ -88,7 +91,7 @@ class Game:
 
                 self.respawn_enemies = True
 
-                self.char_current['stamina'] -= 1
+                self.char_current['stamina'] -= 0.5
                 click_sound.play()
 
             elif self._icons['previous'].rect.collidepoint(pos_mouse):
@@ -97,31 +100,37 @@ class Game:
 
                 self.respawn_enemies = True
 
-                self.char_current['stamina'] -= 1
+                self.char_current['stamina'] -= 0.5
                 click_sound.play()
 
         self._tools['gps'].rect.topleft = (POS_GPS[index])
+
         self.gps = LIST_LANDS[index]
 
     def _select_enemy(self, pos_mouse):
 
-        for index, obj in enumerate(self._list_enemies_in_area):
+        for __index__, __obj__ in enumerate(self._list_enemies_in_area):
 
-            if obj.rect.collidepoint(pos_mouse):
+            if __obj__.rect.collidepoint(pos_mouse):
+
                 self.battle.erase_log(self.log_battle, self.loots_for_enemy)
 
-                self.index_battle = index
+                self.index_battle = __index__
+
                 self.block_battle = True
+
                 break
 
     def _check_enemies_for_area(self):
 
         id_name = ''
 
-        for key in ID_AREA:
+        for __key__ in ID_AREA:
 
-            if key in self.gps.casefold():
-                id_name = key
+            if __key__ in self.gps.casefold():
+
+                id_name = __key__
+
                 break
 
         return [data_list for data_list in LIST_ENEMIES if id_name == data_list[0]]
@@ -136,6 +145,7 @@ class Game:
 
         y = 430
         for n in range(6):
+
             enemies = choice(self._check_enemies_for_area())
 
             enemy_obj = Enemy(enemies, FOLDER['enemies'] + enemies[1] + '.png', 430, y, self.group_sprites_opponent)
@@ -153,15 +163,15 @@ class Game:
 
     def _change_command(self, pos_mouse):
 
-        if self.char_current['hp'] > 0.1 and self.char_current['stamina'] >= 0.3 and self.enemy_current['hp'] > 0:
+        if self.char_current['hp'] > 0 and self.char_current['stamina'] >= 0.3 and self.enemy_current['hp'] > 0:
 
-            for key in self.commands_battle.keys():
+            for __key__ in self.commands_battle.keys():
 
-                if self.commands_battle[key].rect.collidepoint(pos_mouse):
+                if self.commands_battle[__key__].rect.collidepoint(pos_mouse):
 
                     self.block_battle = True
 
-                    match key:
+                    match __key__:
 
                         case 'b_attack':
                             self._commands_attack()
@@ -209,7 +219,7 @@ class Game:
 
     def _commands_enemy_battle(self):
 
-        if self.turn_enemy and self.enemy_current['hp'] > 0.1 and self.enemy_current['stamina'] >= 0.3:
+        if self.turn_enemy and self.enemy_current['hp'] > 0 and self.enemy_current['stamina'] >= 0.3:
 
             choose_movement = choice(['attack', 'attack', 'defense'])
 
@@ -242,10 +252,12 @@ class Game:
         if self.enemy_current['hp'] <= 0:
 
             self.loots_for_enemy = dict(self.enemy_loots)
-            self.block_battle = False
+
+            self.battle.take_loots(self.char_others, self.char_attribute, self.enemy_loots)
 
             self.battle.erase_log(self.log_battle)
-            self.battle.take_loots(self.char_others, self.char_attribute, self.enemy_loots)
+
+            self.block_battle = False
 
             self.battle.kill_sprite_enemy(self._list_enemies_in_area, self.index_battle)
 
@@ -258,38 +270,40 @@ class Game:
     def _draw_battle(self):
 
         self.battle.draw_loots(self.loots_for_enemy)
+
         self.battle.draw_battle_info(self.log_battle)
 
         self.battle.draw_bar_status(self._list_enemies_in_area[self.index_battle])
+
         self.battle.draw_info_status_enemy(self._list_enemies_in_area[self.index_battle])
 
         self.battle.draw_enemy_sprite(self._list_enemies_in_area, self.index_battle)
 
         color_block = COLORS['YELLOW'] if self.block_battle else COLORS['WHITE']
 
-        DrawStatusBar(1, 1, 100, 373).draw(MAIN_SCREEN, COLORS['BLACK'], 15, 370, 590, 0, color_bg=color_block)
+        pg.draw.rect(MAIN_SCREEN, color_block, (15, 370, 373, 590), 1, 0, 7, 7, 7, 7)
 
-    def _get_mouse_events(self, pos_mouse):
+    def _get_mouse_events_to_show_interactive(self, pos_mouse):
 
-        for key in self._icons.keys():
+        for __key__ in self._icons.keys():
 
-            if self._icons[key].rect.collidepoint(pos_mouse):
+            if self._icons[__key__].rect.collidepoint(pos_mouse):
 
-                __img = 'select_' + key
+                __img = 'select_' + __key__
             else:
-                __img = key
+                __img = __key__
 
-            self._icons[key].image = pg.image.load(IMG_GAME[__img])
+            self._icons[__key__].image = pg.image.load(IMG_GAME[__img])
 
-        for key in self.commands_battle.keys():
+        for __key__ in self.commands_battle.keys():
 
-            if self.commands_battle[key].rect.collidepoint(pos_mouse):
+            if self.commands_battle[__key__].rect.collidepoint(pos_mouse):
 
-                __img = 'select_' + key
+                __img = 'select_' + __key__
             else:
-                __img = key
+                __img = __key__
 
-            self.commands_battle[key].image = pg.image.load(IMG_GAME[__img])
+            self.commands_battle[__key__].image = pg.image.load(IMG_GAME[__img])
 
     def _update_status(self):
 
@@ -310,16 +324,17 @@ class Game:
             self._change_command(pos_mouse)
 
             if not self.block_battle:
+
                 self._select_land(pos_mouse)
                 self._select_enemy(pos_mouse)
                 self._save_and_exit(pos_mouse)
                 self._return_menu(pos_mouse)
 
-        if event.type == pg.MOUSEMOTION:
-            self._get_mouse_events(pos_mouse)
+        self._get_mouse_events_to_show_interactive(pos_mouse)
 
         self.character.events_character(event)
-        [obj.events(event) for obj in self._list_enemies_in_area]
+
+        [obj.events() for obj in self._list_enemies_in_area]
 
     def update(self, main_screen):
 

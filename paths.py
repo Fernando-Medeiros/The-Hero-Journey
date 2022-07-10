@@ -91,24 +91,24 @@ POS_GPS = [
 ]
 
 DARK_ELF = {
-    'duelist': [2, 3, 3, 1, 2],
-    'mage': [1, 2, 3, 4, 1],
-    'assassin': [2, 4, 3, 1, 1]
+    'duelist': [3, 4, 4, 2, 3],
+    'mage': [2, 3, 4, 5, 2],
+    'assassin': [3, 5, 4, 2, 2]
 }
 
 GREY_ELF = {
-    'warrior': [4, 1, 4, 1, 1],
-    'mage': [1, 1, 4, 4, 1],
-    'warden': [1, 1, 3, 1, 5]
+    'warrior': [5, 2, 5, 2, 2],
+    'mage': [2, 2, 5, 5, 2],
+    'warden': [2, 2, 4, 2, 6]
 }
 
 FOREST_ELF = {
-    'warrior': [2, 3, 3, 1, 2],
-    'mage': [1, 1, 4, 4, 1],
-    'warden': [1, 3, 3, 1, 3]
+    'warrior': [3, 4, 4, 2, 3],
+    'mage': [2, 2, 5, 5, 2],
+    'warden': [2, 4, 4, 2, 4]
 }
 
-CLASS_PROGRESSION_MELEE, CLASS_PROGRESSION_MAGE = [1, 1, 1, 1, 1], [1, 1, 1, 1, 1]
+CLASS_PROGRESSION_MELEE, CLASS_PROGRESSION_MAGE = [2, 1, 1, 1, 1], [1, 1, 1, 2, 1]
 
 SKILLS = {
     'd_duelist': {'EN': ['Duelism', 'Combat with Two Weapons'],
@@ -140,11 +140,12 @@ SKILLS = {
 }
 
 LIST_ENEMIES = []
-with open('codes/list_enemies', mode='r', encoding='utf-8') as file:
 
-    for x in file.readlines():
+with open('codes/list_enemies', mode='r', encoding='utf-8') as __file__:
 
-        LIST_ENEMIES.append(x.replace("\n", "").split(':'))
+    for __line__ in __file__.readlines():
+
+        LIST_ENEMIES.append(__line__.replace("\n", "").split(':'))
 
 FOLDER = {
     'save': 'save/',
@@ -157,7 +158,6 @@ FOLDER = {
     'soundtrack': 'assets/soundtrack/',
     'game': 'assets/images/game/',
     'enemies': 'assets/images/enemies/'
-
 }
 
 COLORS = {
@@ -209,8 +209,9 @@ IMG_LOAD = {
     'bg': FOLDER['load'] + 'bg.png',
     'box': FOLDER['load'] + 'box.png',
     'del': FOLDER['load'] + 'del.png',
-    'select_add': FOLDER['load'] + 'add_active.png',
-    'select_del': FOLDER['load'] + 'del_active.png'
+    'add': FOLDER['load'] + 'add.png',
+    'select_add': FOLDER['load'] + 'select_add.png',
+    'select_del': FOLDER['load'] + 'select_del.png'
 }
 
 IMG_OPTIONS = {
@@ -278,6 +279,12 @@ SONGS = {
     'orpheus': pg.mixer.Sound(FOLDER['soundtrack'] + 'orpheus.mp3')
 }
 
+INFO_MAX_RECORDS = \
+    """RECORD SPACES 9/9|
+    RETURN TO MENU|
+    RELEASE ONE OR MORE SPACES|
+    TO CREATE NEW RECORDS..."""
+
 INFO_HERALDRY = {
     'dark':
         {
@@ -293,7 +300,8 @@ INFO_HERALDRY = {
     Dark elves are skilled artisans, and their stone and metalworking is famous even on the surface.\r
     Traditionally, dark elves are selfish and evil,\r
     and their entire culture and society is built around the concept of power at all costs.\r
-    Dark elf citadels are treacherous places, where the rich and powerful play a dangerous game of power,\r
+    Dark elf citadels are treacherous places,\r
+    where the rich and powerful play a dangerous game of power,\r
     in which those of lower caste are mere pawns, completely expendable.\r
     Dark elves have a great appreciation for magic of any kind,\r
     and spell casters tend to occupy a prominent place in their communities.""",
@@ -509,7 +517,8 @@ INFO_SKILLS = {
     \r
     NATURAL RECOVERY\r
     You can recover some of your magical energy\r
-    by stopping to meditate and commune with nature.\r
+    by stopping to meditate\r
+    and commune with nature.\r
     (hp and mp regeneration)""",
 
             'BR':
@@ -537,7 +546,8 @@ INFO_SKILLS = {
     medium armor piece of equipment.\r
     \r
     HYBRID DEFENSE\r
-    When using two weapons or two-handed weapons\r
+    When using two weapons\r
+    or two-handed weapons\r
     you add a 15% bonus to your total dodge attack.""",
 
             'BR':
@@ -563,7 +573,8 @@ INFO_SKILLS = {
     can use it to protect yourself from harm.\r
     \r
     COMBAT WITH BIG WEAPONS \r
-    When you are equipped with a two-handed weapon,\r
+    When you are equipped\r
+    with a two-handed weapon,\r
     you can occasionally use your vitality to\r
     increase % damage.""",
 
@@ -584,7 +595,8 @@ INFO_SKILLS = {
             'EN':
                 """
     OVERLOAD\r
-    You can increase the power of your simpler spells.\r
+    You can increase the power\r
+    of your simpler spells.\r
     Occasionally your magic negates\r
     the opponent's defense.\r
     \r

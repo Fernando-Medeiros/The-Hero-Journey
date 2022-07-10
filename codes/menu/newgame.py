@@ -55,11 +55,11 @@ class NewGame:
         if not self.BLOCK:
 
             if self.add_icon.rect.collidepoint(pos_mouse) and (len(self.NAME) >= MIN_CHARACTERS_NAME):
-
                 features = self.NAME + '\n' + self.ETHNICITY + '\n' + self.CLASS_ + '\n' + '1'
 
                 with open(FOLDER['save'] + self.NAME, 'w') as new_record:
                     new_record.write(features)
+
                 click_sound.play()
 
                 sleep(1)
@@ -97,28 +97,46 @@ class NewGame:
 
         self.NAME = self.NAME[:-1] if len(self.NAME) >= MAX_CHARACTERS_NAME else self.NAME
 
-    def _interactive(self, pos_mouse):
-        """
-        RETURNS IMAGE SWITCH ON MOUSE COLLIDE
-        """
-        mouse_collision_catching_x_y(
-            LIMBO, self.ethnicity + self.class_, self.interactive_[2], pos_mouse)
+    def _get_mouse_events_to_show_interactive(self, pos_mouse):
 
-        mouse_collision_changing_image(
-            self.return_icon, pos_mouse, IMG_MENU['select_return'], IMG_MENU['return'])
+        __topleft__ = -1080, - 1080
+        __img_return__ = 'return'
 
-        mouse_collision_changing_image(
-            self.add_icon, pos_mouse, IMG_LOAD['select_add'], IMG_NEW_GAME['add'], check=False)
+        if self.return_icon.rect.collidepoint(pos_mouse):
+            __img_return__ = 'select_return'
+
+        for __object__ in self.ethnicity + self.class_:
+
+            if __object__.collidepoint(pos_mouse):
+                __topleft__ = __object__.topleft
+
+        self.interactive_[2].rect.topleft = __topleft__
+
+        self.return_icon.image = pg.image.load(IMG_MENU[__img_return__])
+
+    def _enable_icon_to_save_record(self):
+
+        __img_add__ = 'add'
+
+        if self.INBOX and len(self.NAME) >= MIN_CHARACTERS_NAME:
+            __img_add__ = 'select_add'
+
+        self.add_icon.image = pg.image.load(IMG_LOAD[__img_add__])
+
+    def _check_max_records(self):
+        """
+        CHECK LIMIT OF RECORDS AND RETURN LOCK FOLLOWED BY INSTRUCTIONS
+        """
+        if self.class_new_game and len([x for x in listdir(FOLDER['save'])]) >= MAX_RECORDS:
+
+            self.BLOCK = True
+            self.max_records.rect.y = 0
+
+        else:
+            self.BLOCK = False
+            self.max_records.rect.y = LIMBO
 
     def _draw_box(self):
-        """
-        BOX DRAWING TO ADD NAME
-        DRAW THE TEXT, BOX -> INSIDE THE SCREEN_MAIN
-        """
-        if self.INBOX and len(self.NAME) >= MIN_CHARACTERS_NAME:
-            self.add_icon.image = pg.image.load(IMG_LOAD['select_add'])
-        else:
-            self.add_icon.image = pg.image.load(IMG_NEW_GAME['add'])
 
         # DRAW USER TEXT INPUT
         draw_texts(
@@ -128,17 +146,17 @@ class NewGame:
         # DRAW THE BOX FOR TEXT INPUT
         pg.draw.rect(MAIN_SCREEN, COLORS['ACTIVE'], self.boxes[2], 2)
 
-    def _check_max_records(self):
-        """
-        CHECK LIMIT OF RECORDS AND RETURN LOCK FOLLOWED BY INSTRUCTIONS
-        """
-        if self.class_new_game and len([x for x in listdir(FOLDER['save'])]) >= MAX_RECORDS:
-            self.BLOCK = True
-            self.max_records.rect.y = 0
+    def _draw_info_max_records(self):
 
-        else:
-            self.BLOCK = False
-            self.max_records.rect.y = LIMBO
+        if self.BLOCK:
+
+            y = 500
+            for line in INFO_MAX_RECORDS.split('|'):
+
+                draw_texts(
+                    MAIN_SCREEN, f'{line}'.replace('|', '\n').title().strip(), 230, y, size=20, color=COLORS['BLACK'])
+
+                y += 30
 
     def _draw_subtitles(self):
 
@@ -147,38 +165,40 @@ class NewGame:
         pos_y_etn, pos_y_clas = 70, 560
 
         for item in range(3):
-
             # TEXT AND BOX FOR ETHNICITIES
             draw_texts(
                 MAIN_SCREEN, f'{list_ethnicities[item]}'.title(), pos_x_txt[item], pos_y_etn + 10, size=20)
 
-            self.ethnicity.append(DrawStatusBar(249, 41, 0, 249, rect=(pos_x_rect[item], pos_y_etn)))
+            self.ethnicity.append(pg.rect.Rect(pos_x_rect[item], pos_y_etn, 249, 41))
 
             # TEXT AND BOX FOR CLASSES
             draw_texts(
                 MAIN_SCREEN, f'{self.index_list_class[item]}'.title(), pos_x_txt[item] + 20, pos_y_clas + 10, size=20)
 
-            self.class_.append(DrawStatusBar(249, 41, 0, 249, rect=(pos_x_rect[item], pos_y_clas)))
+            self.class_.append(pg.rect.Rect(pos_x_rect[item], pos_y_clas, 249, 41))
 
     def _draw_info_ethnicity(self):
 
-        try:
-            info =\
-                'dark' if 'dark' in self.ETHNICITY else\
-                'forest' if 'forest' in self.ETHNICITY else\
-                'grey' if 'grey' in self.ETHNICITY else None
+        if self.ETHNICITY != '':
+
+            info = \
+                'dark' if 'dark' in self.ETHNICITY else \
+                'forest' if 'forest' in self.ETHNICITY else \
+                'grey' if 'grey' in self.ETHNICITY else ''
 
             y = 240
+
             for line in INFO_HERALDRY[info][LANGUAGE].replace('\n', '').split('\r'):
+
                 draw_texts(MAIN_SCREEN, f'{line}', 0, y, color=COLORS['BLACK'])
 
                 y += 30 if len(INFO_HERALDRY[info][LANGUAGE]) < 600 else 15
 
-        except Exception as erro:
-            return f'{erro.args}'
-
     def _draw_info_classes(self):
-        try:
+
+        pg.draw.rect(MAIN_SCREEN, COLORS['BLACK'], (185, 610, 550, 300), 1)
+
+        if self.CLASS_ != '':
 
             idd = 'ed_' if 'dark' in self.ETHNICITY else 'ef_' if 'forest' in self.ETHNICITY else 'eg_'
             list_with_attributes = DARK_ELF if idd == 'ed_' else FOREST_ELF if idd == 'ef_' else GREY_ELF
@@ -192,45 +212,44 @@ class NewGame:
 
                 draw_texts(
                     MAIN_SCREEN, f'{status.title():<} - {list_with_attributes[self.CLASS_][index]:>.1f}',
-                    210, y, color=COLORS['BLACK'], size=20)
+                    210, y, color=COLORS['BLACK'], size=18)
 
                 y += 30
 
             # SPRITE OF CLASS
             sprite = pg.image.load(IMG_CLASSES[idd + self.CLASS_])
+
             MAIN_SCREEN.blit(sprite, (25, 680))
 
-        except Exception as erro:
-            return f'{erro.args}'
+            # SKILLS
+            y = 680
 
-        # SKILLS
-        y = 680
-        for line in INFO_SKILLS[idd[1:] + self.CLASS_][LANGUAGE].replace('\n', '').split('\r'):
-            draw_texts(MAIN_SCREEN, f'{line}', 375, y, color=COLORS['BLACK'])
+            for line in INFO_SKILLS[idd[1:] + self.CLASS_][LANGUAGE].replace('\n', '').split('\r'):
 
-            y += 20
+                draw_texts(MAIN_SCREEN, f'{line}', 375, y, color=COLORS['BLACK'])
+
+                y += 20
 
     def _list_ethnicity_and_classes(self, var_ethnicity, name_ethnicity: str, bg_ethnicity: str, pos_mouse):
 
         classes = LIST_CLASSES[0] if 'dark' in name_ethnicity else LIST_CLASSES[1]
 
-        if var_ethnicity.rect.collidepoint(pos_mouse):
+        if var_ethnicity.collidepoint(pos_mouse):
             self._reset_changes()
 
-            self.interactive_[0].rect.x = var_ethnicity.rect.x
+            self.interactive_[0].rect.x = var_ethnicity.x
             self.boxes[0].image = pg.image.load(IMG_NEW_GAME[bg_ethnicity])
 
             self.index_list_class = classes
             self.ETHNICITY = name_ethnicity.casefold()
             click_sound.play()
 
-        if self.interactive_[0].rect.x == var_ethnicity.rect.x:
+        if self.interactive_[0].rect.x == var_ethnicity.x:
 
             for index in range(3):
 
-                if self.class_[index].rect.collidepoint(pos_mouse):
-
-                    self.interactive_[1].rect.x = self.class_[index].rect.x
+                if self.class_[index].collidepoint(pos_mouse):
+                    self.interactive_[1].rect.x = self.class_[index].x
 
                     self.CLASS_ = classes[index].casefold()
                     click_sound.play()
@@ -240,6 +259,7 @@ class NewGame:
         self.NAME, self.ETHNICITY, self.CLASS_ = '', '', ''
 
         for index in range(2):
+
             self.interactive_[index].rect.x = LIMBO
             self.boxes[0].image = pg.image.load(IMG_NEW_GAME['HERALDRY_BOX'])
 
@@ -249,23 +269,30 @@ class NewGame:
 
         if event.type == pg.MOUSEBUTTONDOWN:
             self._return_menu(pos_mouse)
-            self._select_guides(pos_mouse)
-            self._active_input_box(pos_mouse)
-            self._add_record(pos_mouse)
 
-        if event.type == pg.MOUSEMOTION:
-            self._interactive(pos_mouse)
+            if not self.BLOCK:
+
+                self._select_guides(pos_mouse)
+                self._active_input_box(pos_mouse)
+                self._add_record(pos_mouse)
+
+        self._get_mouse_events_to_show_interactive(pos_mouse)
 
         self._receives_character_name(event)
 
     def update(self, *args, **kwargs):
 
         self._check_max_records()
-        self._draw_box()
-        self._draw_subtitles()
-        self._draw_info_ethnicity()
-        self._draw_info_classes()
+        self._enable_icon_to_save_record()
 
-        draw_texts(MAIN_SCREEN, f'{title_new_game[0]}', 300 + len(title_new_game[0]), 15, size=27)
-        draw_texts(MAIN_SCREEN, f'{title_new_game[1]}', 300 + len(title_new_game[1]), 510, size=27)
+        self._draw_info_max_records()
 
+        if not self.BLOCK:
+
+            self._draw_box()
+            self._draw_subtitles()
+            self._draw_info_ethnicity()
+            self._draw_info_classes()
+
+            draw_texts(MAIN_SCREEN, f'{title_new_game[0]}', 300 + len(title_new_game[0]), 15, size=27)
+            draw_texts(MAIN_SCREEN, f'{title_new_game[1]}', 300 + len(title_new_game[1]), 510, size=27)

@@ -1,5 +1,4 @@
 from settings import *
-from paths import *
 
 
 class Entity:
@@ -48,6 +47,7 @@ class Entity:
         next_level = self.attributes['level'] * 15
 
         if self.attributes['xp'] >= next_level:
+
             return True
         else:
             return False
@@ -55,12 +55,13 @@ class Entity:
     def level_progression(self, level_up):
 
         if level_up:
+
             keys = 'force', 'vitality', 'agility', 'intelligence', 'resistance'
 
             data_progression = CLASS_PROGRESSION_MAGE if self.attributes['class'] == 'mage' else CLASS_PROGRESSION_MELEE
 
-            for index, key in enumerate(keys):
-                self.attributes[key] += data_progression[index]
+            for __index__, __key__ in enumerate(keys):
+                self.attributes[__key__] += data_progression[__index__]
 
             self.attributes['level'] += 1
             self.attributes['xp'] = 1
@@ -70,10 +71,12 @@ class Entity:
     def level_progression_enemy(self, level_up):
 
         if level_up:
+
             keys = 'force', 'vitality', 'agility', 'intelligence', 'resistance'
 
-            for index, key in enumerate(keys):
-                self.attributes[key] += 1
+            for __key__ in keys:
+
+                self.attributes[__key__] += 1
 
             self.attributes['level'] += 1
             self.attributes['xp'] = 1
@@ -85,16 +88,16 @@ class Entity:
         level, force, agility, vitality, intelligence, resistance = \
             list(self.attributes.values())[3:9]
 
-        self.status_secondary['hp'] = level * vitality * force * 3.5
-        self.status_secondary['mp'] = level * intelligence + resistance * 1.5
-        self.status_secondary['stamina'] = level * resistance * 1.5
+        self.status_secondary['hp'] = (vitality / 2) * force
+        self.status_secondary['mp'] = (intelligence / 2) * resistance
+        self.status_secondary['stamina'] = (resistance / 2) + vitality
 
-        self.status['attack'] = force * level + (agility / 2)
-        self.status['defense'] = resistance * level + (agility / 2)
-        self.status['dodge'] = (agility + level) / 4
-        self.status['block'] = (agility + resistance) / 4
-        self.status['critical'] = agility / 4
-        self.status['luck'] = (level + agility) / 4
+        self.status['attack'] = force + (agility / 2)
+        self.status['defense'] = resistance + (agility / 2)
+        self.status['dodge'] = agility / 3
+        self.status['block'] = resistance / 3
+        self.status['critical'] = agility / 5
+        self.status['luck'] = level / 8
 
     def assign_current_status(self):
 
@@ -104,11 +107,11 @@ class Entity:
 
     def check_current_status(self):
 
-        self.current_status['hp'] = 0 if self.current_status['hp'] <= 0 else self.current_status['hp']
+        for __key__, __value__ in self.current_status.items():
 
-        self.current_status['mp'] = 0 if self.current_status['mp'] <= 0 else self.current_status['mp']
+            if __value__ <= 0:
 
-        self.current_status['stamina'] = 0 if self.current_status['stamina'] <= 0 else self.current_status['stamina']
+                self.current_status[__key__] = 0
 
     def status_regen(self):
 
@@ -116,16 +119,11 @@ class Entity:
 
         if time % 2 == 0:
 
-            current_, secondary_ = self.current_status,  self.status_secondary
+            for __key__, __value__ in self.current_status.items():
 
-            if current_['hp'] < secondary_['hp']:
-                self.current_status['hp'] += secondary_['regen_hp']
+                if __value__ < self.status_secondary[__key__]:
 
-            if current_['mp'] < secondary_['mp']:
-                self.current_status['mp'] += secondary_['regen_mp']
-
-            if current_['stamina'] < secondary_['stamina']:
-                self.current_status['stamina'] += secondary_['regen_stamina']
+                    self.current_status[__key__] += self.status_secondary['regen_' + __key__]
 
     @staticmethod
     def draw_render_status(TXT: str, X, Y, size=15, color=(255, 255, 255)):
@@ -134,3 +132,14 @@ class Entity:
         text = font.render(f'{TXT}', True, color)
 
         MAIN_SCREEN.blit(text, (X, Y))
+
+    @staticmethod
+    def draw_status_bar(height, fixed_value, max_size, color, rect: (int, int), current_value):
+
+        __size_max = max_size
+        __current_size = fixed_value / __size_max
+
+        border = 0, 7, 7, 7, 7
+
+        pg.draw.rect(MAIN_SCREEN, color, (*rect, current_value / __current_size, height), *border)
+        pg.draw.rect(MAIN_SCREEN, COLORS['WHITE'], (*rect, __size_max, height), 1, *border)

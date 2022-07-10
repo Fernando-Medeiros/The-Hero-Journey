@@ -24,23 +24,24 @@ class Character(Entity):
             'equips': []
         }
 
-        self._button_status = DrawStatusBar(373, 30, 100, 373, rect=(15, 190))
+        self._button_status = pg.rect.Rect(15, 190, 373, 30)
 
     def _assign_basic_attributes(self):
 
-        list_keys = [key for key in self.attributes]
+        __list_keys__ = [key for key in self.attributes]
 
         list_values = check_records(FOLDER['save'])[self.index]
 
         status = list_values + self._first_game() if len(list_values[:]) < 5 else list_values
 
-        for _index, item in enumerate(status):
+        for __index__, __item__ in enumerate(status):
 
-            item = int(item) if str(item).isnumeric() else item
+            __item__ = int(__item__) if str(__item__).isnumeric() else __item__
 
-            self.attributes[list_keys[_index]] = item
+            self.attributes[__list_keys__[__index__]] = __item__
 
     def _assign_others(self):
+
         name, ethnicity, class_, level = self._unpack_basic_status(self.index)
 
         self.others['skills'].append(SKILLS[ethnicity[0] + '_' + class_][LANGUAGE])
@@ -49,12 +50,11 @@ class Character(Entity):
 
         name, ethnicity, class_, level = self._unpack_basic_status(self.index)
 
-        folder =\
-            DARK_ELF[class_] if 'dark' in ethnicity else FOREST_ELF[class_] if 'forest' in ethnicity else GREY_ELF[class_]
+        folder = DARK_ELF if 'dark' in ethnicity else FOREST_ELF if 'forest' in ethnicity else GREY_ELF
 
         if str(level) == '1':
 
-            return folder
+            return folder[class_]
 
     def _draw_bar_status(self):
 
@@ -74,8 +74,8 @@ class Character(Entity):
 
         for __index__ in range(len(info_0)):
 
-            draw = DrawStatusBar(233, 15, info_0[__index__], __max_size[__index__])
-            draw.draw(MAIN_SCREEN, colors[__index__], *__pos[__index__], 15, info_1[__index__])
+            self.draw_status_bar(
+                15, info_0[__index__], __max_size[__index__], colors[__index__], __pos[__index__], info_1[__index__])
 
     def _draw_sprites(self):
 
@@ -102,47 +102,49 @@ class Character(Entity):
         ]
 
         __x, __y = 185, 36
-        for item in info:
+        for __item__ in info:
 
-            self.draw_render_status(item, __x, __y, size=13)
+            self.draw_render_status(__item__, __x, __y, size=13)
 
             __y += 18
 
     def _draw_status(self):
 
-        self._button_status.draw(MAIN_SCREEN, COLORS['BLACK'], 15, 190, 30, 0)
+        pg.draw.rect(MAIN_SCREEN, COLORS['WHITE'], self._button_status, 1, 0, 7, 7, 7, 7)
+
         self.draw_render_status(f'{"Status"}', 170, 190, size=25)
 
         if self.show_status_interface:
-            DrawStatusBar(1, 1, 100, 373).draw(MAIN_SCREEN, COLORS['BLACK'], 15, 220, 150, 0)
+
+            __RECT = pg.draw.rect(MAIN_SCREEN, COLORS['WHITE'], (15, 220, 373, 150), 1, 0, 7, 7, 7, 7)
 
             y = 230
-            for key, value in self.attributes.items():
+            for __key__, __value__ in self.attributes.items():
 
-                if not key in 'name, level, rank, xp':
-                    self.draw_render_status(f'{key.title():<} - {value:>}', 20, y)
+                if not __key__ in 'name, level, rank, xp':
+                    self.draw_render_status(f'{__key__.title():<} - {__value__:>}', 20, y)
                     y += 20
 
             y = 230
-            for key, value in self.status.items():
+            for __key__, __value__ in self.status.items():
 
-                self.draw_render_status(f'{key.title():<} - {value:>.1f}', 206, y)
+                self.draw_render_status(f'{__key__.title():<} - {__value__:>.1f}', 206, y)
                 y += 20
 
     def _show_status(self, pos_mouse):
 
-        if self._button_status.rect.collidepoint(pos_mouse):
+        if self._button_status.collidepoint(pos_mouse):
             self.show_status_interface = True
         else:
             self.show_status_interface = False
 
     def save(self):
 
-        with open(FOLDER['save'] + str(self.attributes['name']).lower(), mode='w+', encoding='utf-8') as file:
+        with open(FOLDER['save'] + str(self.attributes['name']).lower(), mode='w+', encoding='utf-8') as __file__:
 
-            for x in self.attributes.values():
+            for __x__ in self.attributes.values():
 
-                file.write(str(x).strip() + '\n')
+                __file__.write(str(__x__).strip() + '\n')
 
         self.others['skills'].clear()
 
@@ -151,9 +153,10 @@ class Character(Entity):
         pos_mouse = pg.mouse.get_pos()
 
         if event.type == pg.MOUSEBUTTONDOWN:
+
             self._show_status(pos_mouse)
 
-    def update(self, *args, **kwargs):
+    def update(self):
 
         if not self.others['skills']:
 
