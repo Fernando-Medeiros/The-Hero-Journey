@@ -144,7 +144,7 @@ class Battle:
         for __item__ in args.items():
             __key__, __value__ = __item__
 
-            self.draw_render_status(f'{__key__.title()} + {__value__:<10}', pos_x, pos_y, color=COLORS['GREEN'])
+            self.draw_render_status(f'{__key__.title()} >>> {__value__:_}', pos_x, pos_y, color=COLORS['GREEN'])
 
             pos_y += 20
 
@@ -181,9 +181,9 @@ class Battle:
         for __items__ in args:
 
             info = [
-                f'{__items__.current_status["hp"]:^45.1f}/{__items__.status_secondary["hp"]:^45.1f}',
-                f'{__items__.current_status["mp"]:^45.1f}/{__items__.status_secondary["mp"]:^45.1f}',
-                f'{__items__.current_status["stamina"]:^45.1f}/{__items__.status_secondary["stamina"]:^45.1f}'
+                f'{__items__.current_status["hp"]:^45_.2f}/{__items__.status_secondary["hp"]:^45_.2f}',
+                f'{__items__.current_status["mp"]:^45_.2f}/{__items__.status_secondary["mp"]:^45_.2f}',
+                f'{__items__.current_status["stamina"]:^45_.2f}/{__items__.status_secondary["stamina"]:^45_.2f}'
             ]
 
             for __index__ in range(len(info)):

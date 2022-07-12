@@ -14,7 +14,7 @@ class Game:
     battle = Battle()
     character = Character()
 
-    gps = 'Sea North'
+    gps = character.location
     index_battle = 0
 
     def __init__(self, *groups):
@@ -64,13 +64,14 @@ class Game:
 
         if self._icons['save'].rect.collidepoint(pos_mouse):
 
-            self.character.save(), save_log()
+            self.character.save(self.gps), save_log()
 
     def _return_menu(self, pos_mouse):
 
         if self._icons['options'].rect.collidepoint(pos_mouse):
 
-            self.character.save()
+            self.character.save(self.gps)
+
             self.gps = 'Sea North'
 
             self._check_enemies_for_area(), self._enemies_in_the_area()
@@ -78,6 +79,16 @@ class Game:
             self.battle.erase_log(self.log_battle, self.loots_for_enemy)
 
             self.class_game = False
+
+    def _check_location(self):
+
+        index = LIST_LANDS.index(self.gps)
+
+        if self._tools['gps'].rect.topleft != (POS_GPS[index]):
+
+            self._enemies_in_the_area()
+
+            self._tools['gps'].rect.topleft = (POS_GPS[index])
 
     def _select_land(self, pos_mouse):
 
@@ -106,6 +117,8 @@ class Game:
         self._tools['gps'].rect.topleft = (POS_GPS[index])
 
         self.gps = LIST_LANDS[index]
+
+        self.character.location = self.gps
 
     def _select_enemy(self, pos_mouse):
 
@@ -156,9 +169,11 @@ class Game:
     def _check_index_enemy(self):
 
         if self.index_battle >= len(self._list_enemies_in_area):
+
             self.index_battle -= 1
 
         if len(self._list_enemies_in_area) <= 0:
+
             self._enemies_in_the_area()
 
     def _change_command(self, pos_mouse):
@@ -341,14 +356,23 @@ class Game:
         if self.respawn_enemies:
 
             self._check_enemies_for_area()
+
             self._enemies_in_the_area()
+
             self.battle.erase_log(self.log_battle, self.loots_for_enemy)
+
             self.respawn_enemies = False
 
         self._battle()
+
         self._draw_name_of_land()
 
         self.character.update()
+
         self.group_sprites_opponent.draw(main_screen)
 
         [obj.update() for obj in self._list_enemies_in_area]
+
+        self.gps = self.character.location
+
+        self._check_location()

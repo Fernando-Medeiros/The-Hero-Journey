@@ -8,7 +8,7 @@ pg.display.set_caption(NAME_OF_THE_GAME)
 DISPLAY_DEFAULT = 747
 MAIN_SCREEN = pg.display.set_mode((DISPLAY_DEFAULT, 1050), pg.SCALED | pg.RESIZABLE)
 
-VERSION = '1.6'
+VERSION = '2.0'
 LOG = datetime.today().strftime('%d/%m/%Y %H:%M:%S')
 
 FRAMES = pg.time.Clock()

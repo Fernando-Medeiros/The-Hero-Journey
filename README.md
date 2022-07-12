@@ -1,6 +1,7 @@
 # Pygame-RPG
 <p align="center">
     <img windth="500" src="assets_readme/gif1.gif">
+    <img windth="500" src="assets_readme/gif2.gif">
          
 <p align="center">
     <img windth="470" height="300" src="assets_readme/The Hero's Journey 24_06_2022 10_50_28.png"> 
@@ -10,6 +11,10 @@
     <img windth="470" height="300" src="assets_readme/The Hero's Journey 24_06_2022 10_51_39.png">
     <img windth="470" height="300" src="assets_readme/The Hero's Journey 24_06_2022 10_51_09.png">
     <img windth="470" height="300" src="assets_readme/The Hero's Journey 24_06_2022 10_50_50.png">
+ <p align="center">
+    <img windth="470" height="300" src="assets_readme/Captura de tela 2022-07-11 205959.png">
+    <img windth="470" height="300" src="assets_readme/Captura de tela 2022-07-11 210308.png">
+    <img windth="470" height="300" src="assets_readme/sprites.png">
  </p>
 
 

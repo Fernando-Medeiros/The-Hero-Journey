@@ -24,9 +24,9 @@ class Entity:
             'hp': 1,
             'mp': 1,
             'stamina': 1,
-            'regen_hp': 0.002,
-            'regen_mp': 0.002,
-            'regen_stamina': 0.002
+            'regen_hp': 0.005,
+            'regen_mp': 0.005,
+            'regen_stamina': 0.009
         }
         self.current_status = {
             'hp': 1,
@@ -88,16 +88,16 @@ class Entity:
         level, force, agility, vitality, intelligence, resistance = \
             list(self.attributes.values())[3:9]
 
-        self.status_secondary['hp'] = (vitality / 2) * force
-        self.status_secondary['mp'] = (intelligence / 2) * resistance
+        self.status_secondary['hp'] = (vitality / 2) * force + (level / 3)
+        self.status_secondary['mp'] = (intelligence / 2) * resistance + (level / 3)
         self.status_secondary['stamina'] = (resistance / 2) + vitality
 
-        self.status['attack'] = force + (agility / 2)
-        self.status['defense'] = resistance + (agility / 2)
-        self.status['dodge'] = agility / 3
-        self.status['block'] = resistance / 3
-        self.status['critical'] = agility / 5
-        self.status['luck'] = level / 8
+        self.status['attack'] = force + (agility / 3)
+        self.status['defense'] = resistance + (agility / 3)
+        self.status['dodge'] = agility / 10
+        self.status['block'] = resistance / 10
+        self.status['critical'] = agility / 20
+        self.status['luck'] = level / 10
 
     def assign_current_status(self):
 

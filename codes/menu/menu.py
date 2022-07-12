@@ -1,6 +1,6 @@
 from settings import *
 
-# soundtrack[0].play()
+soundtrack[0].play()
 
 
 class Menu:

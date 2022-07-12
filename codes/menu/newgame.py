@@ -55,9 +55,11 @@ class NewGame:
         if not self.BLOCK:
 
             if self.add_icon.rect.collidepoint(pos_mouse) and (len(self.NAME) >= MIN_CHARACTERS_NAME):
+
                 features = self.NAME + '\n' + self.ETHNICITY + '\n' + self.CLASS_ + '\n' + '1'
 
                 with open(FOLDER['save'] + self.NAME, 'w') as new_record:
+
                     new_record.write(features)
 
                 click_sound.play()

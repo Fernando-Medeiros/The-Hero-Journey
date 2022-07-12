@@ -24,6 +24,7 @@ class Enemy(Entity, Obj):
         self._assign_attributes()
         self.assign_status_secondary()
         self.assign_current_status()
+        self._assign_random_loots_()
 
     def _assign_attributes(self):
 
@@ -42,6 +43,11 @@ class Enemy(Entity, Obj):
         __max__ = randint(level, level * 2)
 
         return randint(level, __max__)
+
+    def _assign_random_loots_(self):
+
+        self.loots['gold'] = randint(1, self.attributes['level'])
+        self.loots['xp'] = randint(1, self.attributes['level'])
 
     def _draw_name_and_level(self):
 
