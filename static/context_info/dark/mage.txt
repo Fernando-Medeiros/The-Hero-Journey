@@ -1,0 +1,11 @@
+CONJURATION
+As a student of arcane magic,
+you possess a spellbook (or grimoire),
+that reveals the first glimpses
+of your true power.
+(receives a fixed element)
+
+ARCANA RECOVERY
+You learned how to recover some of your
+magical energy by studying your spellbook.
+(mana regeneration)

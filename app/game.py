@@ -1,6 +1,11 @@
-from codes.character_opponent.opponent import Enemy
-from codes.character_opponent.character import Character
-from codes.battle.battle import *
+from settings import *
+from random import choice
+
+from app.opponent.opponent import Enemy
+from app.character.character import Character
+from app.battle.battle import Battle
+
+from app.database.get_enemies import LIST_ENEMIES
 
 
 class Game:
@@ -60,11 +65,13 @@ class Game:
         self.enemy_attribute, self.enemy_status, self.enemy_current, self.enemy_loots = \
             self.battle.data_enemy(self._list_enemies_in_area[self.index_battle])
 
+
     def _save_and_exit(self, pos_mouse):
 
         if self._icons['save'].rect.collidepoint(pos_mouse):
 
-            self.character.save(self.gps), save_log()
+            self.character.save(self.gps), save_log_and_exit(DATETIME_INIT_APP)
+
 
     def _return_menu(self, pos_mouse):
 
@@ -80,6 +87,7 @@ class Game:
 
             self.class_game = False
 
+
     def _check_location(self):
 
         index = LIST_LANDS.index(self.gps)
@@ -89,6 +97,7 @@ class Game:
             self._enemies_in_the_area()
 
             self._tools['gps'].rect.topleft = (POS_GPS[index])
+
 
     def _select_land(self, pos_mouse):
 
@@ -120,33 +129,36 @@ class Game:
 
         self.character.location = self.gps
 
+
     def _select_enemy(self, pos_mouse):
 
-        for __index__, __obj__ in enumerate(self._list_enemies_in_area):
+        for index, obj in enumerate(self._list_enemies_in_area):
 
-            if __obj__.rect.collidepoint(pos_mouse):
+            if obj.rect.collidepoint(pos_mouse):
 
                 self.battle.erase_log(self.log_battle, self.loots_for_enemy)
 
-                self.index_battle = __index__
+                self.index_battle = index
 
                 self.block_battle = True
 
                 break
 
+
     def _check_enemies_for_area(self):
 
         id_name = ''
 
-        for __key__ in ID_AREA:
+        for key in ID_AREA:
 
-            if __key__ in self.gps.casefold():
+            if key in self.gps.casefold():
 
-                id_name = __key__
+                id_name = key
 
                 break
 
         return [data_list for data_list in LIST_ENEMIES if id_name == data_list[0]]
+
 
     def _enemies_in_the_area(self):
 
@@ -166,6 +178,7 @@ class Game:
             self._list_enemies_in_area.append(enemy_obj)
             y += 95
 
+
     def _check_index_enemy(self):
 
         if self.index_battle >= len(self._list_enemies_in_area):
@@ -176,17 +189,18 @@ class Game:
 
             self._enemies_in_the_area()
 
+
     def _change_command(self, pos_mouse):
 
         if self.char_current['hp'] > 0 and self.char_current['stamina'] >= 0.3 and self.enemy_current['hp'] > 0:
 
-            for __key__ in self.commands_battle.keys():
+            for key in self.commands_battle.keys():
 
-                if self.commands_battle[__key__].rect.collidepoint(pos_mouse):
+                if self.commands_battle[key].rect.collidepoint(pos_mouse):
 
                     self.block_battle = True
 
-                    match __key__:
+                    match key:
 
                         case 'b_attack':
                             self._commands_attack()
@@ -206,6 +220,7 @@ class Game:
                     self.turn_enemy = True
                     self.battle.erase_log(self.loots_for_enemy)
 
+
     def _commands_attack(self):
 
         damage_char = self.battle.ATTACK(self.char_status, self.enemy_status)
@@ -216,6 +231,7 @@ class Game:
 
         self.log_battle.append(self.battle.log_attack(self.char_attribute, self.enemy_attribute, damage_char))
 
+
     def _commands_defense(self):
 
         defense = self.battle.defense()
@@ -224,6 +240,7 @@ class Game:
 
         self.log_battle.append(self.battle.log_defense(self.char_attribute, defense))
 
+
     def _commands_flee(self):
 
         self.block_battle = self.battle.flee()
@@ -231,6 +248,7 @@ class Game:
         self.battle.energy_used_in_battle(self.char_current)
 
         self.log_battle.append(self.battle.log_flee(self.char_attribute, self.block_battle))
+
 
     def _commands_enemy_battle(self):
 
@@ -256,6 +274,7 @@ class Game:
 
                     self.log_battle.append(self.battle.log_defense(self.enemy_attribute, defense))
 
+
     def _battle(self):
 
         self._update_status()
@@ -278,9 +297,11 @@ class Game:
 
         self.turn_enemy = False
 
+
     def _draw_name_of_land(self):
 
         draw_texts(MAIN_SCREEN, f'{self.gps:^35}', 404, 104, size=25)
+
 
     def _draw_battle(self):
 
@@ -298,27 +319,29 @@ class Game:
 
         pg.draw.rect(MAIN_SCREEN, color_block, (15, 370, 373, 590), 1, 0, 7, 7, 7, 7)
 
+
     def _get_mouse_events_to_show_interactive(self, pos_mouse):
 
-        for __key__ in self._icons.keys():
+        for key in self._icons.keys():
 
-            if self._icons[__key__].rect.collidepoint(pos_mouse):
+            if self._icons[key].rect.collidepoint(pos_mouse):
 
-                __img = 'select_' + __key__
+                img = 'select_' + key
             else:
-                __img = __key__
+                img = key
 
-            self._icons[__key__].image = pg.image.load(IMG_GAME[__img])
+            self._icons[key].image = pg.image.load(IMG_GAME[img])
 
-        for __key__ in self.commands_battle.keys():
+        for key in self.commands_battle.keys():
 
-            if self.commands_battle[__key__].rect.collidepoint(pos_mouse):
+            if self.commands_battle[key].rect.collidepoint(pos_mouse):
 
-                __img = 'select_' + __key__
+                img = 'select_' + key
             else:
-                __img = __key__
+                img = key
 
-            self.commands_battle[__key__].image = pg.image.load(IMG_GAME[__img])
+            self.commands_battle[key].image = pg.image.load(IMG_GAME[img])
+
 
     def _update_status(self):
 
@@ -329,6 +352,7 @@ class Game:
 
         self.enemy_attribute, self.enemy_status, self.enemy_current, self.enemy_loots = \
             self.battle.data_enemy(self._list_enemies_in_area[self.index_battle])
+
 
     def events_game(self, event):
 
@@ -350,6 +374,7 @@ class Game:
         self.character.events_character(event)
 
         [obj.events() for obj in self._list_enemies_in_area]
+
 
     def update(self, main_screen):
 

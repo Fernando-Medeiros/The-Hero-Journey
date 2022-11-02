@@ -24,10 +24,11 @@ class Load:
         for records in range(MAX_RECORDS):
 
             self._box.append(Obj(IMG_LOAD['box'], pos_x_y[records][0], pos_x_y[records][1], *groups))
-            self._icon_del.append(Obj(IMG_LOAD['del'], LIMBO, LIMBO, *groups))
-            self._icon_add.append(Obj(IMG_NEW_GAME['add'], LIMBO, LIMBO, *groups))
+            self._icon_del.append(Obj(IMG_LOAD['del'], DISPLAY_NONE, DISPLAY_NONE, *groups))
+            self._icon_add.append(Obj(IMG_NEW_GAME['add'], DISPLAY_NONE, DISPLAY_NONE, *groups))
 
         self._return_icon = Obj(IMG_MENU['return'], 100, 970, *groups)
+
 
     def _draw_records(self):
         """
@@ -38,50 +39,53 @@ class Load:
         number_of_records = check_records(FOLDER['save'])
         black = COLORS['BLACK']
 
-        for __index__ in range(len(number_of_records)):
+        for index in range(len(number_of_records)):
 
-            name, ethnicity, class_, level = number_of_records[__index__][:4]
+            name, ethnicity, class_, level = number_of_records[index][:4]
 
             idd = 'ed_' if 'dark' in ethnicity else 'ef_' if 'forest' in ethnicity else 'eg_'
 
-            self._box[__index__].image = pg.image.load(IMG_CLASSES[idd + class_])
+            self._box[index].image = pg.image.load(IMG_CLASSES[idd + class_])
 
-            pos_x, pos_y = self._box[__index__].rect.bottomleft
+            pos_x, pos_y = self._box[index].rect.bottomleft
 
-            self._icon_del[__index__].rect.topleft = (pos_x, pos_y + 90)
-            self._icon_add[__index__].rect.topleft = (pos_x + 85, pos_y + 90)
+            self._icon_del[index].rect.topleft = (pos_x, pos_y + 90)
+            self._icon_add[index].rect.topleft = (pos_x + 85, pos_y + 90)
 
             draw_texts(MAIN_SCREEN, f'> {name}'.title(), pos_x, pos_y + 10, color=black)
             draw_texts(MAIN_SCREEN, f'> {ethnicity}'.title(), pos_x, pos_y + 30, color=black)
             draw_texts(MAIN_SCREEN, f'> {class_}'.title(), pos_x, pos_y + 50, color=black)
             draw_texts(MAIN_SCREEN, f'> lvl {level}', pos_x, pos_y + 70, color=black)
 
+
     def _erase_record(self, pos_mouse):
         """
         FUNCTION TO CHECK THE OBJECT POSITION AND DELETE THE FILE
         """
-        __file__ = [x_ for x_ in listdir(FOLDER['save'])]
+        file = [x_ for x_ in listdir(FOLDER['save'])]
 
-        for __item__ in range(len(__file__)):
+        for item in range(len(file)):
 
-            if self._icon_del[__item__].rect.collidepoint(pos_mouse):
+            if self._icon_del[item].rect.collidepoint(pos_mouse):
 
-                remove(FOLDER['save'] + __file__[__item__])
+                remove(FOLDER['save'] + file[item])
 
-                self._icon_add[len(__file__) - 1].rect.y = LIMBO
-                self._icon_del[len(__file__) - 1].rect.y = LIMBO
-                self._box[len(__file__) - 1].image = pg.image.load(IMG_LOAD['box'])
+                self._icon_add[len(file) - 1].rect.y = DISPLAY_NONE
+                self._icon_del[len(file) - 1].rect.y = DISPLAY_NONE
+                self._box[len(file) - 1].image = pg.image.load(IMG_LOAD['box'])
 
                 click_sound.play()
 
+
     def _loading(self, pos_mouse):
 
-        for __icon__ in range(len(self._icon_add)):
+        for icon in range(len(self._icon_add)):
 
-            if self._icon_add[__icon__].rect.collidepoint(pos_mouse):
+            if self._icon_add[icon].rect.collidepoint(pos_mouse):
 
                 self.check = 'loading'
-                self.name_for_loading = check_records(FOLDER['save'])[__icon__][0].strip()
+                self.name_for_loading = check_records(FOLDER['save'])[icon][0].strip()
+
 
     def _return_menu(self, pos_mouse):
 
@@ -90,30 +94,32 @@ class Load:
             self.class_load = False
             click_sound.play()
 
+
     def _get_mouse_events_to_show_interactive(self, pos_mouse):
 
-        for __index__ in range(len(self._icon_del)):
+        for index in range(len(self._icon_del)):
 
-            if self._icon_del[__index__].rect.collidepoint(pos_mouse):
-                __img_del__ = 'select_del'
+            if self._icon_del[index].rect.collidepoint(pos_mouse):
+                img_del = 'select_del'
             else:
-                __img_del__ = 'del'
+                img_del = 'del'
 
-            if self._icon_add[__index__].rect.collidepoint(pos_mouse):
-                __img_add__ = 'select_add'
+            if self._icon_add[index].rect.collidepoint(pos_mouse):
+                img_add = 'select_add'
             else:
-                __img_add__ = 'add'
+                img_add = 'add'
 
-            self._icon_del[__index__].image = pg.image.load(IMG_LOAD[__img_del__])
-            self._icon_add[__index__].image = pg.image.load(IMG_LOAD[__img_add__])
+            self._icon_del[index].image = pg.image.load(IMG_LOAD[img_del])
+            self._icon_add[index].image = pg.image.load(IMG_LOAD[img_add])
 
-        __img_return__ = 'return'
+        img_return = 'return'
 
         if self._return_icon.rect.collidepoint(pos_mouse):
 
-            __img_return__ = 'select_return'
+            img_return = 'select_return'
 
-        self._return_icon.image = pg.image.load(IMG_MENU[__img_return__])
+        self._return_icon.image = pg.image.load(IMG_MENU[img_return])
+
 
     def events_load(self, evento):
 
@@ -126,6 +132,7 @@ class Load:
             self._loading(pos_mouse)
 
         self._get_mouse_events_to_show_interactive(pos_mouse)
+
 
     def update(self):
 

@@ -1,0 +1,10 @@
+OVERLOAD
+You can increase the power
+of your simpler spells.
+Occasionally your magic negates
+the opponent's defense.
+
+ARCANA RECOVERY
+You learned how to recover some of your
+magical energy by studying your spellbook.
+(mana regeneration)

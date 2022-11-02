@@ -1,0 +1,9 @@
+WILD COMBAT FORM
+You assume a savage form adding a
+3% damage bonus for each free gear slot.
+
+WILD FORM OF ELEMENTAL
+Occasionally you summon an elemental form
+of pure essence to aid in the attack.
+The elemental's strength varies according
+to its level.

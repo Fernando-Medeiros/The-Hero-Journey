@@ -1,0 +1,10 @@
+CIRCLE SPELLS
+Your mystical connection to the land infuses
+you with the ability to cast certain spells.
+random bonus depending on the terrain.
+
+NATURAL RECOVERY
+You can recover some of your magical energy
+by stopping to meditate
+and commune with nature.
+(hp and mp regeneration)

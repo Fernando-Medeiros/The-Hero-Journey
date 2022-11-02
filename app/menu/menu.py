@@ -1,6 +1,6 @@
 from settings import *
 
-soundtrack[0].play()
+SONGS['orpheus'].play()
 
 
 class Menu:
@@ -16,23 +16,25 @@ class Menu:
         self._guides = []
 
         self._objects = {
-            'select': Obj(IMG_MENU['select'], 0, LIMBO, *groups),
-            'info_credit': Obj(IMG_MENU['info_c'], 0, LIMBO, *groups),
-            'return': Obj(IMG_MENU['return'], 206, LIMBO, *groups)
+            'select': Obj(IMG_MENU['select'], 0, DISPLAY_NONE, *groups),
+            'info_credit': Obj(IMG_MENU['info_c'], 0, DISPLAY_NONE, *groups),
+            'return': Obj(IMG_MENU['return'], 206, DISPLAY_NONE, *groups)
         }
         self._draw_guides()
+
 
     def _draw_guides(self):
 
         pos_x, pos_y = 195, 317
 
-        for __item__ in list_guides_menu:
+        for item in list_guides_menu:
 
-            draw_texts(MAIN_SCREEN, f'{__item__:^45}'.title().replace('_', ' '), pos_x, pos_y + 15, size=25)
+            draw_texts(MAIN_SCREEN, f'{item:^45}'.title().replace('_', ' '), pos_x, pos_y + 15, size=25)
 
             self._guides.append(pg.rect.Rect(pos_x, pos_y, 356, 65))
 
             pos_y += 90
+
 
     def _guide_new_game(self, pos_mouse):
 
@@ -42,6 +44,7 @@ class Menu:
             self.class_menu = False
             click_sound.play()
 
+
     def _guide_load(self, pos_mouse):
 
         if self._guides[1].collidepoint(pos_mouse):
@@ -50,6 +53,7 @@ class Menu:
             self.class_menu = False
             click_sound.play()
 
+
     def _guide_options(self, pos_mouse):
 
         if self._guides[3].collidepoint(pos_mouse):
@@ -57,6 +61,7 @@ class Menu:
             self.check = 'options'
             self.class_menu = False
             click_sound.play()
+
 
     def _guide_credit(self, pos_mouse):
 
@@ -67,7 +72,7 @@ class Menu:
 
         elif self._objects['return'].rect.collidepoint(pos_mouse):
 
-            y, y_ = LIMBO, LIMBO
+            y, y_ = DISPLAY_NONE, DISPLAY_NONE
             self.BLOCK = False
 
         else:
@@ -77,32 +82,36 @@ class Menu:
         self._objects['return'].rect.y = y_
         click_sound.play()
 
+
     def _guide_quit(self, pos_mouse):
 
         if self._guides[4].collidepoint(pos_mouse):
 
-            save_log()
+            save_log_and_exit(DATETIME_INIT_APP)
+
 
     def _get_mouse_events_to_show_interactive(self, pos_mouse):
 
-        __img_return__ = 'return'
+        img_return = 'return'
 
         if self._objects['return'].rect.collidepoint(pos_mouse):
-            __img_return__ = 'select_return'
+            img_return = 'select_return'
 
-        self._objects['return'].image = pg.image.load(IMG_MENU[__img_return__])
+        self._objects['return'].image = pg.image.load(IMG_MENU[img_return])
+
 
     def _select_guides(self, pos_mouse):
 
-        __topleft__ = -1080, - 1080
+        topleft = -1080, - 1080
 
-        for __object__ in self._guides:
+        for object in self._guides:
 
-            if __object__.collidepoint(pos_mouse):
+            if object.collidepoint(pos_mouse):
 
-                __topleft__ = __object__.topleft
+                topleft = object.topleft
 
-        self._objects['select'].rect.topleft = __topleft__
+        self._objects['select'].rect.topleft = topleft
+
 
     def events_menu(self, event):
 
@@ -124,6 +133,7 @@ class Menu:
             self._select_guides(pos_mouse)
 
         self._get_mouse_events_to_show_interactive(pos_mouse)
+
 
     def update(self) -> None:
 

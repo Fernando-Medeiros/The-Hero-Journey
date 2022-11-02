@@ -31,19 +31,20 @@ class Options:
 
         self.return_icon = Obj(IMG_MENU['return'], 206, 942, *groups)
 
+
     def _select_options(self, pos_mouse):
 
-        for __key__, __value__ in self.objects.items():
+        for key, value in self.objects.items():
 
-            if __value__.rect.collidepoint(pos_mouse):
+            if value.rect.collidepoint(pos_mouse):
 
-                match __key__:
+                match key:
 
                     case 'full_screen':
-                        pg.display.set_mode((DISPLAY_DEFAULT, 1080), pg.SCALED | pg.FULLSCREEN)
+                        pg.display.set_mode((DISPLAY_DEFAULT_Y, 1080), pg.SCALED | pg.FULLSCREEN)
 
                     case 'default':
-                        pg.display.set_mode((DISPLAY_DEFAULT, 1050), pg.SCALED | pg.RESIZABLE)
+                        pg.display.set_mode((DISPLAY_DEFAULT_Y, 1050), pg.SCALED | pg.RESIZABLE)
 
                     case '30fps':
                         self.MAX_FRAMES = 30
@@ -58,6 +59,7 @@ class Options:
                     case 'off':
                         pg.mixer.pause()
                         self.mixer = 'mixer_stop'
+
 
     def _check_options(self):
 
@@ -74,7 +76,7 @@ class Options:
                     result = active if self.FULL_SCREEN else inactive
 
                 case 'default':
-                    self.DEFAULT = True if pg.display.get_window_size()[0] <= DISPLAY_DEFAULT else False
+                    self.DEFAULT = True if pg.display.get_window_size()[0] <= DISPLAY_DEFAULT_Y else False
                     result = active if self.DEFAULT else inactive
 
                 case _:
@@ -94,6 +96,7 @@ class Options:
 
             self.objects[item].image = result
 
+
     def _draw_options(self):
         """
         DRAW ICONS AND CONFIGURATION TEXTS
@@ -108,6 +111,7 @@ class Options:
         self._help_draw_txt_in_options(self.caption[1], self.fps, pos=280)
         self._help_draw_txt_in_options(self.caption[2], self.sound, pos=360)
 
+
     def _return_menu(self, pos_mouse):
 
         if self.return_icon.rect.collidepoint(pos_mouse):
@@ -115,14 +119,16 @@ class Options:
             self.class_options = False
             click_sound.play()
 
+
     def _get_mouse_events_to_show_interactive(self, pos_mouse):
 
-        __img_return__ = 'return'
+        img_return = 'return'
 
         if self.return_icon.rect.collidepoint(pos_mouse):
-            __img_return__ = 'select_return'
+            img_return = 'select_return'
 
-        self.return_icon.image = pg.image.load(IMG_MENU[__img_return__])
+        self.return_icon.image = pg.image.load(IMG_MENU[img_return])
+
 
     def events_options(self, evento):
 
@@ -137,9 +143,11 @@ class Options:
 
         self._get_mouse_events_to_show_interactive(pos_mouse)
 
+
     def update(self):
 
         self._draw_options()
+
 
     def _help_draw_txt_in_options(self, caption, args, tab=40, pos=200):
         """

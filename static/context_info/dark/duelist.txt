@@ -1,0 +1,8 @@
+DUELISM
+When you wield a melee weapon in one hand,
+and no other weapons,
+you gain 25% bonus damage with that weapon.
+
+COMBAT WITH TWO WEAPONS
+When you are engaged in a two-weapon fight,
+you may occasionally land a second blow.

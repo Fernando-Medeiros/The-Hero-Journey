@@ -1,0 +1,10 @@
+SUPERNATURAL DODGE
+When an enemy you can see hits you
+with an attack,
+you can use your reaction to halve
+the damage taken.
+
+LUCKY STRIKE
+If one of your attacks fails,
+you can turn that failure into a hit,
+and get a second chance. (critical damage)

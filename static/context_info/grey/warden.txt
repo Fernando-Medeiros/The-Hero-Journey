@@ -1,0 +1,11 @@
+FORTIFICATION
+Warden are experts in defense,
+and know how to maximize the
+potential of their armor,
+you receive a 5% bonus for each piece of
+heavy armor equipment.
+
+DEFENSE SPECIALIST
+Your accumulated fortification,
+every 5 hits received,
+regenerates 8% of your health.

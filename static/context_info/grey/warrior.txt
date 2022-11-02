@@ -1,0 +1,9 @@
+GET YOUR BREATH BACK
+You have a pool of stamina and
+can use it to protect yourself from harm.
+
+COMBAT WITH BIG WEAPONS 
+When you are equipped
+with a two-handed weapon,
+you can occasionally use your vitality to
+increase % damage.

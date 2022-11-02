@@ -1,20 +1,30 @@
-# Pygame-RPG
+<div align="center">
+    <img align="center" src="https://img.shields.io/badge/Python-white?style=for-the-badge&logo=python&logoColor=yellow">
+    <img align="center" src="https://img.shields.io/badge/PYGAME-white?style=for-the-badge&logo=python&logoColor=orange">    
+    <img align="center" src="https://img.shields.io/badge/SQLITE3-white?style=for-the-badge&logo=sqlite&logoColor=blue">
+</div>
+
+<hr>
+
+<h1 align="center">The Hero's Journey  v.2.1</h1>
+
+
 <p align="center">
-    <img windth="500" src="assets_readme/gif1.gif">
-    <img windth="500" src="assets_readme/gif2.gif">
+    <img windth="500" src="src/gif1.gif">
+    <img windth="500" src="src/gif2.gif">
          
 <p align="center">
-    <img windth="470" height="300" src="assets_readme/The Hero's Journey 24_06_2022 10_50_28.png"> 
-    <img windth="470" height="300" src="assets_readme/The Hero's Journey 24_06_2022 10_52_00.png">
-    <img windth="470" height="300" src="assets_readme/The Hero's Journey 24_06_2022 10_51_52.png">
+    <img windth="470" height="300" src="src/The Hero's Journey 24_06_2022 10_50_28.png"> 
+    <img windth="470" height="300" src="src/The Hero's Journey 24_06_2022 10_52_00.png">
+    <img windth="470" height="300" src="src/The Hero's Journey 24_06_2022 10_51_52.png">
  <p align="center">
-    <img windth="470" height="300" src="assets_readme/The Hero's Journey 24_06_2022 10_51_39.png">
-    <img windth="470" height="300" src="assets_readme/The Hero's Journey 24_06_2022 10_51_09.png">
-    <img windth="470" height="300" src="assets_readme/The Hero's Journey 24_06_2022 10_50_50.png">
+    <img windth="470" height="300" src="src/The Hero's Journey 24_06_2022 10_51_39.png">
+    <img windth="470" height="300" src="src/The Hero's Journey 24_06_2022 10_51_09.png">
+    <img windth="470" height="300" src="src/The Hero's Journey 24_06_2022 10_50_50.png">
  <p align="center">
-    <img windth="470" height="300" src="assets_readme/Captura de tela 2022-07-11 205959.png">
-    <img windth="470" height="300" src="assets_readme/Captura de tela 2022-07-11 210308.png">
-    <img windth="470" height="300" src="assets_readme/sprites.png">
+    <img windth="470" height="300" src="src/Captura de tela 2022-07-11 205959.png">
+    <img windth="470" height="300" src="src/Captura de tela 2022-07-11 210308.png">
+    <img windth="470" height="300" src="src/sprites.png">
  </p>
 
 
@@ -40,7 +50,3 @@ Systems: Inventory, Equipment, Market / Infinite Game Progression and Opponents 
 1 - [Python 3.10.5](https://www.python.org/downloads/release/python-3105/)
 
 2 - [Pygame 2.1.2](https://pypi.org/project/pygame/)
-
-## License
-
-Non-profit personal project, images, music and sounds taken from youtube and google.

@@ -1,0 +1,11 @@
+DODGE FORTIFICATION
+Warden are experts in defense,
+and know how to maximize the
+potential of their armor,
+you receive a 5% bonus for each
+medium armor piece of equipment.
+
+HYBRID DEFENSE
+When using two weapons
+or two-handed weapons
+you add a 15% bonus to your total dodge attack.
