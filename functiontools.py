@@ -51,9 +51,16 @@ def check_records(FOLDER_: str) -> list:
     return records
 
 
-def draw_texts(screen, TXT: str, X: int, Y: int, font='arial', size=15, color=(255, 255, 255)):
+def draw_texts(
+    screen,
+    text: str,
+    X: int,
+    Y: int,
+    font='arial',
+    size=15,
+    color=(255, 255, 255)):
 
-    text = pg.font.SysFont(font, size, True)
-    text_surface = text.render(f'{TXT}', True, color)
+    text_font = pg.font.SysFont(font, size, True)
+    text_surface = text_font.render(f'{text}', True, color)
 
     screen.blit(text_surface, (X, Y))
