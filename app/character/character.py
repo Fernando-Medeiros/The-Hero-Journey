@@ -1,18 +1,20 @@
-from settings import (
-    FOLDER, DARK_ELF, FOREST_ELF, SKILLS, GREY_ELF,
-    check_records, pg)
+import os
+import pygame as pg
 
+from paths import FOLDER
+from app.functiontools import check_records
+
+from .settings import DARK_ELF, FOREST_ELF, GREY_ELF, SKILLS
 from .base import BaseEntity
 from .view import View
 
 
-
 class Character(BaseEntity, View):
 
-    def __init__(self):
-
+    def __init__(self, main_screen):
         super().__init__()
-        View.__init__(self)
+        BaseEntity.__init__(self)
+        View.__init__(self, main_screen)
         
         self.index = 0
 
@@ -27,7 +29,14 @@ class Character(BaseEntity, View):
             'equips': []
         }
 
-        self._button_status = pg.rect.Rect(15, 190, 373, 30)
+        self.button_status = pg.rect.Rect(15, 190, 373, 30)
+
+
+    def _get_index_from_name(self):
+        # LOAD THE CHARACTER NAME INTO THE ENV AND RETURN INDEX TO GET THE DATA LIST.
+        for index, item in enumerate(check_records('save/')):
+            if os.environ['CHARNAME'] == item[0]:
+                self.index = index
 
 
     def _unpack_basic_status(self, index) -> tuple:
@@ -90,24 +99,31 @@ class Character(BaseEntity, View):
 
     def _show_status(self, pos_mouse):
 
-        if self._button_status.collidepoint(pos_mouse):
-            self.show_status_interface = True
+        if self.button_status.collidepoint(pos_mouse):
+            self.show_status = True
             return
 
-        self.show_status_interface = False
+        self.show_status = False
 
 
     def save(self, location):
 
-        with open(FOLDER['save'] + str(self.attributes['name']).lower(), mode='w+', encoding='utf-8') as file:
+        path = '{}{}'.format(
+            FOLDER['save'],
+            str(self.attributes['name']).lower()
+            )
+
+        with open(path, mode='w+', encoding='utf-8') as file:
 
             for value in self.attributes.values():
 
-                file.write(str(value).strip() + '\n')
+                file.write('{}\n'.format(str(value).strip()))
 
-            file.write(str(self.others['gold']) + '\n')
-            file.write(str(self.others['soul']) + '\n')
-            file.write(str(location).strip() + '\n')
+            file.write('{}\n{}\n{}\n'.format(
+                str(self.others['gold']),
+                str(self.others['soul']),
+                str(location).strip() 
+                ))
 
         self.others['skills'].clear()
 
@@ -124,28 +140,27 @@ class Character(BaseEntity, View):
 
 
     def update(self):
+        
+        self._get_index_from_name()
 
+        # AFTER LOAD CHARACTER
         if not self.others['skills']:
 
             self._assign_basic_attributes()
-
             self.assign_status_secondary()
-
             self.assign_current_status()
-
             self._assign_gold_soul()
-
             self._assign_location()
-
             self._assign_others()
 
         self.check_current_status()
 
-        self._draw_bar_status()
-        self._draw_sprites()
-        self._draw_info_status()
-        self._draw_status()
+        # VIEW
+        self._draw_bar_status(self.current_status, self.status_secondary, self.attributes)
+        self._draw_sprites(self.attributes)
+        self._draw_info_status(self.current_status, self.status_secondary, self.attributes, self.others)
+        self._draw_status(self.attributes, self.status, self.show_status, self.button_status)
 
+        # 
         self.status_regen()
-
         self.level_progression(self.level_up())

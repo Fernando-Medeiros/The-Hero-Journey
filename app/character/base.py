@@ -1,11 +1,10 @@
-from settings import COLORS, CLASS_PROGRESSION_MAGE, CLASS_PROGRESSION_MELEE, MAIN_SCREEN, pg
-
 from datetime import datetime
+from .settings import *
 
 
 class BaseEntity:
 
-    show_status_interface = False
+    show_status = False
 
     def __init__(self):
 
@@ -57,13 +56,15 @@ class BaseEntity:
     def level_progression(self, level_up):
 
         if level_up:
+            
+            if self.attributes['class'] == 'mage':
+                data_progression = CLASS_PROGRESSION_MAGE
+            else:
+                data_progression = CLASS_PROGRESSION_MELEE
 
-            keys = 'force', 'vitality', 'agility', 'intelligence', 'resistance'
-
-            data_progression = CLASS_PROGRESSION_MAGE if self.attributes['class'] == 'mage' else CLASS_PROGRESSION_MELEE
-
-            for index, key in enumerate(keys):
-                self.attributes[key] += data_progression[index]
+            for index, attribute in enumerate(BASIC_ATTRIBUTES):
+                
+                self.attributes[attribute] += data_progression[index]
 
             self.attributes['level'] += 1
             self.attributes['xp'] = 1
@@ -75,11 +76,9 @@ class BaseEntity:
 
         if level_up:
 
-            keys = 'force', 'vitality', 'agility', 'intelligence', 'resistance'
+            for attribute in BASIC_ATTRIBUTES:
 
-            for key in keys:
-
-                self.attributes[key] += 1
+                self.attributes[attribute] += 1
 
             self.attributes['level'] += 1
             self.attributes['xp'] = 1
@@ -131,22 +130,3 @@ class BaseEntity:
                 if value < self.status_secondary[status]:
 
                     self.current_status[status] += self.status_secondary['regen_' + status]
-
-
-    def draw_render_status(self, TXT: str, X, Y, size=15, color=(255, 255, 255)):
-
-        font = pg.font.SysFont('arial', size, True)
-        text = font.render(f'{TXT}', True, color)
-
-        MAIN_SCREEN.blit(text, (X, Y))
-
-
-    def draw_status_bar(self, height, fixed_value, max_size, color, rect, current_value):
-
-        size_max = max_size
-        current_size = fixed_value / size_max
-
-        border = 0, 7, 7, 7, 7
-
-        pg.draw.rect(MAIN_SCREEN, color, (*rect, current_value / current_size, height), *border)
-        pg.draw.rect(MAIN_SCREEN, COLORS['WHITE'], (*rect, size_max, height), 1, *border)

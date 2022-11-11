@@ -1,8 +1,14 @@
-from settings import COLORS, FOLDER, MAIN_SCREEN, pg
+import pygame as pg
+
+from paths import FOLDER
+from app.functiontools import draw_texts, draw_status_bar, COLORS
 
 
-class DrawViews:
-
+class Views:
+    
+    def __init__(self, main_screen):
+        self.main_screen = main_screen
+        
     def draw_loots(self, args):
 
         pos_x, pos_y = 25, 820
@@ -10,9 +16,10 @@ class DrawViews:
         for item in args.items():
             key, value = item
 
-            self.draw_render_status(
-                TXT='{} >>> {:_}'.format(key.title(), value),
-                X=pos_x, Y=pos_y,
+            draw_texts(
+                screen=self.main_screen,
+                text='{} >>> {:_}'.format(key.title(), value),
+                pos_x=pos_x, pos_y=pos_y,
                 color=COLORS['GREEN'])
 
             pos_y += 20
@@ -22,7 +29,8 @@ class DrawViews:
 
         pos_x, pos_y = 25, 540
 
-        white, wood = COLORS['WHITE'], COLORS['WOOD']
+        white = COLORS['WHITE']
+        wood = COLORS['WOOD']
 
         if len(log) >= 13:
             del log[:12]
@@ -31,9 +39,10 @@ class DrawViews:
 
             color = white if index % 2 == 0 else wood
 
-            self.draw_render_status(
-                TXT='{} - {}'.format(index, info),
-                X=pos_x, Y=pos_y,
+            draw_texts(
+                screen=self.main_screen,
+                text='{} - {}'.format(index, info),
+                pos_x=pos_x, pos_y=pos_y,
                 color=color)
 
             pos_y += 30
@@ -44,12 +53,13 @@ class DrawViews:
         name = enemy[index].attributes['name']
         sprite = pg.image.load(FOLDER['enemies'] + name + '.png')
 
-        self.draw_render_status(
-            TXT='{}'.format(name).title().replace('_', ' '),
-            X=30, Y=425,
+        draw_texts(
+            screen=self.main_screen,
+            text='{}'.format(name).title().replace('_', ' '),
+            pos_x=30, pos_y=425,
             size=20)
 
-        MAIN_SCREEN.blit(sprite, (171, 461))
+        self.main_screen.blit(sprite, (171, 461))
 
 
     def draw_info_status_enemy(self, *args):
@@ -66,9 +76,10 @@ class DrawViews:
 
             for index in range(len(info)):
 
-                self.draw_render_status(
-                    TXT=info[index],
-                    X=pos_x, Y=pos_y,
+                draw_texts(
+                    screen=self.main_screen,
+                    text=info[index],
+                    pos_x=pos_x, pos_y=pos_y,
                     size=10)
 
                 pos_y += 13
@@ -95,25 +106,14 @@ class DrawViews:
 
             for index in range(len(secondary)):
 
-                self.draw_status_bar(13, secondary[index], 310, colors[index], (pos_x, pos_y), current[index])
+                draw_status_bar(
+                    screen=self.main_screen,
+                    height=13,
+                    fixed_value=secondary[index],
+                    max_size=310,
+                    color=colors[index],
+                    rect=(pos_x, pos_y),
+                    current_value=current[index],
+                    color_bg=COLORS['BLACK'])
 
                 pos_y += 13
-
-
-    def draw_render_status(self, TXT: str, X, Y, size=15, color=(255, 255, 255)):
-
-        font = pg.font.SysFont('arial', size, True)
-        text = font.render(f'{TXT}', True, color)
-
-        MAIN_SCREEN.blit(text, (X, Y))
-
-
-    def draw_status_bar(self, height, fixed_value, max_size, color, rect, current_value):
-
-        size_max = max_size
-        current_size = fixed_value / size_max
-
-        border = 0, 7, 7, 7, 7
-
-        pg.draw.rect(MAIN_SCREEN, color, (*rect, current_value / current_size, height), *border)
-        pg.draw.rect(MAIN_SCREEN, COLORS['BLACK'], (*rect, size_max, height), 1, *border)

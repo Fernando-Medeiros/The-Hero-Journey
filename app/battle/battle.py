@@ -1,10 +1,10 @@
 from random import randint, choice
 
-from .view import DrawViews
+from .view import Views
 from .log import LogBattle
 
 
-class Battle(LogBattle, DrawViews):
+class Battle(LogBattle, Views):
 
     
     def data_character(self, char) -> tuple:

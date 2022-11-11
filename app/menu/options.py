@@ -1,16 +1,29 @@
-from settings import *
+import os
+import pygame as pg
+
+from app.functiontools import Obj, COLORS
+from paths import *
+from .settings import txt_options
+
+
+DISPLAY_NONE = int(os.environ.get('DISPLAY_NONE'))
+DISPLAY_DEFAULT_Y = int(os.environ.get('DISPLAY_DEFAULT_Y'))
+MAX_FRAMES = os.environ.get('MAX_FRAMES')
+MIN_FRAMES = os.environ.get('MIN_FRAMES')
+MAX_RECORDS = int(os.environ.get('MAX_RECORDS'))
+MIN_CHARACTERS_NAME = int(os.environ.get('MIN_CHARACTERS_NAME'))
+MAX_CHARACTERS_NAME = int(os.environ.get('MAX_CHARACTERS_NAME'))
 
 
 class Options:
 
-    class_options = True
-    FULL_SCREEN, DEFAULT = False, False
+    is_active = True
+ 
+    def __init__(self, main_screen, *groups):
 
-    mixer = 'mixer_active'
-    pos_center = MAIN_SCREEN.get_width() / 2
-    MAX_FRAMES = MAX_FRAMES
+        self.main_screen = main_screen
 
-    def __init__(self, *groups):
+        self.pos_center = self.main_screen.get_width() / 2
 
         self.title = txt_options['title']
         self.caption = txt_options['caption']
@@ -28,6 +41,9 @@ class Options:
             'on': Obj(IMG_OPTIONS['inactive'], self.pos_center, 0, *groups),
             'off': Obj(IMG_OPTIONS['inactive'], self.pos_center, 0, *groups),
         }
+
+        self.active = pg.image.load(IMG_OPTIONS['active'])
+        self.inactive = pg.image.load(IMG_OPTIONS['inactive'])
 
         self.return_icon = Obj(IMG_MENU['return'], 206, 942, *groups)
 
@@ -47,52 +63,46 @@ class Options:
                         pg.display.set_mode((DISPLAY_DEFAULT_Y, 1050), pg.SCALED | pg.RESIZABLE)
 
                     case '30fps':
-                        self.MAX_FRAMES = 30
+                        os.environ['FRAMES'] = str(MIN_FRAMES)
 
                     case '60fps':
-                        self.MAX_FRAMES = 60
+                        os.environ['FRAMES'] = str(MAX_FRAMES)
 
                     case 'on':
                         pg.mixer.unpause()
-                        self.mixer = 'mixer_active'
-
+                        os.environ['MIXER'] = str('mixer_is_active')
+                        
                     case 'off':
                         pg.mixer.pause()
-                        self.mixer = 'mixer_stop'
+                        os.environ['MIXER'] = str('mixer_is_stopped')
 
 
     def _check_options(self):
-
-        active = pg.image.load(IMG_OPTIONS['active'])
-        inactive = pg.image.load(IMG_OPTIONS['inactive'])
-        frame = FRAMES.get_fps()
-
+        
         for item in self.objects:
 
             match item:
 
                 case 'full_screen':
-                    self.FULL_SCREEN = True if pg.display.get_window_size()[0] >= 1920 else False
-                    result = active if self.FULL_SCREEN else inactive
+                    result = self.active if pg.display.get_window_size()[0] >= 1920 else self.inactive
 
                 case 'default':
-                    self.DEFAULT = True if pg.display.get_window_size()[0] <= DISPLAY_DEFAULT_Y else False
-                    result = active if self.DEFAULT else inactive
-
-                case _:
-                    result = inactive
-
-            match item:
-
+                    result = self.active if pg.display.get_window_size()[0] <= DISPLAY_DEFAULT_Y else self.inactive
+                
                 case '30fps':
-                    result = active if frame < 50 else inactive
+                    result = self.active if int(os.environ['FRAMES']) <= 30 else self.inactive
+
                 case '60fps':
-                    result = active if frame > 50 else inactive
+                    result = self.active if int(os.environ['FRAMES']) > 30 else self.inactive
 
                 case 'on':
-                    result = active if 'mixer_active' in self.mixer else inactive
+                    result = self.active if 'active' in os.environ['MIXER'] else self.inactive
+
                 case 'off':
-                    result = active if 'mixer_stop' in self.mixer else inactive
+                    result = self.active if 'stopped' in os.environ['MIXER'] else self.inactive
+
+                case _:
+                    result = self.inactive
 
             self.objects[item].image = result
 
@@ -101,11 +111,11 @@ class Options:
         """
         DRAW ICONS AND CONFIGURATION TEXTS
         """
-        y = 240
+        pos_y = 240
         for item in self.objects:
 
-            self.objects[item].rect.y = y
-            y += 40
+            self.objects[item].rect.y = pos_y
+            pos_y += 40
 
         self._help_draw_txt_in_options(self.caption[0], self.screen)
         self._help_draw_txt_in_options(self.caption[1], self.fps, pos=280)
@@ -116,9 +126,8 @@ class Options:
 
         if self.return_icon.rect.collidepoint(pos_mouse):
 
-            self.class_options = False
-            click_sound.play()
-
+            self.is_active = False
+          
 
     def _get_mouse_events_to_show_interactive(self, pos_mouse):
 
@@ -145,19 +154,18 @@ class Options:
 
 
     def update(self):
-
         self._draw_options()
 
 
     def _help_draw_txt_in_options(self, caption, args, tab=40, pos=200):
-        """
-        AUXILIARY FUNCTION TO RENDER THE TEXTS OF EACH OPTION
-        """
+        
+        FONT = pg.font.SysFont('arial', 15, True)
+
         draw = [
-            (FONT_SETTINGS.render(f'{self.title}', True, COLORS['WHITE']), (self.pos_center - len(self.title) * 9.5, 100)),
-            (FONT_SETTINGS.render(f'{caption}', True, COLORS['WHITE']), (self.pos_center - 150, pos + tab * 2)),
-            (FONT_SETTINGS.render(f'{args[0]}', True, COLORS['WHITE']), (self.pos_center + 30, pos + tab)),
-            (FONT_SETTINGS.render(f'{args[1]}', True, COLORS['WHITE']), (self.pos_center + 30, pos + tab * 2)),
+            (FONT.render(f'{self.title}', True, COLORS['WHITE']), (self.pos_center - len(self.title) * 9.5, 100)),
+            (FONT.render(f'{caption}', True, COLORS['WHITE']), (self.pos_center - 150, pos + tab * 2)),
+            (FONT.render(f'{args[0]}', True, COLORS['WHITE']), (self.pos_center + 30, pos + tab)),
+            (FONT.render(f'{args[1]}', True, COLORS['WHITE']), (self.pos_center + 30, pos + tab * 2)),
         ]
 
-        MAIN_SCREEN.blits(draw)
+        self.main_screen.blits(draw)

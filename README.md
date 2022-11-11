@@ -17,7 +17,6 @@
 </div>
 
 ## About
-<hr>
 
 This is my first personal project \o/
 
@@ -60,9 +59,32 @@ You can watch the video on [Youtube](https://www.youtube.com/watch?v=v-M-O1niVuk
 
 <br>
 
+## Run game
+
+### Clone this project
+```
+git clone https://github.com/Fernando-Medeiros/Pygame-RPG.git
+```
+### Create the virtual environment
+```
+virtualenv .venv
+```
+### Activate .venv
+```
+source .venv/bin/activate
+```
+### Install dependencies
+```
+pip install -r requirements.txt
+```
+### Start the game
+```
+python main.py
+```
+
+<br>
 
 ## Menu
-<hr>
 
 When starting the Game you have the following options:
 <li>
@@ -105,7 +127,6 @@ When starting the Game you have the following options:
 <br>
 
 ## Create and Load the Character
-<hr>
 
 The game allows a maximum of 9 save games
 
@@ -131,7 +152,6 @@ The game allows a maximum of 9 save games
 <br>
 
 ## Exploring the World
-<hr>
 
 The game currently has 55 areas
 
@@ -163,7 +183,6 @@ Each area has an average of 10 unique opponents with randomly generated stats
 
 
 ## Credits
-<hr>
 
 All opponent and character sprites are authored by the
 [Oryx Design Lab](https://www.oryxdesignlab.com/home)
@@ -175,7 +194,6 @@ The game map is authored by
 <br>
 
 ## License
-<hr>
 
 License - MIT
 

@@ -1,40 +1,52 @@
-from settings import *
+import pygame as pg
 from random import choice
+
+from .map import *
+from .sound import SONGS
+from paths import *
+from app.functiontools import Obj, draw_texts, save_log_and_exit, COLORS
+
+from app.database.get_enemies import LIST_ENEMIES
 
 from app.opponent.opponent import Enemy
 from app.character.character import Character
 from app.battle.battle import Battle
 
-from app.database.get_enemies import LIST_ENEMIES
 
+SONGS['orpheus'].play()
 
 class Game:
 
-    class_game = True
-    respawn_enemies, block_battle = False, False
+    is_active = True
+    block_battle = False
+    respawn_enemies = False
     turn_enemy = False
 
-    group_sprites_opponent = GROUPS['opponent']
+    group_opponent = pg.sprite.Group()
 
-    battle = Battle()
-    character = Character()
-
-    gps = character.location
     index_battle = 0
 
-    def __init__(self, *groups):
+    def __init__(self, main_screen, *groups):
 
-        self._bg = Obj(IMG_GAME['bg'], 0, 0, *groups)
+        self.main_screen = main_screen
 
-        self._tools = {
+        self.battle = Battle(main_screen)
+
+        self.character = Character(main_screen)
+
+        self.location = self.character.location
+
+        self.bg = Obj(IMG_GAME['bg'], 0, 0, *groups)
+
+        self.tools = {
             'map': Obj(IMG_GAME['map'], 432, 180, *groups),
             'gps': Obj(IMG_GAME['gps'], 511, 184, *groups)
         }
-        self._loots = {
+        self.loots = {
             'gold': Obj(IMG_GAME['gold'], 435, 6, *groups),
             'soul': Obj(IMG_GAME['soul'], 568, 6, *groups)
         }
-        self._icons = {
+        self.icons = {
             'options': Obj(IMG_GAME['options'], 15, 980, *groups),
             'skills': Obj(IMG_GAME['skills'], 68, 980, *groups),
             'marketplace': Obj(IMG_GAME['marketplace'], 121, 980, *groups),
@@ -51,7 +63,7 @@ class Game:
             'b_skills': Obj(IMG_GAME['b_skills'], 75, 925, *groups),
             'b_items': Obj(IMG_GAME['b_items'], 200, 925, *groups),
         }
-        self._list_enemies_in_area = []
+        self.list_enemies_in_area = []
 
         self.log_battle = []
 
@@ -63,76 +75,78 @@ class Game:
             self.battle.data_character(self.character)
 
         self.enemy_attribute, self.enemy_status, self.enemy_current, self.enemy_loots = \
-            self.battle.data_enemy(self._list_enemies_in_area[self.index_battle])
+            self.battle.data_enemy(self.list_enemies_in_area[self.index_battle])
 
 
     def _save_and_exit(self, pos_mouse):
+        
+        if self.icons['save'].rect.collidepoint(pos_mouse):
 
-        if self._icons['save'].rect.collidepoint(pos_mouse):
-
-            self.character.save(self.gps), save_log_and_exit(DATETIME_INIT_APP)
+            self.character.save(self.location)
+            save_log_and_exit()
 
 
     def _return_menu(self, pos_mouse):
 
-        if self._icons['options'].rect.collidepoint(pos_mouse):
+        if self.icons['options'].rect.collidepoint(pos_mouse):
 
-            self.character.save(self.gps)
+            self.character.save(self.location)
 
-            self.gps = 'Sea North'
+            self.location = 'Sea North'
 
-            self._check_enemies_for_area(), self._enemies_in_the_area()
+            self._check_enemies_for_area()
+            self._enemies_in_the_area()
 
             self.battle.erase_log(self.log_battle, self.loots_for_enemy)
 
-            self.class_game = False
+            self.is_active = False
 
 
     def _check_location(self):
 
-        index = LIST_LANDS.index(self.gps)
+        index = LIST_LANDS.index(self.location)
 
-        if self._tools['gps'].rect.topleft != (POS_GPS[index]):
+        if self.tools['gps'].rect.topleft != (POS_GPS[index]):
 
             self._enemies_in_the_area()
 
-            self._tools['gps'].rect.topleft = (POS_GPS[index])
+            self.tools['gps'].rect.topleft = (POS_GPS[index])
 
 
     def _select_land(self, pos_mouse):
 
-        index = LIST_LANDS.index(self.gps)
+        index = LIST_LANDS.index(self.location)
 
         if self.char_current['stamina'] >= 0.5:
 
-            if self._icons['next'].rect.collidepoint(pos_mouse):
+            if self.icons['next'].rect.collidepoint(pos_mouse):
 
                 index = index if index + 1 >= len(LIST_LANDS) else index + 1
 
                 self.respawn_enemies = True
 
                 self.char_current['stamina'] -= 0.5
-                click_sound.play()
+              
 
-            elif self._icons['previous'].rect.collidepoint(pos_mouse):
+            elif self.icons['previous'].rect.collidepoint(pos_mouse):
 
                 index = 0 if index - 1 <= 0 else index - 1
 
                 self.respawn_enemies = True
 
                 self.char_current['stamina'] -= 0.5
-                click_sound.play()
+              
 
-        self._tools['gps'].rect.topleft = (POS_GPS[index])
+        self.tools['gps'].rect.topleft = (POS_GPS[index])
 
-        self.gps = LIST_LANDS[index]
+        self.location = LIST_LANDS[index]
 
-        self.character.location = self.gps
+        self.character.location = self.location
 
 
     def _select_enemy(self, pos_mouse):
 
-        for index, obj in enumerate(self._list_enemies_in_area):
+        for index, obj in enumerate(self.list_enemies_in_area):
 
             if obj.rect.collidepoint(pos_mouse):
 
@@ -151,7 +165,7 @@ class Game:
 
         for key in ID_AREA:
 
-            if key in self.gps.casefold():
+            if key in self.location.casefold():
 
                 id_name = key
 
@@ -162,30 +176,37 @@ class Game:
 
     def _enemies_in_the_area(self):
 
-        del self._list_enemies_in_area[::]
+        del self.list_enemies_in_area[::]
 
-        for sprite in self.group_sprites_opponent.sprites():
+        for sprite in self.group_opponent.sprites():
 
-            self.group_sprites_opponent.remove(sprite)
+            self.group_opponent.remove(sprite)
 
-        y = 430
-        for n in range(6):
+        pos_y = 430
+        for cont in range(6):
 
-            enemies = choice(self._check_enemies_for_area())
+            data: list = choice(self._check_enemies_for_area())
 
-            enemy_obj = Enemy(enemies, FOLDER['enemies'] + enemies[1] + '.png', 430, y, self.group_sprites_opponent)
+            self.list_enemies_in_area.append(
+                Enemy(
+                    data,
+                    '{}{}.png'.format(FOLDER['enemies'], data[1]),
+                    430,
+                    pos_y,
+                    self.main_screen,
+                    self.group_opponent)
+                )
 
-            self._list_enemies_in_area.append(enemy_obj)
-            y += 95
+            pos_y += 95
 
 
     def _check_index_enemy(self):
 
-        if self.index_battle >= len(self._list_enemies_in_area):
+        if self.index_battle >= len(self.list_enemies_in_area):
 
             self.index_battle -= 1
 
-        if len(self._list_enemies_in_area) <= 0:
+        if len(self.list_enemies_in_area) <= 0:
 
             self._enemies_in_the_area()
 
@@ -293,14 +314,19 @@ class Game:
 
             self.block_battle = False
 
-            self.battle.kill_sprite_enemy(self._list_enemies_in_area, self.index_battle)
+            self.battle.kill_sprite_enemy(self.list_enemies_in_area, self.index_battle)
 
         self.turn_enemy = False
 
 
     def _draw_name_of_land(self):
 
-        draw_texts(MAIN_SCREEN, f'{self.gps:^35}', 404, 104, size=25)
+        draw_texts(
+            screen=self.main_screen,
+            text='{:^35}'.format(self.location),
+            pos_x=404,
+            pos_y=104,
+            size=25)
 
 
     def _draw_battle(self):
@@ -309,28 +335,28 @@ class Game:
 
         self.battle.draw_battle_info(self.log_battle)
 
-        self.battle.draw_bar_status(self._list_enemies_in_area[self.index_battle])
+        self.battle.draw_bar_status(self.list_enemies_in_area[self.index_battle])
 
-        self.battle.draw_info_status_enemy(self._list_enemies_in_area[self.index_battle])
+        self.battle.draw_info_status_enemy(self.list_enemies_in_area[self.index_battle])
 
-        self.battle.draw_enemy_sprite(self._list_enemies_in_area, self.index_battle)
+        self.battle.draw_enemy_sprite(self.list_enemies_in_area, self.index_battle)
 
         color_block = COLORS['YELLOW'] if self.block_battle else COLORS['WHITE']
 
-        pg.draw.rect(MAIN_SCREEN, color_block, (15, 370, 373, 590), 1, 0, 7, 7, 7, 7)
+        pg.draw.rect(self.main_screen, color_block, (15, 370, 373, 590), 1, 0, 7, 7, 7, 7)
 
 
     def _get_mouse_events_to_show_interactive(self, pos_mouse):
 
-        for key in self._icons.keys():
+        for key in self.icons.keys():
 
-            if self._icons[key].rect.collidepoint(pos_mouse):
+            if self.icons[key].rect.collidepoint(pos_mouse):
 
                 img = 'select_' + key
             else:
                 img = key
 
-            self._icons[key].image = pg.image.load(IMG_GAME[img])
+            self.icons[key].image = pg.image.load(IMG_GAME[img])
 
         for key in self.commands_battle.keys():
 
@@ -351,7 +377,7 @@ class Game:
             self.battle.data_character(self.character)
 
         self.enemy_attribute, self.enemy_status, self.enemy_current, self.enemy_loots = \
-            self.battle.data_enemy(self._list_enemies_in_area[self.index_battle])
+            self.battle.data_enemy(self.list_enemies_in_area[self.index_battle])
 
 
     def events_game(self, event):
@@ -373,7 +399,7 @@ class Game:
 
         self.character.events_character(event)
 
-        [obj.events() for obj in self._list_enemies_in_area]
+        [obj.events() for obj in self.list_enemies_in_area]
 
 
     def update(self, main_screen):
@@ -394,10 +420,10 @@ class Game:
 
         self.character.update()
 
-        self.group_sprites_opponent.draw(main_screen)
-
-        [obj.update() for obj in self._list_enemies_in_area]
-
-        self.gps = self.character.location
+        self.group_opponent.draw(main_screen)
+     
+        [obj.update() for obj in self.list_enemies_in_area]
+     
+        self.location = self.character.location
 
         self._check_location()

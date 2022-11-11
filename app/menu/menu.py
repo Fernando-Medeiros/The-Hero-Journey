@@ -1,16 +1,25 @@
-from settings import *
+import os
+import pygame as pg
 
-SONGS['orpheus'].play()
+from .settings import list_guides_menu
+from paths import *
+from app.functiontools import Obj, draw_texts, save_log_and_exit
+
+VERSION = os.environ.get('VERSION')
+GAME_NAME = os.environ.get('GAME_NAME')
+DISPLAY_NONE = int(os.environ.get('DISPLAY_NONE'))
 
 
 class Menu:
 
-    class_menu = True
-    BLOCK = False
+    is_active = True
+    block = False
     check = ''
 
-    def __init__(self, *groups):
-
+    def __init__(self, main_screen, *groups):
+        
+        self.main_screen = main_screen
+        
         self._background = Obj(IMG_MENU['bg'], 0, 0, *groups)
 
         self._guides = []
@@ -29,8 +38,13 @@ class Menu:
 
         for item in list_guides_menu:
 
-            draw_texts(MAIN_SCREEN, f'{item:^45}'.title().replace('_', ' '), pos_x, pos_y + 15, size=25)
-
+            draw_texts(
+                screen=self.main_screen,
+                text='{:^45}'.format(item.title().replace('_', ' ')),
+                pos_x=pos_x,
+                pos_y=pos_y + 15,
+                size=25
+                )
             self._guides.append(pg.rect.Rect(pos_x, pos_y, 356, 65))
 
             pos_y += 90
@@ -41,53 +55,49 @@ class Menu:
         if self._guides[0].collidepoint(pos_mouse):
 
             self.check = 'new'
-            self.class_menu = False
-            click_sound.play()
-
+            self.is_active = False
+           
 
     def _guide_load(self, pos_mouse):
 
         if self._guides[1].collidepoint(pos_mouse):
 
             self.check = 'load'
-            self.class_menu = False
-            click_sound.play()
-
+            self.is_active = False
+          
 
     def _guide_options(self, pos_mouse):
 
         if self._guides[3].collidepoint(pos_mouse):
 
             self.check = 'options'
-            self.class_menu = False
-            click_sound.play()
-
+            self.is_active = False
+           
 
     def _guide_credit(self, pos_mouse):
 
         if self._guides[2].collidepoint(pos_mouse):
 
             y, y_ = 0, 942
-            self.BLOCK = True
+            self.block = True
 
         elif self._objects['return'].rect.collidepoint(pos_mouse):
 
             y, y_ = DISPLAY_NONE, DISPLAY_NONE
-            self.BLOCK = False
+            self.block = False
 
         else:
             return 0
 
         self._objects['info_credit'].rect.y = y
         self._objects['return'].rect.y = y_
-        click_sound.play()
-
+       
 
     def _guide_quit(self, pos_mouse):
 
         if self._guides[4].collidepoint(pos_mouse):
 
-            save_log_and_exit(DATETIME_INIT_APP)
+            save_log_and_exit()
 
 
     def _get_mouse_events_to_show_interactive(self, pos_mouse):
@@ -121,14 +131,14 @@ class Menu:
 
             self._guide_credit(pos_mouse)
 
-            if not self.BLOCK:
+            if not self.block:
 
                 self._guide_new_game(pos_mouse)
                 self._guide_load(pos_mouse)
                 self._guide_options(pos_mouse)
                 self._guide_quit(pos_mouse)
 
-        if not self.BLOCK:
+        if not self.block:
 
             self._select_guides(pos_mouse)
 
@@ -136,10 +146,21 @@ class Menu:
 
 
     def update(self) -> None:
+               
+        draw_texts(
+            screen=self.main_screen,
+            text=GAME_NAME,
+            pos_x=self.main_screen.get_width() / 2 - len(GAME_NAME) * 6.5,
+            pos_y=100,
+            size=25
+            )
+        draw_texts(
+            screen=self.main_screen,
+            text=VERSION,
+            pos_x=self.main_screen.get_width() / 2 - len(VERSION),
+            pos_y=980
+            )
 
-        draw_texts(MAIN_SCREEN, NAME_OF_THE_GAME, MAIN_SCREEN.get_width() / 2 - len(NAME_OF_THE_GAME) * 6.5, 100, size=25)
-        draw_texts(MAIN_SCREEN, VERSION, MAIN_SCREEN.get_width() / 2 - len(VERSION), 980)
-
-        if not self.BLOCK:
+        if not self.block:
 
             self._draw_guides()

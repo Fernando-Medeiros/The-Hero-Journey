@@ -1,23 +1,23 @@
-from settings import pg, Obj
-
-from .base import BaseEntity
-from .view import DrawViews
-
+import pygame as pg
 from random import randint
 
+from ..character.settings import BASIC_ATTRIBUTES
+from app.functiontools import Obj
 
-class Enemy(BaseEntity, DrawViews, Obj):
+from .base import BaseEntity
+from .view import Views
 
-    show_status_interface = False
-    alive = True
 
-    def __init__(self, list_,  img, x, y, *groups):
+class Enemy(Obj, BaseEntity, Views):
+
+    show_status = False
+    is_alive = True
+
+    def __init__(self, list_,  img, x, y, main_screen, *groups):
 
         Obj.__init__(self, img, x, y, *groups)
-
         BaseEntity.__init__(self)
-
-        DrawViews.__init__(self)
+        Views.__init__(self, main_screen)
 
         self.instance_data = list_
 
@@ -36,14 +36,14 @@ class Enemy(BaseEntity, DrawViews, Obj):
 
     def _assign_attributes(self):
 
-        list_keys = ['force', 'agility', 'vitality', 'intelligence', 'resistance']
+        list_keys = BASIC_ATTRIBUTES
 
         self.attributes['name'] = self.instance_data[1]
         self.attributes['level'] = int(self.instance_data[2])
 
-        for key in list_keys:
+        for attribute in list_keys:
 
-            self.attributes[key] = self._random_attributes_per_level(self.attributes['level'])
+            self.attributes[attribute] = self._random_attributes_per_level(self.attributes['level'])
 
 
     def _random_attributes_per_level(self, level: int) -> int:
@@ -63,16 +63,16 @@ class Enemy(BaseEntity, DrawViews, Obj):
 
         if self.current_status['hp'] <= 0.1:
 
-            self.alive = False
+            self.is_alive = False
 
 
     def _show_status(self, pos_mouse):
 
         if self.rect.collidepoint(pos_mouse):
 
-            self.show_status_interface = True
+            self.show_status = True
         else:
-            self.show_status_interface = False
+            self.show_status = False
 
 
     def events(self):
@@ -90,10 +90,10 @@ class Enemy(BaseEntity, DrawViews, Obj):
 
         self.level_progression_enemy(self.level_up())
 
-        self._draw_name_and_level()
+        self._draw_name_and_level(self.attributes, self.show_status, self.rect)
 
-        self._draw_status()
+        self._draw_status(self.attributes, self.status, self.show_status, self.rect)
 
-        if self.alive:
+        if self.is_alive:
 
             self.status_regen()

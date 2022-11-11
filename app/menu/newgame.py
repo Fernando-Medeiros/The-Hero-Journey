@@ -1,15 +1,35 @@
-from settings import *
+import os
+import pygame as pg
+from time import sleep
+
+from paths import *
+from app.functiontools import Obj, draw_texts, COLORS
+from ..character.settings import *
+from .settings import title_new_game, list_ethnicities
+
+
+
+DISPLAY_NONE = int(os.environ.get('DISPLAY_NONE'))
+MAX_RECORDS = int(os.environ.get('MAX_RECORDS'))
+MIN_CHARACTERS_NAME = int(os.environ.get('MIN_CHARACTERS_NAME'))
+MAX_CHARACTERS_NAME = int(os.environ.get('MAX_CHARACTERS_NAME'))
 
 
 class NewGame:
 
-    ETHNICITY, CLASS_, NAME = '', '', ''
-    check, name_for_loading = '', ''
+    ETHNICITY = ''
+    char_class = ''
+    name = ''
+    check = ''
+    
+    is_active = True
+    block = False
+    inbox = False
 
-    class_new_game = True
-    BLOCK, INBOX = False, False
+    def __init__(self, main_screen, *groups):
+        
+        self.main_screen = main_screen
 
-    def __init__(self, *groups):
         self.pos_y_e, self.pos_y_c = 70, 560
 
         self.bg = Obj(IMG_NEW_GAME['bg'], 0, 0, *groups)
@@ -46,7 +66,7 @@ class NewGame:
     def _return_menu(self, pos_mouse):
 
         if self.return_icon.rect.collidepoint(pos_mouse):
-            self.class_new_game = False
+            self.is_active = False
             self._reset_changes()
 
 
@@ -55,34 +75,32 @@ class NewGame:
         SELECT NAME AND ADD BOX
         RETURN THE REGISTRATION TO ADD NAME AND CLICK ON ICON
         """
-        if not self.BLOCK:
+        if not self.block:
 
-            if self.add_icon.rect.collidepoint(pos_mouse) and (len(self.NAME) >= MIN_CHARACTERS_NAME):
+            if self.add_icon.rect.collidepoint(pos_mouse) and (len(self.name) >= MIN_CHARACTERS_NAME):
 
-                features = self.NAME + '\n' + self.ETHNICITY + '\n' + self.CLASS_ + '\n' + '1'
+                features = self.name + '\n' + self.ETHNICITY + '\n' + self.char_class + '\n' + '1'
 
-                with open(FOLDER['save'] + self.NAME, 'w') as new_record:
+                with open(FOLDER['save'] + self.name, 'w') as new_record:
 
                     new_record.write(features)
-
-                click_sound.play()
 
                 sleep(1)
 
                 self.check = 'loading'
-                self.name_for_loading = self.NAME
+                os.environ['CHARNAME'] = self.name
 
 
     def _active_input_box(self, pos_mouse):
 
-        if not self.BLOCK:
+        if not self.block:
 
             if self.boxes[2].collidepoint(pos_mouse):
-                self.INBOX = True, click_sound.play()
+                self.inbox = True
             else:
-                self.INBOX = False
+                self.inbox = False
 
-            COLORS['ACTIVE'] = COLORS['WHITE'] if self.INBOX else COLORS['BLACK']
+            COLORS['ACTIVE'] = COLORS['WHITE'] if self.inbox else COLORS['BLACK']
 
 
     def _receives_character_name(self, event):
@@ -90,24 +108,24 @@ class NewGame:
         NAME RECEIVES THE PRESSED CHARACTERS, REMOVED FROM THE KEY/EVENT.UNICODE
         PREVENTS TEXT FROM BEING GREATER THAN MAX_C CHARACTERS
         """
-        if not self.BLOCK:
+        if not self.block:
 
-            if event.type == pg.KEYDOWN and self.INBOX:
+            if event.type == pg.KEYDOWN and self.inbox:
 
-                if len(self.ETHNICITY) > 2 < len(self.CLASS_):
+                if len(self.ETHNICITY) > 2 < len(self.char_class):
                     if event.key == pg.KSCAN_UNKNOWN:
-                        self.NAME = ''
+                        self.name = ''
                     if event.key == pg.K_BACKSPACE:
-                        self.NAME = self.NAME[:-1]
+                        self.name = self.name[:-1]
                     else:
-                        self.NAME += str(event.unicode).replace('\r', '').replace('\t', '').strip().casefold()
+                        self.name += str(event.unicode).replace('\r', '').replace('\t', '').strip().casefold()
 
-        self.NAME = self.NAME[:-1] if len(self.NAME) >= MAX_CHARACTERS_NAME else self.NAME
+        self.name = self.name[:-1] if len(self.name) >= MAX_CHARACTERS_NAME else self.name
 
 
     def _get_mouse_events_to_show_interactive(self, pos_mouse):
 
-        topleft = -1080, - 1080
+        topleft = -1080, -1080
         img_return = 'return'
 
         if self.return_icon.rect.collidepoint(pos_mouse):
@@ -127,7 +145,7 @@ class NewGame:
 
         img_add = 'add'
 
-        if self.INBOX and len(self.NAME) >= MIN_CHARACTERS_NAME:
+        if self.inbox and len(self.name) >= MIN_CHARACTERS_NAME:
             img_add = 'select_add'
 
         self.add_icon.image = pg.image.load(IMG_LOAD[img_add])
@@ -137,13 +155,13 @@ class NewGame:
         """
         CHECK LIMIT OF RECORDS AND RETURN LOCK FOLLOWED BY INSTRUCTIONS
         """
-        if self.class_new_game and len([x for x in listdir(FOLDER['save'])]) >= MAX_RECORDS:
+        if self.is_active and len([save for save in os.listdir(FOLDER['save'])]) >= MAX_RECORDS:
 
-            self.BLOCK = True
+            self.block = True
             self.max_records.rect.y = 0
 
         else:
-            self.BLOCK = False
+            self.block = False
             self.max_records.rect.y = DISPLAY_NONE
 
 
@@ -151,24 +169,33 @@ class NewGame:
 
         # DRAW USER TEXT INPUT
         draw_texts(
-            MAIN_SCREEN, self.NAME.title(), X=self.boxes[2].x + 5, Y=self.boxes[2].y + 5, size=25,
+            screen=self.main_screen,
+            text=self.name.title(),
+            pos_x=self.boxes[2].x + 5,
+            pos_y=self.boxes[2].y + 5,
+            size=25,
             color=COLORS['BLACK'])
 
         # DRAW THE BOX FOR TEXT INPUT
-        pg.draw.rect(MAIN_SCREEN, COLORS['ACTIVE'], self.boxes[2], 2)
+        pg.draw.rect(self.main_screen, COLORS['ACTIVE'], self.boxes[2], 2)
 
 
     def _draw_info_max_records(self):
 
-        if self.BLOCK:
+        if self.block:
 
-            y = 500
+            pos_y = 500
             for line in INFO_MAX_RECORDS.split('|'):
 
                 draw_texts(
-                    MAIN_SCREEN, f'{line}'.replace('|', '\n').title().strip(), 230, y, size=20, color=COLORS['BLACK'])
+                    screen=self.main_screen,
+                    text='{}'.format(line.replace('|', '\n').title().strip()),
+                    pos_x=230,
+                    pos_y=pos_y,
+                    size=20,
+                    color=COLORS['BLACK'])
 
-                y += 30
+                pos_y += 30
 
 
     def _draw_subtitles(self):
@@ -180,13 +207,23 @@ class NewGame:
         for item in range(3):
             # TEXT AND BOX FOR ETHNICITIES
             draw_texts(
-                MAIN_SCREEN, f'{list_ethnicities[item]}'.title(), pos_x_txt[item], pos_y_etn + 10, size=20)
-
+                screen=self.main_screen,
+                text='{}'.format(list_ethnicities[item].title()),
+                pos_x=pos_x_txt[item],
+                pos_y=pos_y_etn + 10,
+                size=20
+                )
+            
             self.ethnicity.append(pg.rect.Rect(pos_x_rect[item], pos_y_etn, 249, 41))
 
             # TEXT AND BOX FOR CLASSES
             draw_texts(
-                MAIN_SCREEN, f'{self.index_list_class[item]}'.title(), pos_x_txt[item] + 20, pos_y_clas + 10, size=20)
+                screen=self.main_screen,
+                text='{}'.format(self.index_list_class[item].title()),
+                pos_x=pos_x_txt[item] + 20,
+                pos_y=pos_y_clas + 10,
+                size=20
+                )
 
             self.class_.append(pg.rect.Rect(pos_x_rect[item], pos_y_clas, 249, 41))
 
@@ -195,55 +232,79 @@ class NewGame:
 
         if self.ETHNICITY != '':
 
-            info = \
-                'dark' if 'dark' in self.ETHNICITY else \
-                'forest' if 'forest' in self.ETHNICITY else \
-                'grey' if 'grey' in self.ETHNICITY else ''
+            if 'dark' in self.ETHNICITY:
+                info = 'dark'
+            elif 'forest' in self.ETHNICITY:
+                info = 'forest'
+            else:
+                info = 'grey'
 
-            y = 240
+            pos_y = 240
 
             for line in INFO_HERALDRY[info].replace('\n', '').split('\r'):
 
-                draw_texts(MAIN_SCREEN, f'{line}', 0, y, color=COLORS['BLACK'])
+                draw_texts(
+                    screen=self.main_screen,
+                    text='{}'.format(line),
+                    pos_x=0,
+                    pos_y=pos_y,
+                    color=COLORS['BLACK'])
 
-                y += 30 if len(INFO_HERALDRY[info]) < 600 else 15
+                pos_y += 30 if len(INFO_HERALDRY[info]) < 600 else 15
 
 
     def _draw_info_classes(self):
 
-        pg.draw.rect(MAIN_SCREEN, COLORS['BLACK'], (185, 610, 550, 300), 1)
+        pg.draw.rect(self.main_screen, COLORS['BLACK'], (185, 610, 550, 300), 1)
 
-        if self.CLASS_ != '':
+        if self.char_class != '':
 
             idd = 'ed_' if 'dark' in self.ETHNICITY else 'ef_' if 'forest' in self.ETHNICITY else 'eg_'
             list_with_attributes = DARK_ELF if idd == 'ed_' else FOREST_ELF if idd == 'ef_' else GREY_ELF
 
             # TITLE
-            draw_texts(MAIN_SCREEN, f'{"Status":^35}{"Skills":^35}', 190, 620, color=COLORS['BLACK'], size=20)
-
+            draw_texts(
+                screen=self.main_screen,
+                text='{:^35}{:^35}'.format("Status", "Skills"),
+                pos_x=190,
+                pos_y=620,
+                color=COLORS['BLACK'],
+                size=20
+                )
             # ATTRIBUTES
-            y = 680
+            pos_y = 680
             for index, status in enumerate(BASIC_ATTRIBUTES):
 
                 draw_texts(
-                    MAIN_SCREEN, f'{status.title():<} - {list_with_attributes[self.CLASS_][index]:>.1f}',
-                    210, y, color=COLORS['BLACK'], size=18)
+                    screen=self.main_screen,
+                    text='{:<} - {:>.1f}'.format(status.title(), list_with_attributes[self.char_class][index]),
+                    pos_x=210,
+                    pos_y=pos_y,
+                    color=COLORS['BLACK'],
+                    size=18
+                    )
 
-                y += 30
+                pos_y += 30
 
             # SPRITE OF CLASS
-            sprite = pg.image.load(IMG_CLASSES[idd + self.CLASS_])
+            sprite = pg.image.load(IMG_CLASSES[idd + self.char_class])
 
-            MAIN_SCREEN.blit(sprite, (25, 680))
+            self.main_screen.blit(sprite, (25, 680))
 
             # SKILLS
-            y = 680
+            pos_y = 680
 
-            for line in INFO_SKILLS[idd[1:] + self.CLASS_].replace('\n', '').split('\r'):
+            for line in INFO_SKILLS[idd[1:] + self.char_class].replace('\n', '').split('\r'):
 
-                draw_texts(MAIN_SCREEN, f'{line}', 375, y, color=COLORS['BLACK'])
+                draw_texts(
+                    screen=self.main_screen,
+                    text='{}'.format(line),
+                    pos_x=375,
+                    pos_y=pos_y,
+                    color=COLORS['BLACK']
+                    )
 
-                y += 20
+                pos_y += 20
 
 
     def _list_ethnicity_and_classes(self, var_ethnicity, name_ethnicity: str, bg_ethnicity: str, pos_mouse):
@@ -258,7 +319,7 @@ class NewGame:
 
             self.index_list_class = classes
             self.ETHNICITY = name_ethnicity.casefold()
-            click_sound.play()
+          
 
         if self.interactive_[0].rect.x == var_ethnicity.x:
 
@@ -267,13 +328,12 @@ class NewGame:
                 if self.class_[index].collidepoint(pos_mouse):
                     self.interactive_[1].rect.x = self.class_[index].x
 
-                    self.CLASS_ = classes[index].casefold()
-                    click_sound.play()
-
+                    self.char_class = classes[index].casefold()
+                   
 
     def _reset_changes(self):
 
-        self.NAME, self.ETHNICITY, self.CLASS_ = '', '', ''
+        self.name, self.ETHNICITY, self.char_class = '', '', ''
 
         for index in range(2):
 
@@ -288,7 +348,7 @@ class NewGame:
         if event.type == pg.MOUSEBUTTONDOWN:
             self._return_menu(pos_mouse)
 
-            if not self.BLOCK:
+            if not self.block:
 
                 self._select_guides(pos_mouse)
                 self._active_input_box(pos_mouse)
@@ -306,12 +366,24 @@ class NewGame:
 
         self._draw_info_max_records()
 
-        if not self.BLOCK:
+        if not self.block:
 
             self._draw_box()
             self._draw_subtitles()
             self._draw_info_ethnicity()
             self._draw_info_classes()
 
-            draw_texts(MAIN_SCREEN, f'{title_new_game[0]}', 300 + len(title_new_game[0]), 15, size=27)
-            draw_texts(MAIN_SCREEN, f'{title_new_game[1]}', 300 + len(title_new_game[1]), 510, size=27)
+            draw_texts(
+                screen=self.main_screen,
+                text='{}'.format(title_new_game[0]),
+                pos_x=300 + len(title_new_game[0]),
+                pos_y=15,
+                size=27
+                )
+            draw_texts(
+                screen=self.main_screen,
+                text='{}'.format(title_new_game[1]),
+                pos_x=300 + len(title_new_game[1]),
+                pos_y=510,
+                size=27
+                )

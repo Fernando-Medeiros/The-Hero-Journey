@@ -1,7 +1,5 @@
-from settings import COLORS, MAIN_SCREEN, pg
-
 from datetime import datetime
-
+from ..character.settings import BASIC_ATTRIBUTES
 
 class BaseEntity:
 
@@ -59,11 +57,11 @@ class BaseEntity:
 
         if level_up:
 
-            keys = 'force', 'vitality', 'agility', 'intelligence', 'resistance'
+            list_attributes = BASIC_ATTRIBUTES
 
-            for key in keys:
+            for attribute in list_attributes:
 
-                self.attributes[key] += 1
+                self.attributes[attribute] += 1
 
             self.attributes['level'] += 1
             self.attributes['xp'] = 1
@@ -115,22 +113,3 @@ class BaseEntity:
                 if value < self.status_secondary[status]:
 
                     self.current_status[status] += self.status_secondary['regen_' + status]
-
-
-    def draw_render_status(self, TXT: str, X, Y, size=15, color=(255, 255, 255)):
-
-        font = pg.font.SysFont('arial', size, True)
-        text = font.render(f'{TXT}', True, color)
-
-        MAIN_SCREEN.blit(text, (X, Y))
-
-
-    def draw_status_bar(self, height, fixed_value, max_size, color, rect, current_value):
-
-        size_max = max_size
-        current_size = fixed_value / size_max
-
-        border = 0, 7, 7, 7, 7
-
-        pg.draw.rect(MAIN_SCREEN, color, (*rect, current_value / current_size, height), *border)
-        pg.draw.rect(MAIN_SCREEN, COLORS['WHITE'], (*rect, size_max, height), 1, *border)
