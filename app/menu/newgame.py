@@ -1,13 +1,13 @@
 import os
-import pygame as pg
 from time import sleep
 
+import pygame as pg
+
+from app.functiontools import COLORS, Obj, draw_texts
 from paths import *
-from app.functiontools import Obj, draw_texts, COLORS
+
 from ..character.settings import *
-from .settings import title_new_game, list_ethnicities
-
-
+from .settings import list_ethnicities, title_new_game
 
 DISPLAY_NONE = int(os.environ.get('DISPLAY_NONE'))
 MAX_RECORDS = int(os.environ.get('MAX_RECORDS'))
@@ -81,7 +81,7 @@ class NewGame:
 
                 features = self.name + '\n' + self.ETHNICITY + '\n' + self.char_class + '\n' + '1'
 
-                with open(FOLDER['save'] + self.name, 'w') as new_record:
+                with open(FOLDERS['save'] + self.name, 'w') as new_record:
 
                     new_record.write(features)
 
@@ -155,7 +155,7 @@ class NewGame:
         """
         CHECK LIMIT OF RECORDS AND RETURN LOCK FOLLOWED BY INSTRUCTIONS
         """
-        if self.is_active and len([save for save in os.listdir(FOLDER['save'])]) >= MAX_RECORDS:
+        if self.is_active and len([save for save in os.listdir(FOLDERS['save'])]) >= MAX_RECORDS:
 
             self.block = True
             self.max_records.rect.y = 0

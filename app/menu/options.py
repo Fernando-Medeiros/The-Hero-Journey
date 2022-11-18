@@ -1,18 +1,23 @@
 import os
+
 import pygame as pg
 
-from app.functiontools import Obj, COLORS
+from app.functiontools import COLORS, Obj
 from paths import *
+
 from .settings import txt_options
 
+DISPLAY_NONE = int(os.getenv('DISPLAY_NONE', '-1080'))
+DEFAULT_HEIGHT = int(os.getenv('DEFAULT_HEIGHT', '747'))
+DEFAULT_WIDTH = int(os.getenv('DEFAULT_WIDTH', '1050'))
 
-DISPLAY_NONE = int(os.environ.get('DISPLAY_NONE'))
-DISPLAY_DEFAULT_Y = int(os.environ.get('DISPLAY_DEFAULT_Y'))
-MAX_FRAMES = os.environ.get('MAX_FRAMES')
-MIN_FRAMES = os.environ.get('MIN_FRAMES')
-MAX_RECORDS = int(os.environ.get('MAX_RECORDS'))
-MIN_CHARACTERS_NAME = int(os.environ.get('MIN_CHARACTERS_NAME'))
-MAX_CHARACTERS_NAME = int(os.environ.get('MAX_CHARACTERS_NAME'))
+MAX_FRAMES = os.getenv('MAX_FRAMES', '60')
+MIN_FRAMES = os.getenv('MIN_FRAMES', '30')
+
+MAX_RECORDS = int(os.getenv('MAX_RECORDS', '9'))
+
+MIN_CHARACTERS_NAME = int(os.getenv('MIN_CHARACTERS_NAME', '3'))
+MAX_CHARACTERS_NAME = int(os.getenv('MAX_CHARACTERS_NAME', '20'))
 
 
 class Options:
@@ -23,7 +28,7 @@ class Options:
 
         self.main_screen = main_screen
 
-        self.pos_center = self.main_screen.get_width() / 2
+        self.center = self.main_screen.get_width() / 2
 
         self.title = txt_options['title']
         self.caption = txt_options['caption']
@@ -34,12 +39,12 @@ class Options:
         self.bg = Obj(IMG_OPTIONS['bg'], 0, 0, *groups)
 
         self.objects = {
-            'full_screen': Obj(IMG_OPTIONS['inactive'], self.pos_center, 0, *groups),
-            'default': Obj(IMG_OPTIONS['inactive'], self.pos_center, 0, *groups),
-            '30fps': Obj(IMG_OPTIONS['inactive'], self.pos_center, 0, *groups),
-            '60fps': Obj(IMG_OPTIONS['inactive'], self.pos_center, 0, *groups),
-            'on': Obj(IMG_OPTIONS['inactive'], self.pos_center, 0, *groups),
-            'off': Obj(IMG_OPTIONS['inactive'], self.pos_center, 0, *groups),
+            'full_screen': Obj(IMG_OPTIONS['inactive'], self.center, 0, *groups),
+            'default': Obj(IMG_OPTIONS['inactive'], self.center, 0, *groups),
+            '30fps': Obj(IMG_OPTIONS['inactive'], self.center, 0, *groups),
+            '60fps': Obj(IMG_OPTIONS['inactive'], self.center, 0, *groups),
+            'on': Obj(IMG_OPTIONS['inactive'], self.center, 0, *groups),
+            'off': Obj(IMG_OPTIONS['inactive'], self.center, 0, *groups),
         }
 
         self.active = pg.image.load(IMG_OPTIONS['active'])
@@ -57,10 +62,10 @@ class Options:
                 match key:
 
                     case 'full_screen':
-                        pg.display.set_mode((DISPLAY_DEFAULT_Y, 1080), pg.SCALED | pg.FULLSCREEN)
+                        pg.display.set_mode((1080, DEFAULT_HEIGHT), pg.SCALED | pg.FULLSCREEN)
 
                     case 'default':
-                        pg.display.set_mode((DISPLAY_DEFAULT_Y, 1050), pg.SCALED | pg.RESIZABLE)
+                        pg.display.set_mode((DEFAULT_WIDTH, DEFAULT_HEIGHT), pg.SCALED | pg.RESIZABLE)
 
                     case '30fps':
                         os.environ['FRAMES'] = str(MIN_FRAMES)
@@ -87,7 +92,7 @@ class Options:
                     result = self.active if pg.display.get_window_size()[0] >= 1920 else self.inactive
 
                 case 'default':
-                    result = self.active if pg.display.get_window_size()[0] <= DISPLAY_DEFAULT_Y else self.inactive
+                    result = self.active if pg.display.get_window_size()[0] <= DEFAULT_WIDTH else self.inactive
                 
                 case '30fps':
                     result = self.active if int(os.environ['FRAMES']) <= 30 else self.inactive
@@ -117,9 +122,9 @@ class Options:
             self.objects[item].rect.y = pos_y
             pos_y += 40
 
-        self._help_draw_txt_in_options(self.caption[0], self.screen)
-        self._help_draw_txt_in_options(self.caption[1], self.fps, pos=280)
-        self._help_draw_txt_in_options(self.caption[2], self.sound, pos=360)
+        self._draw_txt_in_options(self.caption[0], self.screen)
+        self._draw_txt_in_options(self.caption[1], self.fps, pos=280)
+        self._draw_txt_in_options(self.caption[2], self.sound, pos=360)
 
 
     def _return_menu(self, pos_mouse):
@@ -129,7 +134,7 @@ class Options:
             self.is_active = False
           
 
-    def _get_mouse_events_to_show_interactive(self, pos_mouse):
+    def _get_mouse_events_to_show_interactives(self, pos_mouse):
 
         img_return = 'return'
 
@@ -139,33 +144,34 @@ class Options:
         self.return_icon.image = pg.image.load(IMG_MENU[img_return])
 
 
-    def events_options(self, evento):
+    def _draw_txt_in_options(self, caption, args, gap=40, pos=200):
+        
+        font = pg.font.SysFont('arial', 15, True)
+        color = COLORS['WHITE']
+
+        draw = [
+            (font.render(f'{self.title}', True, color), (self.center - len(self.title) * 9.5, 100)),
+            (font.render(f'{caption}', True, color), (self.center - 150, pos + gap * 2)),
+            (font.render(f'{args[0]}', True, color), (self.center + 30, pos + gap)),
+            (font.render(f'{args[1]}', True, color), (self.center + 30, pos + gap * 2)),
+        ]
+
+        self.main_screen.blits(draw)
+
+
+    def events(self, event):
 
         pos_mouse = pg.mouse.get_pos()
 
         self._check_options()
 
-        if evento.type == pg.MOUSEBUTTONDOWN:
+        if event.type == pg.MOUSEBUTTONDOWN:
 
             self._return_menu(pos_mouse)
             self._select_options(pos_mouse)
 
-        self._get_mouse_events_to_show_interactive(pos_mouse)
+        self._get_mouse_events_to_show_interactives(pos_mouse)
 
 
     def update(self):
         self._draw_options()
-
-
-    def _help_draw_txt_in_options(self, caption, args, tab=40, pos=200):
-        
-        FONT = pg.font.SysFont('arial', 15, True)
-
-        draw = [
-            (FONT.render(f'{self.title}', True, COLORS['WHITE']), (self.pos_center - len(self.title) * 9.5, 100)),
-            (FONT.render(f'{caption}', True, COLORS['WHITE']), (self.pos_center - 150, pos + tab * 2)),
-            (FONT.render(f'{args[0]}', True, COLORS['WHITE']), (self.pos_center + 30, pos + tab)),
-            (FONT.render(f'{args[1]}', True, COLORS['WHITE']), (self.pos_center + 30, pos + tab * 2)),
-        ]
-
-        self.main_screen.blits(draw)

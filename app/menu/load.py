@@ -1,10 +1,11 @@
 import os
+
 import pygame as pg
 
-from app.functiontools import Obj, draw_texts, check_records, COLORS
+from app.functiontools import COLORS, Obj, check_records, draw_texts
 from paths import *
-from .settings import title_load
 
+from .settings import title_load
 
 DISPLAY_NONE = int(os.environ.get('DISPLAY_NONE'))
 MAX_RECORDS = int(os.environ.get('MAX_RECORDS'))
@@ -45,7 +46,7 @@ class Load:
         FOR EACH RECORD, DRAW CLASS IMAGE, STATUS AND ICON.
         CHECK ETHNICITY TO ASSIGN IMAGE, AND USE RECT TO SET POSITION
         """
-        number_of_records = check_records(FOLDER['save'])
+        number_of_records = check_records(FOLDERS['save'])
         black = COLORS['BLACK']
 
         for index in range(len(number_of_records)):
@@ -94,13 +95,13 @@ class Load:
         """
         FUNCTION TO CHECK THE OBJECT POSITION AND DELETE THE FILE
         """
-        file = [save for save in os.listdir(FOLDER['save'])]
+        file = [save for save in os.listdir(FOLDERS['save'])]
 
         for item in range(len(file)):
 
             if self.icon_del[item].rect.collidepoint(pos_mouse):
 
-                os.remove(FOLDER['save'] + file[item])
+                os.remove(FOLDERS['save'] + file[item])
 
                 self.icon_add[len(file) - 1].rect.y = DISPLAY_NONE
                 self.icon_del[len(file) - 1].rect.y = DISPLAY_NONE
@@ -114,7 +115,7 @@ class Load:
             if self.icon_add[icon].rect.collidepoint(pos_mouse):
 
                 self.check = 'loading'
-                os.environ['CHARNAME'] = check_records(FOLDER['save'])[icon][0]
+                os.environ['CHARNAME'] = check_records(FOLDERS['save'])[icon][0]
 
 
     def _return_menu(self, pos_mouse):

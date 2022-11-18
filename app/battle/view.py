@@ -1,7 +1,7 @@
 import pygame as pg
 
-from paths import FOLDER
-from app.functiontools import draw_texts, draw_status_bar, COLORS
+from app.functiontools import COLORS, draw_status_bar, draw_texts
+from paths import FOLDERS
 
 
 class Views:
@@ -51,7 +51,7 @@ class Views:
     def draw_enemy_sprite(self, enemy, index):
 
         name = enemy[index].attributes['name']
-        sprite = pg.image.load(FOLDER['enemies'] + name + '.png')
+        sprite = pg.image.load(FOLDERS['enemies'] + name + '.png')
 
         draw_texts(
             screen=self.main_screen,
@@ -110,7 +110,7 @@ class Views:
                     screen=self.main_screen,
                     height=13,
                     fixed_value=secondary[index],
-                    max_size=310,
+                    width=310,
                     color=colors[index],
                     rect=(pos_x, pos_y),
                     current_value=current[index],

@@ -1,13 +1,14 @@
 import pygame as pg
-from paths import FOLDER
+
+from paths import FOLDERS
 
 """
 SOUND SETTINGS
 """
 SOUNDS = {
-    'click': pg.mixer.Sound('{}{}'.format(FOLDER['sound'], 'click.mp3'))
+    'click': pg.mixer.Sound('{}{}'.format(FOLDERS['sound'], 'click.mp3'))
 }
 
 SONGS = {
-    'orpheus': pg.mixer.Sound('{}{}'.format(FOLDER['soundtrack'], 'orpheus.mp3'))
+    'orpheus': pg.mixer.Sound('{}{}'.format(FOLDERS['soundtrack'], 'orpheus.mp3'))
 }

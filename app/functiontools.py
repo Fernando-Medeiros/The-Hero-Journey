@@ -1,10 +1,8 @@
-import os
-import pygame as pg
-
 from datetime import datetime
+from os import getenv, listdir, remove
 from time import sleep
-from os import listdir, remove
 
+import pygame as pg
 
 COLORS = {
     'WHITE': (255, 255, 255),
@@ -35,7 +33,7 @@ class Obj(pg.sprite.Sprite):
         
 def save_log_and_exit():
 
-    datetime_app = os.environ.get('DATETIME_APP')
+    datetime_app = getenv('DATETIME_APP')
     
     now = datetime.today().strftime('%d/%m/%Y %H:%M:%S')
 
@@ -43,54 +41,56 @@ def save_log_and_exit():
 
         register_log.write('{} < // > {} \n'.format(datetime_app, now))
         sleep(1)
-
     quit()
 
 
-def check_records(FOLDER_: str) -> list:
+def check_records(folder: str) -> list:
 
-    list_records = [save for save in listdir(FOLDER_)]
+    list_records = [save for save in listdir(folder)]
     records = []
 
     for save in list_records:
-        if not open(FOLDER_ + save, mode='r+', encoding='utf-8').readlines():
-            remove(FOLDER_ + save)
+        if not open(folder + save, mode='r+', encoding='utf-8').readlines():
+            remove(folder + save)
 
-        with open(FOLDER_ + save, mode='r+', encoding='utf-8') as file:
+        with open(folder + save, mode='r+', encoding='utf-8') as file:
             records.append(file.read().strip().split('\n'))
 
     return records
 
 
 def draw_texts(
-    screen,
+    screen: pg.Surface,
     text: str,
     pos_x: int,
     pos_y: int,
-    font='arial',
-    size=15,
+    font: str = 'arial',
+    size: int = 15,
     color=COLORS['WHITE']):
 
-    text_font = pg.font.SysFont(font, size, True)
-    text_surface = text_font.render(str(text), True, color)
+    txt_font = pg.font.SysFont(font, size, True)
+    txt_surface = txt_font.render(str(text), True, color)
 
-    screen.blit(text_surface, (pos_x, pos_y))
+    screen.blit(txt_surface, (pos_x, pos_y))
 
 
 def draw_status_bar(
-    screen,
-    height,
-    fixed_value,
-    max_size,
-    color,
-    rect,
-    current_value,
+    screen: pg.Surface,
+    height: int,
+    fixed_value: float,
+    width: int,
+    color: tuple[int, int, int],
+    rect: tuple[int, int],
+    current_value: int,
     color_bg=COLORS['WHITE']):
     
-    size_max = max_size
-    current_size = fixed_value / size_max
+    fixed_width = width
+    current_size = fixed_value / fixed_width
 
-    border = 0, 7, 7, 7, 7
+    border = 0, 7, 7, 7, 7  # rounded -> radius, T-left, T-right, B-left, B-right
 
-    pg.draw.rect(screen, color, (*rect, current_value / current_size, height), *border)
-    pg.draw.rect(screen, color_bg, (*rect, size_max, height), 1, *border)
+    pg.draw.rect(
+        screen, color, (*rect, round(current_value / current_size), height), 0, *border)
+
+    pg.draw.rect(
+        screen, color_bg, (*rect, fixed_width, height), 1, *border)

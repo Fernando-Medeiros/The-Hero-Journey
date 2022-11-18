@@ -1,7 +1,7 @@
 import pygame as pg
 
+from app.functiontools import COLORS, draw_status_bar, draw_texts
 from paths import IMG_CLASSES
-from app.functiontools import draw_texts, draw_status_bar, COLORS
 
 
 class View:
@@ -25,7 +25,7 @@ class View:
                 screen=self.MAIN_SCREEN,
                 height=15,
                 fixed_value=bar_status[0],
-                max_size=bar_status[4],
+                width=bar_status[4],
                 color=bar_status[2],
                 rect=bar_status[3],
                 current_value=bar_status[1])

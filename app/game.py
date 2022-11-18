@@ -1,17 +1,16 @@
-import pygame as pg
 from random import choice
+
+import pygame as pg
+
+from app.battle.battle import Battle
+from app.character.character import Character
+from app.database.get_enemies import LIST_ENEMIES
+from app.functiontools import COLORS, Obj, draw_texts, save_log_and_exit
+from app.opponent.opponent import Enemy
+from paths import *
 
 from .map import *
 from .sound import SONGS
-from paths import *
-from app.functiontools import Obj, draw_texts, save_log_and_exit, COLORS
-
-from app.database.get_enemies import LIST_ENEMIES
-
-from app.opponent.opponent import Enemy
-from app.character.character import Character
-from app.battle.battle import Battle
-
 
 SONGS['orpheus'].play()
 
@@ -190,7 +189,7 @@ class Game:
             self.list_enemies_in_area.append(
                 Enemy(
                     data,
-                    '{}{}.png'.format(FOLDER['enemies'], data[1]),
+                    '{}{}.png'.format(FOLDERS['enemies'], data[1]),
                     430,
                     pos_y,
                     self.main_screen,

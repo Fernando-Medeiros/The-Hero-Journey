@@ -1,9 +1,10 @@
 import pygame as pg
+
+from .game import Game
+from .menu.load import Load
 from .menu.menu import Menu
 from .menu.newgame import NewGame
-from .menu.load import Load
 from .menu.options import Options
-from .game import Game
 
 
 class MenuController:
@@ -71,7 +72,7 @@ class MenuController:
                 self.load.events_load(event)
 
             elif self.menu_.check == 'options' and self.options.is_active:
-                self.options.events_options(event)
+                self.options.events(event)
 
 
 class GameController:

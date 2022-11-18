@@ -1,9 +1,9 @@
 import os
-import pygame as pg
 from datetime import datetime
 
+import pygame as pg
 
-VERSION = '2.1'
+VERSION = '2.2'
 
 GAME_NAME = "The Hero's Journey"
 
@@ -16,8 +16,8 @@ MIXER = 'mixer_is_active'
 DATETIME_APP = datetime.today().strftime('%d/%m/%Y %H:%M:%S')
 
 # DISPLAY SETTINGS
-DISPLAY_DEFAULT_Y = 747
-DISPLAY_DEFAULT_X = 1050
+DEFAULT_WIDTH = 747
+DEFAULT_HEIGHT = 1050
 DISPLAY_NONE = -1080
 
 FRAMES = 30
@@ -38,28 +38,28 @@ class Main:
         self.init_game()
 
         self.main_screen = pg.display.set_mode(
-            (DISPLAY_DEFAULT_Y, DISPLAY_DEFAULT_X),
+            (DEFAULT_WIDTH, DEFAULT_HEIGHT),
             pg.SCALED | pg.RESIZABLE
             )
 
         self.frames = pg.time.Clock()
 
-        from app.events import MenuController, GameController
+        from app.events import GameController, MenuController
 
         self.menu = MenuController(self.main_screen)
         self.game = GameController(self.main_screen)
         
 
     def init_const(self):
-        list_const = {        
+        consts = {        
             'VERSION': VERSION,
             'GAME_NAME': GAME_NAME,
             'URL_CREDIT': URL_CREDIT,
             'DATETIME_APP': DATETIME_APP,
             'MIXER': MIXER,
             'STATIC': STATIC,
-            'DISPLAY_DEFAULT_Y' : DISPLAY_DEFAULT_Y,
-            'DISPLAY_DEFAULT_X' : DISPLAY_DEFAULT_X, 
+            'DEFAULT_HEIGHT' : DEFAULT_HEIGHT,
+            'DEFAULT_WIDTH' : DEFAULT_WIDTH, 
             'DISPLAY_NONE' : DISPLAY_NONE,
             'FRAMES': FRAMES,
             'MIN_FRAMES': MIN_FRAMES,
@@ -69,16 +69,15 @@ class Main:
             'MIN_CHARACTERS_NAME': MIN_CHARACTERS_NAME,
             'MAX_CHARACTERS_NAME': MAX_CHARACTERS_NAME,        
         }
-        for const in list_const:
-            os.environ[const] = str(list_const[const])
+        for key, value in consts.items():
+            os.environ[key] = str(value)
 
 
     def init_game(self):
         pg.init()
         pg.font.init()
         pg.mixer.init()
-        pg.display.set_caption(GAME_NAME)
-                
+                       
 
     def draw(self):
         if self.menu.is_active:
@@ -108,16 +107,15 @@ class Main:
 
 
     def update(self):
-        self.frames.tick(int(os.environ['FRAMES']))
+        self.frames.tick(int(os.getenv('FRAMES', '30')))
         self.draw()
         self.events()
+        pg.display.set_caption('{} | {:.2f}'.format(GAME_NAME, self.frames.get_fps()))
         pg.display.update()
 
    
 
 if __name__ == '__main__':
-    
     main = Main()
-    
     while True:
         main.update()

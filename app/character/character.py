@@ -1,11 +1,12 @@
 import os
+
 import pygame as pg
 
-from paths import FOLDER
 from app.functiontools import check_records
+from paths import FOLDERS
 
-from .settings import DARK_ELF, FOREST_ELF, GREY_ELF, SKILLS
 from .base import BaseEntity
+from .settings import DARK_ELF, FOREST_ELF, GREY_ELF, SKILLS
 from .view import View
 
 
@@ -41,7 +42,7 @@ class Character(BaseEntity, View):
 
     def _unpack_basic_status(self, index) -> tuple:
 
-        name, ethnicity, class_, level = check_records(FOLDER['save'])[index][:4]
+        name, ethnicity, class_, level = check_records(FOLDERS['save'])[index][:4]
 
         return name, ethnicity, class_, level
 
@@ -50,7 +51,7 @@ class Character(BaseEntity, View):
 
         list_keys = [key for key in self.attributes]
 
-        list_values = check_records(FOLDER['save'])[self.index]
+        list_values = check_records(FOLDERS['save'])[self.index]
 
         status = list_values + self._first_game() if len(list_values[:]) < 5 else list_values
 
@@ -63,7 +64,7 @@ class Character(BaseEntity, View):
 
     def _assign_gold_soul(self):
 
-        values = check_records(FOLDER['save'])[self.index]
+        values = check_records(FOLDERS['save'])[self.index]
 
         if len(values) >= 14:
 
@@ -72,9 +73,9 @@ class Character(BaseEntity, View):
 
     def _assign_location(self):
 
-        if len(check_records(FOLDER['save'])[self.index]) >= 14:
+        if len(check_records(FOLDERS['save'])[self.index]) >= 14:
 
-            self.location = check_records(FOLDER['save'])[self.index][-1]
+            self.location = check_records(FOLDERS['save'])[self.index][-1]
 
 
     def _assign_others(self):
@@ -109,7 +110,7 @@ class Character(BaseEntity, View):
     def save(self, location):
 
         path = '{}{}'.format(
-            FOLDER['save'],
+            FOLDERS['save'],
             str(self.attributes['name']).lower()
             )
 
