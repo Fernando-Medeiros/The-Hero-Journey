@@ -5,11 +5,12 @@ import pygame as pg
 from app.battle.battle import Battle
 from app.character.character import Character
 from app.database.enemies_db import EnemieDB
-from app.functiontools import COLORS, Obj, draw_texts, save_log_and_exit
+from app.database.map_db import MapDB
+from app.functiontools import (COLORS, Obj, draw_rect, draw_texts,
+                               save_log_and_exit)
 from app.opponent.opponent import Enemy
 from paths import *
 
-from .map import *
 from .sound import SONGS
 
 SONGS['orpheus'].play()
@@ -30,6 +31,7 @@ class Game:
         self.main_screen = main_screen
         
         self.enemie_db = EnemieDB()
+        self.map_db = MapDB()
 
         self.battle = Battle(main_screen)
 
@@ -37,8 +39,10 @@ class Game:
 
         self.location = self.character.location
 
-        self.bg = Obj(IMG_GAME['bg'], 0, 0, *groups)
+        self.map = self.map_db.get_map_info()
 
+        self.bg = Obj(IMG_GAME['bg'], 0, 0, *groups)
+        
         self.tools = {
             'map': Obj(IMG_GAME['map'], 432, 180, *groups),
             'gps': Obj(IMG_GAME['gps'], 511, 184, *groups)
@@ -64,13 +68,12 @@ class Game:
             'b_skills': Obj(IMG_GAME['b_skills'], 75, 925, *groups),
             'b_items': Obj(IMG_GAME['b_items'], 200, 925, *groups),
         }
+
         self.list_enemies_in_area = []
 
         self.log_battle = []
 
         self.loots_for_enemy = {}
-
-        self.map: dict = self.enemie_db.read_json_db('app/database/map.json')
 
         self._enemies_in_the_area()
 
@@ -101,26 +104,15 @@ class Game:
             self.is_active = False
 
 
-    def _check_location(self):
-
-        index = LIST_LANDS.index(self.location)
-
-        if self.tools['gps'].rect.topleft != (POS_GPS[index]):
-
-            self._enemies_in_the_area()
-
-            self.tools['gps'].rect.topleft = (POS_GPS[index])
-
-
     def _select_land(self, pos_mouse):
 
-        index = LIST_LANDS.index(self.location)
+        index = self.map['name'].index(self.location)
 
         if self.char_current['stamina'] >= 0.5:
 
             if self.icons['next'].rect.collidepoint(pos_mouse):
 
-                index = index if index + 1 >= len(LIST_LANDS) else index + 1
+                index = index if index + 1 >= len(self.map['name']) else index + 1
 
                 self.respawn_enemies = True
 
@@ -136,9 +128,9 @@ class Game:
                 self.char_current['stamina'] -= 0.5
               
 
-        self.tools['gps'].rect.topleft = (POS_GPS[index])
+        self.tools['gps'].rect.topleft = (self.map['pos'][index])
 
-        self.location = LIST_LANDS[index]
+        self.location = self.map['name'][index]
 
         self.character.location = self.location
 
@@ -158,11 +150,12 @@ class Game:
                 break
 
 
-    def _check_enemies_for_area(self) -> dict | None:
+    def _check_enemies_for_area(self) -> dict:
     
-        for tag in self.enemie_db.read_json_db('app/database/map.json').keys():
+        for tag in self.map['tag']:
             if tag in self.location.casefold():
-                return self.enemie_db.get_random_enemy_by_tag('app/database/enemies.json', tag=tag)              
+                
+                return self.enemie_db.get_random_enemy_by_tag(tag=tag)              
                 
 
     def _enemies_in_the_area(self):
@@ -320,7 +313,6 @@ class Game:
             size=25
             )
 
-
     def _draw_battle(self):
 
         self.battle.draw_loots(self.loots_for_enemy)
@@ -335,9 +327,11 @@ class Game:
 
         color_block = COLORS['YELLOW'] if self.block_battle else COLORS['WHITE']
 
-        pg.draw.rect(
-            self.main_screen, color_block, (15, 370, 373, 590), 1, 0, 7, 7, 7, 7)
-
+        draw_rect(
+            screen=self.main_screen,
+            color=color_block,
+            rect=[15, 370, 373, 590]
+        )
 
     def _get_mouse_events_to_show_interactive(self, pos_mouse):
 
@@ -396,7 +390,7 @@ class Game:
 
 
     def update(self):
-
+        
         if self.respawn_enemies:
 
             self._check_enemies_for_area()
@@ -418,5 +412,3 @@ class Game:
         [obj.update() for obj in self.list_enemies_in_area]
      
         self.location = self.character.location
-
-        self._check_location()

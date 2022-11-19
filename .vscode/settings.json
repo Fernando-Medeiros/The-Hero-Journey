@@ -12,7 +12,7 @@
             "source.organizeImports": true
         }
     },
-    "workbench.colorTheme": "Ayu Mirage",
+    "workbench.colorTheme": "Dracula Soft",
     "workbench.startupEditor": "readme",
     "python.testing.pytestArgs": [
         "tests"

@@ -1,34 +1,11 @@
-import json
 from random import choice, randint
-from typing import Optional
+
+from .base import Base
 
 
-class EnemieDB:
-
-    def write_json_db(self,
-        json_name: str,
-        dict_to_save: dict) -> None:
-
-        if not open(json_name, mode='w'):
-            with open(json_name, mode='x', encoding='utf-8') as jsonfile:
-                json.dump(dict_to_save ,jsonfile)            
-        
-        with open(json_name, mode='w', encoding='utf-8') as jsonfile:
-            json.dump(dict_to_save ,jsonfile)
-        
-
-    def read_json_db(self,
-        json_name: str,
-        tag: Optional[str] = None) -> dict:
-        
-        try:
-            with open(json_name, mode='r+', encoding='utf-8') as jsonfile:
-                if tag:
-                    return json.load(jsonfile)[tag]           
-                return json.load(jsonfile)
-        except:
-            raise FileNotFoundError('File not found')
-
+class EnemieDB(Base):
+    
+    db = 'app/database/enemies.json'
 
     def create_enemy_model(self,
         name: str,
@@ -62,10 +39,10 @@ class EnemieDB:
 
 
     def update_enemy(self,
-        json_name: str,
         tag: str,
         name: str,
-        data: dict) -> None:
+        data: dict,
+        json_name: str = db) -> None:
     
         try:
             file = self.read_json_db(json_name)
@@ -76,7 +53,7 @@ class EnemieDB:
             self.write_json_db(json_name, file)
     
 
-    def get_random_enemy_by_tag(self, json_name: str, tag: str) -> dict:
+    def get_random_enemy_by_tag(self, tag: str, json_name: str = db) -> dict:
         try:
             collection: dict[str, dict] = self.read_json_db(json_name, tag=tag)
             one_entity: list = choice(list(collection.items()))  # type: ignore
