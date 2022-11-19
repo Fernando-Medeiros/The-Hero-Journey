@@ -1,47 +1,46 @@
-from random import randint, choice
+from random import choice, randint
 
-from .view import Views
 from .log import LogBattle
+from .view import Views
 
 
 class Battle(LogBattle, Views):
 
     
     def data_character(self, char) -> tuple:
-        char_attribute = char.attributes
-        char_status = char.status
-        char_current = char.current_status
-        char_others = char.others
+        attribute = char.attributes
+        status = char.status
+        current = char.current_status
+        others = char.others
 
-        return char_attribute, char_status, char_current, char_others
+        return attribute, status, current, others
 
 
     def data_enemy(self, enemy) -> tuple:
-        enemy_attribute = enemy.attributes
-        enemy_status = enemy.status
-        enemy_current = enemy.current_status
-        enemy_loots = enemy.loots
+        attribute = enemy.entity['attributes']
+        status = enemy.entity['status']
+        current = enemy.entity['current']
 
-        return enemy_attribute, enemy_status, enemy_current, enemy_loots
+        return attribute, status, current,
 
     
 
     def damage(self, hit, defense, block, dodge, critical) -> list:
 
-        dano = hit - defense
+        damage = hit - defense
 
-        dano = 0 if dano <= 0 else dano
+        damage = 0 if damage <= 0 else damage
 
         if block:
             return [0, 'block']
         if dodge:
             return [0, 'dodge']
         if critical:
-            return [dano * 2, 'critical']
-        if dano == 0:
-            return [dano, 'miss']
+            return [damage * 2, 'critical']
+        if damage == 0:
+            return [damage, 'miss']
         
-        return [dano, '']
+        return [damage, '']
 
 
     def defense(self,) -> bool:

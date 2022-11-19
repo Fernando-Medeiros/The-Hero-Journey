@@ -7,22 +7,22 @@ from paths import FOLDERS
 class Views:
     
     def __init__(self, main_screen):
+
         self.main_screen = main_screen
         
     def draw_loots(self, args):
+        pos_x, pos_y = 25, 660
+        
+        for key, value in args.items():
+            
+            if key in 'xp gold soul':
+                draw_texts(
+                    screen=self.main_screen,
+                    text='{} >>> {}'.format(key.title(), value),
+                    pos_x=pos_x, pos_y=pos_y,
+                    color=COLORS['GREEN'])
 
-        pos_x, pos_y = 25, 820
-
-        for item in args.items():
-            key, value = item
-
-            draw_texts(
-                screen=self.main_screen,
-                text='{} >>> {:_}'.format(key.title(), value),
-                pos_x=pos_x, pos_y=pos_y,
-                color=COLORS['GREEN'])
-
-            pos_y += 20
+            pos_y += 15
 
 
     def draw_battle_info(self, log):
@@ -50,15 +50,18 @@ class Views:
 
     def draw_enemy_sprite(self, enemy, index):
 
-        name = enemy[index].attributes['name']
-        sprite = pg.image.load(FOLDERS['enemies'] + name + '.png')
+        name = enemy[index].entity['attributes']['name'].title()
+        sprite_img = enemy[index].entity['attributes']['sprite']
+        
+        sprite = pg.image.load(FOLDERS['enemies'] + sprite_img)
 
         draw_texts(
             screen=self.main_screen,
-            text='{}'.format(name).title().replace('_', ' '),
-            pos_x=30, pos_y=425,
-            size=20)
-
+            text=f'{name}',
+            pos_x=30,
+            pos_y=425,
+            size=20
+            )
         self.main_screen.blit(sprite, (171, 461))
 
 
@@ -69,9 +72,9 @@ class Views:
         for items in args:
 
             info = [
-                '{:^45_.2f}/{:^45_.2f}'.format(items.current_status["hp"], items.status_secondary["hp"]),
-                '{:^45_.2f}/{:^45_.2f}'.format(items.current_status["mp"], items.status_secondary["mp"]),
-                '{:^45_.2f}/{:^45_.2f}'.format(items.current_status["stamina"], items.status_secondary["stamina"])
+                '{:^45_.2f}/{:^45_.2f}'.format(items.entity['current']["hp"], items.entity['secondary']["hp"]),
+                '{:^45_.2f}/{:^45_.2f}'.format(items.entity['current']["mp"], items.entity['secondary']["mp"]),
+                '{:^45_.2f}/{:^45_.2f}'.format(items.entity['current']["stamina"], items.entity['secondary']["stamina"])
             ]
 
             for index in range(len(info)):
@@ -94,14 +97,14 @@ class Views:
         for items in args:
 
             secondary = [
-                items.status_secondary['hp'],
-                items.status_secondary['mp'],
-                items.status_secondary['stamina']
+                items.entity['secondary']['hp'],
+                items.entity['secondary']['mp'],
+                items.entity['secondary']['stamina']
             ]
             current = [
-                items.current_status['hp'],
-                items.current_status['mp'],
-                items.current_status['stamina']
+                items.entity['current']['hp'],
+                items.entity['current']['mp'],
+                items.entity['current']['stamina']
             ]
 
             for index in range(len(secondary)):

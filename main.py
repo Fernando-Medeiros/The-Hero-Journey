@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pygame as pg
 
-VERSION = '2.3'
+VERSION = '2.4'
 
 GAME_NAME = "The Hero's Journey"
 

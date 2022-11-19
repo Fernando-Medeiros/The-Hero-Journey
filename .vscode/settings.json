@@ -12,7 +12,7 @@
             "source.organizeImports": true
         }
     },
-    "workbench.colorTheme": "Ayu Mirage Bordered",
+    "workbench.colorTheme": "Ayu Mirage",
     "workbench.startupEditor": "readme",
     "python.testing.pytestArgs": [
         "tests"

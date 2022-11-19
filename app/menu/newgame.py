@@ -9,10 +9,10 @@ from paths import *
 from ..character.settings import *
 from .settings import list_ethnicities, title_new_game
 
-DISPLAY_NONE = int(os.environ.get('DISPLAY_NONE'))
-MAX_RECORDS = int(os.environ.get('MAX_RECORDS'))
-MIN_CHARACTERS_NAME = int(os.environ.get('MIN_CHARACTERS_NAME'))
-MAX_CHARACTERS_NAME = int(os.environ.get('MAX_CHARACTERS_NAME'))
+DISPLAY_NONE = int(os.getenv('DISPLAY_NONE', '-1080'))
+MAX_RECORDS = int(os.getenv('MAX_RECORDS', '9'))
+MIN_CHARACTERS_NAME = int(os.getenv('MIN_CHARACTERS_NAME', '3'))
+MAX_CHARACTERS_NAME = int(os.getenv('MAX_CHARACTERS_NAME', '20'))
 
 
 class NewGame:

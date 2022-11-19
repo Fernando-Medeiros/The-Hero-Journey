@@ -1,55 +1,55 @@
 from datetime import datetime
+
 from ..character.settings import BASIC_ATTRIBUTES
 
+
 class BaseEntity:
-
-    show_status_interface = False
-
     def __init__(self):
-
-        self.attributes = {
-            'name': '',
-            'ethnicity': '',
-            'class': '',
-            'level': 1,
-            'force': 1,
-            'agility': 1,
-            'vitality': 1,
-            'intelligence': 1,
-            'resistance': 1,
-            'rank': 1,
-            'xp': 1
+        
+        self.entity = {
+            'attributes': {
+                'name': '',
+                'ethnicity': '',
+                'class': '',
+                'level': 1,
+                'force': 1,
+                'agility': 1,
+                'vitality': 1,
+                'intelligence': 1,
+                'resistance': 1,
+                'rank': 1,
+                'xp': 1,
+                'sprite': '',
+                },
+            'secondary': {
+                'hp': 1,
+                'mp': 1,
+                'stamina': 1,
+                'regen_hp': 0.005,
+                'regen_mp': 0.005,
+                'regen_stamina': 0.009
+            },
+            'current': {
+                'hp': 1,
+                'mp': 1,
+                'stamina': 1    
+            },
+            'status': {
+                'attack': 1,
+                'defense': 1,
+                'dodge': 1,
+                'block': 1,
+                'critical': 1,
+                'luck': 1    
+            },
         }
-        self.status_secondary = {
-            'hp': 1,
-            'mp': 1,
-            'stamina': 1,
-            'regen_hp': 0.005,
-            'regen_mp': 0.005,
-            'regen_stamina': 0.009
-        }
-        self.current_status = {
-            'hp': 1,
-            'mp': 1,
-            'stamina': 1
-        }
-        self.status = {
-            'attack': 1,
-            'defense': 1,
-            'dodge': 1,
-            'block': 1,
-            'critical': 1,
-            'luck': 1
-        }
-
 
     def level_up(self) -> bool:
 
-        next_level = self.attributes['level'] * 15
+        next_level = self.entity['attributes']['level'] * 15
 
-        if self.attributes['xp'] >= next_level:
+        if self.entity['attributes']['xp'] >= next_level:
             return True
-        
         return False
 
 
@@ -61,10 +61,10 @@ class BaseEntity:
 
             for attribute in list_attributes:
 
-                self.attributes[attribute] += 1
+                self.entity['attributes'][attribute] += 1
 
-            self.attributes['level'] += 1
-            self.attributes['xp'] = 1
+            self.entity['attributes']['level'] += 1
+            self.entity['attributes']['xp'] = 1
 
             self.assign_status_secondary()
 
@@ -72,34 +72,33 @@ class BaseEntity:
     def assign_status_secondary(self):
 
         level, force, agility, vitality, intelligence, resistance = \
-            list(self.attributes.values())[3:9]
+            list(self.entity['attributes'].values())[3:9]
 
-        self.status_secondary['hp'] = (vitality / 2) * force + (level / 3)
-        self.status_secondary['mp'] = (intelligence / 2) * resistance + (level / 3)
-        self.status_secondary['stamina'] = (resistance / 2) + vitality
+        self.entity['secondary']['hp'] = (vitality / 2) * force + (level / 3)
+        self.entity['secondary']['mp'] = (intelligence / 2) * resistance + (level / 3)
+        self.entity['secondary']['stamina'] = (resistance / 2) + vitality
 
-        self.status['attack'] = force + (agility / 3)
-        self.status['defense'] = resistance + (agility / 3)
-        self.status['dodge'] = agility / 10
-        self.status['block'] = resistance / 10
-        self.status['critical'] = agility / 20
-        self.status['luck'] = level / 10
+        self.entity['status']['attack'] = force + (agility / 3)
+        self.entity['status']['defense'] = resistance + (agility / 3)
+        self.entity['status']['dodge'] = agility / 10
+        self.entity['status']['block'] = resistance / 10
+        self.entity['status']['critical'] = agility / 20
+        self.entity['status']['luck'] = level / 10
 
 
     def assign_current_status(self):
 
-        self.current_status['hp'] = self.status_secondary['hp']
-        self.current_status['mp'] = self.status_secondary['mp']
-        self.current_status['stamina'] = self.status_secondary['stamina']
+        self.entity['current']['hp'] = self.entity['secondary']['hp']
+        self.entity['current']['mp'] = self.entity['secondary']['mp']
+        self.entity['current']['stamina'] = self.entity['secondary']['stamina']
 
 
     def check_current_status(self):
 
-        for key, value in self.current_status.items():
+        for key, value in self.entity['current'].items():
 
             if value <= 0:
-
-                self.current_status[key] = 0
+                self.entity['current'][key] = 0
 
 
     def status_regen(self):
@@ -107,9 +106,8 @@ class BaseEntity:
         time = datetime.today().second
 
         if time % 2 == 0:
+            for status, value in self.entity['current'].items():
 
-            for status, value in self.current_status.items():
+                if value < self.entity['secondary'][status]:
 
-                if value < self.status_secondary[status]:
-
-                    self.current_status[status] += self.status_secondary['regen_' + status]
+                    self.entity['current'][status] += self.entity['secondary']['regen_' + status]

@@ -4,7 +4,7 @@ import pygame as pg
 
 from app.battle.battle import Battle
 from app.character.character import Character
-from app.database.get_enemies import LIST_ENEMIES
+from app.database.enemies_db import EnemieDB
 from app.functiontools import COLORS, Obj, draw_texts, save_log_and_exit
 from app.opponent.opponent import Enemy
 from paths import *
@@ -25,9 +25,11 @@ class Game:
 
     index_battle = 0
 
-    def __init__(self, main_screen, *groups):
+    def __init__(self, main_screen: pg.Surface, *groups):
 
         self.main_screen = main_screen
+        
+        self.enemie_db = EnemieDB()
 
         self.battle = Battle(main_screen)
 
@@ -70,11 +72,7 @@ class Game:
 
         self._enemies_in_the_area()
 
-        self.char_attribute, self.char_status, self.char_current, self.char_others = \
-            self.battle.data_character(self.character)
-
-        self.enemy_attribute, self.enemy_status, self.enemy_current, self.enemy_loots = \
-            self.battle.data_enemy(self.list_enemies_in_area[self.index_battle])
+        self._update_status()
 
 
     def _save_and_exit(self, pos_mouse):
@@ -158,46 +156,38 @@ class Game:
                 break
 
 
-    def _check_enemies_for_area(self):
-
-        id_name = ''
-
-        for key in ID_AREA:
-
-            if key in self.location.casefold():
-
-                id_name = key
-
-                break
-
-        return [data_list for data_list in LIST_ENEMIES if id_name == data_list[0]]
-
+    def _check_enemies_for_area(self) -> dict | None:
+        
+        for tag in ID_AREA:
+            if tag in self.location.casefold():
+                return self.enemie_db.get_random_enemy_by_tag('app/database/enemies.json', tag=tag)              
+                
 
     def _enemies_in_the_area(self):
 
         del self.list_enemies_in_area[::]
 
         for sprite in self.group_opponent.sprites():
-
             self.group_opponent.remove(sprite)
 
-        pos_y = 430
-        for cont in range(6):
+        def add_enemy():        
+            pos_y = 430
+            for cnt in range(6):
+                     
+                enemy: dict = self._check_enemies_for_area()
 
-            data: list = choice(self._check_enemies_for_area())
+                self.list_enemies_in_area.append(
+                    Enemy(
+                        enemy,    
+                        '{}{}'.format(FOLDERS['enemies'], enemy['sprite']),
+                        430,
+                        pos_y,
+                        self.main_screen,
+                        self.group_opponent)
+                    )
+                pos_y += 95
 
-            self.list_enemies_in_area.append(
-                Enemy(
-                    data,
-                    '{}{}.png'.format(FOLDERS['enemies'], data[1]),
-                    430,
-                    pos_y,
-                    self.main_screen,
-                    self.group_opponent)
-                )
-
-            pos_y += 95
-
+        add_enemy()
 
     def _check_index_enemy(self):
 
@@ -305,9 +295,9 @@ class Game:
 
         if self.enemy_current['hp'] <= 0:
 
-            self.loots_for_enemy = dict(self.enemy_loots)
+            self.loots_for_enemy = self.enemy_attribute
 
-            self.battle.take_loots(self.char_others, self.char_attribute, self.enemy_loots)
+            self.battle.take_loots(self.char_others, self.char_attribute, self.enemy_attribute)
 
             self.battle.erase_log(self.log_battle)
 
@@ -325,7 +315,8 @@ class Game:
             text='{:^35}'.format(self.location),
             pos_x=404,
             pos_y=104,
-            size=25)
+            size=25
+            )
 
 
     def _draw_battle(self):
@@ -342,7 +333,8 @@ class Game:
 
         color_block = COLORS['YELLOW'] if self.block_battle else COLORS['WHITE']
 
-        pg.draw.rect(self.main_screen, color_block, (15, 370, 373, 590), 1, 0, 7, 7, 7, 7)
+        pg.draw.rect(
+            self.main_screen, color_block, (15, 370, 373, 590), 1, 0, 7, 7, 7, 7)
 
 
     def _get_mouse_events_to_show_interactive(self, pos_mouse):
@@ -375,11 +367,11 @@ class Game:
         self.char_attribute, self.char_status, self.char_current, self.char_others = \
             self.battle.data_character(self.character)
 
-        self.enemy_attribute, self.enemy_status, self.enemy_current, self.enemy_loots = \
+        self.enemy_attribute,self.enemy_status, self.enemy_current = \
             self.battle.data_enemy(self.list_enemies_in_area[self.index_battle])
 
 
-    def events_game(self, event):
+    def events(self, event):
 
         pos_mouse = pg.mouse.get_pos()
 
@@ -396,12 +388,12 @@ class Game:
 
         self._get_mouse_events_to_show_interactive(pos_mouse)
 
-        self.character.events_character(event)
+        self.character.events(event, pos_mouse)
 
-        [obj.events() for obj in self.list_enemies_in_area]
+        [obj.events(pos_mouse) for obj in self.list_enemies_in_area]
 
 
-    def update(self, main_screen):
+    def update(self):
 
         if self.respawn_enemies:
 
@@ -419,7 +411,7 @@ class Game:
 
         self.character.update()
 
-        self.group_opponent.draw(main_screen)
+        self.group_opponent.draw(self.main_screen)
      
         [obj.update() for obj in self.list_enemies_in_area]
      

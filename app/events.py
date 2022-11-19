@@ -91,7 +91,7 @@ class GameController:
 
             if self.game.is_active:
                 self.game_group.draw(main_screen)
-                self.game.update(main_screen)
+                self.game.update()
                
             else:
                 self.is_active = False
@@ -102,4 +102,4 @@ class GameController:
 
         if self.is_active and self.game.is_active:
             
-            self.game.events_game(event)
+            self.game.events(event)

@@ -131,10 +131,7 @@ class Character(BaseEntity, View):
         self.others['gold'], self.others['soul'] = 0, 0
 
 
-    def events_character(self, event):
-
-        pos_mouse = pg.mouse.get_pos()
-
+    def events(self, event, pos_mouse):
         if event.type == pg.MOUSEBUTTONDOWN:
 
             self._show_status(pos_mouse)

@@ -19,14 +19,14 @@ COLORS = {
 
 class Obj(pg.sprite.Sprite):
 
-    def __init__(self, img, x, y, *groups):
+    def __init__(self, img, pos_x, pos_y, *groups, **kwargs):
 
         super().__init__(*groups)
 
         self.image = pg.image.load(img)
         self.rect = self.image.get_rect()
-        self.rect.x = x
-        self.rect.y = y
+        self.rect.x = pos_x
+        self.rect.y = pos_y
         self.rect.width = self.image.get_width()
         self.rect.height = self.image.get_height()
 
@@ -66,7 +66,7 @@ def draw_texts(
     pos_y: int,
     font: str = 'arial',
     size: int = 15,
-    color=COLORS['WHITE']):
+    color=COLORS['WHITE']) -> None:
 
     txt_font = pg.font.SysFont(font, size, True)
     txt_surface = txt_font.render(str(text), True, color)
@@ -82,7 +82,7 @@ def draw_status_bar(
     color: tuple[int, int, int],
     rect: tuple[int, int],
     current_value: int,
-    color_bg=COLORS['WHITE']):
+    color_bg=COLORS['WHITE']) -> None:
     
     fixed_width = width
     current_size = fixed_value / fixed_width
@@ -94,3 +94,13 @@ def draw_status_bar(
 
     pg.draw.rect(
         screen, color_bg, (*rect, fixed_width, height), 1, *border)
+
+
+def draw_rect(
+    screen: pg.Surface,
+    color: tuple[int, int, int] = COLORS['WHITE'],
+    rect: list[int] = [0,0,0,0],
+    width: int = 1,
+    border: list[int] = [0,7,7,7,7]) -> None:
+
+    pg.draw.rect(screen, color, rect, width, *border)

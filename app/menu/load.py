@@ -7,8 +7,8 @@ from paths import *
 
 from .settings import title_load
 
-DISPLAY_NONE = int(os.environ.get('DISPLAY_NONE'))
-MAX_RECORDS = int(os.environ.get('MAX_RECORDS'))
+DISPLAY_NONE = int(os.getenv('DISPLAY_NONE', '-1080'))
+MAX_RECORDS = int(os.getenv('MAX_RECORDS', '9'))
 
 class Load:
 

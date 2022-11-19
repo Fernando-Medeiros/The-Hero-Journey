@@ -1,14 +1,6 @@
 import json
-from random import randint
+from random import choice, randint
 from typing import Optional
-
-LIST_ENEMIES = []
-
-with open('app/database/list_enemies.txt', mode='r', encoding='utf-8') as file:
-
-    for line in file.readlines():
-
-        LIST_ENEMIES.append(line.replace("\n", "").split(':'))
 
 
 class EnemieDB:
@@ -38,7 +30,7 @@ class EnemieDB:
             raise FileNotFoundError('File not found')
 
 
-    def create_enemie_model(self,
+    def create_enemy_model(self,
         name: str,
         level: int,
         img_name: str) -> dict:
@@ -69,7 +61,7 @@ class EnemieDB:
         return entity
 
 
-    def update_enemie(self,
+    def update_enemy(self,
         json_name: str,
         tag: str,
         name: str,
@@ -82,3 +74,16 @@ class EnemieDB:
             raise ValueError(error.args)
         else:
             self.write_json_db(json_name, file)
+    
+
+    def get_random_enemy_by_tag(self, json_name: str, tag: str) -> dict:
+        try:
+            collection: dict[str, dict] = self.read_json_db(json_name, tag=tag)
+            one_entity: list = choice(list(collection.items()))  # type: ignore
+            enemy: dict = one_entity[1]
+            enemy['name'] = one_entity[0]
+
+        except Exception as error:
+            raise FileNotFoundError(f'{error.args}')
+        else:
+            return enemy
