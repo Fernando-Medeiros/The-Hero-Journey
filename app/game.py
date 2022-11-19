@@ -70,6 +70,8 @@ class Game:
 
         self.loots_for_enemy = {}
 
+        self.map: dict = self.enemie_db.read_json_db('app/database/map.json')
+
         self._enemies_in_the_area()
 
         self._update_status()
@@ -157,8 +159,8 @@ class Game:
 
 
     def _check_enemies_for_area(self) -> dict | None:
-        
-        for tag in ID_AREA:
+    
+        for tag in self.enemie_db.read_json_db('app/database/map.json').keys():
             if tag in self.location.casefold():
                 return self.enemie_db.get_random_enemy_by_tag('app/database/enemies.json', tag=tag)              
                 

@@ -1,0 +1,268 @@
+{
+    "corrupted": {
+        "name": "Corrupted Island",
+        "pos": [
+            449,
+            198
+        ]
+    },
+    "beasts": {
+        "name": "Island of Beasts",
+        "pos": [
+            468,
+            183
+        ]
+    },
+    "slimes": {
+        "name": "Sea North",
+        "pos": [
+            511,
+            184
+        ]
+    },
+    "vipers": {
+        "name": "Fields of Slimes",
+        "pos": [
+            494,
+            200
+        ]
+    },
+    "whisper": {
+        "name": "River of Vipers",
+        "pos": [
+            509,
+            214
+        ]
+    },
+    "passage": {
+        "name": "Whispering Forest",
+        "pos": [
+            524,
+            205
+        ]
+    },
+    "mines": {
+        "name": "Foggy Passage",
+        "pos": [
+            528,
+            216
+        ]
+    },
+    "road": {
+        "name": "Mines of Noria",
+        "pos": [
+            512,
+            224
+        ]
+    },
+    "wind": {
+        "name": "West Road",
+        "pos": [
+            502,
+            233
+        ]
+    },
+    "city": {
+        "name": "Wind Fields",
+        "pos": [
+            509,
+            249
+        ]
+    },
+    "lands": {
+        "name": "Noria City",
+        "pos": [
+            514,
+            264
+        ]
+    },
+    "golems": {
+        "name": "Lands of Noria",
+        "pos": [
+            504,
+            276
+        ]
+    },
+    "dragons": {
+        "name": "Domain of Golems",
+        "pos": [
+            488,
+            262
+        ]
+    },
+    "sea": {
+        "name": "Field of Dragons",
+        "pos": [
+            466,
+            257
+        ]
+    },
+    "draconian": {
+        "name": "Sea Dragon",
+        "pos": [
+            457,
+            273
+        ]
+    },
+    "mystical": {
+        "name": "Desolate Road",
+        "pos": [
+            470,
+            288
+        ]
+    },
+    "elders": {
+        "name": "Draconian Domain",
+        "pos": [
+            477,
+            308
+        ]
+    },
+    "wild elves": {
+        "name": "Mystical Disorder",
+        "pos": [
+            459,
+            319
+        ]
+    },
+    "dead": {
+        "name": "City Ghabul",
+        "pos": [
+            460,
+            337
+        ]
+    },
+    "hell": {
+        "name": "Dragon City",
+        "pos": [
+            490,
+            324
+        ]
+    },
+    "lizardman": {
+        "name": "Draconian Harbor",
+        "pos": [
+            530,
+            319
+        ]
+    },
+    "cursed": {
+        "name": "Isle of Elders",
+        "pos": [
+            573,
+            336
+        ]
+    },
+    "goblin": {
+        "name": "Forest of Wild Elves",
+        "pos": [
+            608,
+            359
+        ]
+    },
+    "orc": {
+        "name": "No Man's lands",
+        "pos": [
+            639,
+            346
+        ]
+    },
+    "grey elves": {
+        "name": "Desert of the Dead",
+        "pos": [
+            659,
+            327
+        ]
+    },
+    "gnomes": {
+        "name": "Hell's Gate",
+        "pos": [
+            661,
+            308
+        ]
+    },
+    "fomorian": {
+        "name": "Dragons Mountains",
+        "pos": [
+            635,
+            305
+        ]
+    },
+    "druids": {
+        "name": "Ymir City",
+        "pos": [
+            612,
+            316
+        ]
+    },
+    "mages": {
+        "name": "Lizardmans Area",
+        "pos": [
+            592,
+            301
+        ]
+    },
+    "dark elves": {
+        "name": "Cursed Tower",
+        "pos": [
+            614,
+            282
+        ]
+    },
+    "mythical": {
+        "name": "Goblin Horde",
+        "pos": [
+            635,
+            268
+        ]
+    },
+    "witches": {
+        "name": "Orc Horde",
+        "pos": [
+            664,
+            259
+        ]
+    },
+    "aesir": {
+        "name": "Grey Elves Mountains",
+        "pos": [
+            685,
+            238
+        ]
+    },
+    "shadow": {
+        "name": "Gnomes Hideout",
+        "pos": [
+            668,
+            226
+        ]
+    },
+    "warriors": {
+        "name": "Storm Wind Valley",
+        "pos": [
+            649,
+            238
+        ]
+    },
+    "rose": {
+        "name": "Fomorian Invasion",
+        "pos": [
+            628,
+            245
+        ]
+    },
+    "noldor": {
+        "name": "Aretuza City",
+        "pos": [
+            614,
+            245
+        ]
+    },
+    "three": {
+        "name": "North Road",
+        "pos": [
+            626,
+            224
+        ]
+    }
+}

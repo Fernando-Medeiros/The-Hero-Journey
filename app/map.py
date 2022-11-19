@@ -13,16 +13,6 @@ LIST_LANDS = [
     'Noldor', 'Three Crowns'
 ]
 
-ID_AREA = [
-    'corrupted', 'beasts', 'slimes', 'vipers', 'whisper',
-    'passage', 'mines', 'road', 'wind', 'city', 'lands',
-    'golems', 'dragons', 'sea', 'draconian', 'mystical',
-    'elders', 'wild elves', 'dead', 'hell', 'lizardman',
-    'cursed', 'goblin', 'orc', 'grey elves', 'gnomes',
-    'fomorian', 'druids', 'mages', 'dark elves', 'mythical',
-    'witches', 'aesir', 'shadow', 'warriors', 'rose', 'noldor',
-    'three'
-    ]
 
 POS_GPS = [
     (449, 198), (468, 183), (511, 184), (494, 200), (509, 214), (524, 205),
