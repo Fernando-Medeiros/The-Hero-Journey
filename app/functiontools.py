@@ -37,7 +37,7 @@ def save_log_and_exit():
     
     now = datetime.today().strftime('%d/%m/%Y %H:%M:%S')
 
-    with open('log', 'a') as register_log:
+    with open('docs/log.txt', 'a') as register_log:
 
         register_log.write('{} < // > {} \n'.format(datetime_app, now))
         sleep(1)
