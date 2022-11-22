@@ -1,7 +1,6 @@
 <div align="center">
     <img align="center" src="https://img.shields.io/badge/Python-white?style=for-the-badge&logo=python&logoColor=yellow">
-    <img align="center" src="https://img.shields.io/badge/PYGAME-white?style=for-the-badge&logo=python&logoColor=orange">    
-    <img align="center" src="https://img.shields.io/badge/SQLITE3-white?style=for-the-badge&logo=sqlite&logoColor=blue">
+    <img align="center" src="https://img.shields.io/badge/PYGAME-white?style=for-the-badge&logo=python&logoColor=orange">
 </div>
 
 <br>
@@ -38,7 +37,8 @@ The Hero's Journey is a turn-based rpg, and its plot takes place on a continent 
 - Battle Status System (Dodge, Block, Critical)
 - Intuitive battle log
 
-> You can watch the video on [Youtube](https://www.youtube.com/watch?v=v-M-O1niVuk)
+> - You can watch it here - [Youtube - Menu](https://youtu.be/v-M-O1niVuk)
+> - You can watch it here - [Youtube - Game](https://youtu.be/LTYqAjMrrDI)
 
 
 
@@ -59,7 +59,7 @@ Activate .venv
 # Linux
 source .venv/bin/activate
 # Windows Power Shell
-.\.venv\Scripts\activate.ps1
+./.venv/bin/activate.ps1
 ```
 
 Install dependencies
@@ -77,75 +77,77 @@ python main.py
 ```console
 .
 ├── app
-│   ├── battle
-│   │   ├── battle.py
-│   │   ├── log.py
-│   │   ├── skills.py
-│   │   └── view.py
-│   ├── character
-│   │   ├── base.py
-│   │   ├── character.py
-│   │   ├── settings.py
-│   │   └── view.py
-│   ├── database
-│   │   ├── base.py
-│   │   ├── enemies_db.py
-│   │   ├── enemies.json
-│   │   ├── map_db.py
-│   │   ├── map.json
-│   ├── events.py
-│   ├── functiontools.py
-│   ├── game.py
-│   ├── menu
-│   │   ├── load.py
-│   │   ├── menu.py
-│   │   ├── newgame.py
-│   │   ├── options.py
-│   │   └── settings.py
-│   ├── opponent
-│   │   ├── base.py
-│   │   ├── opponent.py
-│   │   └── view.py
-│   └── sound.py
+│   ├── battle
+│   │   ├── battle.py
+│   │   ├── log.py
+│   │   ├── skills.py
+│   │   └── view.py
+│   ├── character
+│   │   ├── base.py
+│   │   ├── character.py
+│   │   ├── settings.py
+│   │   └── view.py
+│   ├── database
+│   │   ├── base.py
+│   │   ├── enemies_db.py
+│   │   ├── enemies.json
+│   │   ├── map_db.py
+│   │   └── map.json
+│   ├── events.py
+│   ├── functiontools.py
+│   ├── game.py
+│   ├── menu
+│   │   ├── load.py
+│   │   ├── menu.py
+│   │   ├── newgame.py
+│   │   ├── options.py
+│   │   └── settings.py
+│   ├── opponent
+│   │   ├── base.py
+│   │   ├── opponent.py
+│   │   └── view.py
+│   └── sound.py
 ├── docs
-│   ├── img
-│   │   └── ...
-│   ├── LICENSE
-│   ├── log.txt
-│   └── README.md
+│   ├── img
+│   ├── log.txt
+│   └── README.md
+├── LICENSE
 ├── main.py
 ├── paths.py
 ├── requirements.txt
 ├── runtime.txt
 ├── save
-│   └── ...
+│   ├── taliesin
+│   ├── test
+│   └── test2
 └── static
-    ├── context_info
-    │   ├── dark
-    │   │   └── ...
-    │   ├── forest
-    │   │   └── ...
-    │   └── grey
-    │       └── ...
-    ├── images
-    │   ├── classes
-    │   │   └── ...
-    │   ├── enemies
-    │   │   └── ...
-    │   │  
-    │   ├── menu
-    │   │   ├── load
-    │   │   │   └── ...
-    │   │   ├── newgame
-    │   │   │   └── ...
-    │   │   ├── options
-    │   │   │   └── ...
-    │   │   └── ...
-    │   └── sprites_credits.txt
-    ├── sound
-    │   └── ...
-    └── soundtrack
-        └── ...
+    ├── context_info
+    │   ├── dark
+    │   │   ├── assassin.txt
+    │   │   ├── duelist.txt
+    │   │   ├── heraldry.txt
+    │   │   └── mage.txt
+    │   ├── forest
+    │   │   ├── heraldry.txt
+    │   │   ├── mage.txt
+    │   │   ├── warden.txt
+    │   │   └── warrior.txt
+    │   └── grey
+    │       ├── heraldry.txt
+    │       ├── mage.txt
+    │       ├── warden.txt
+    │       └── warrior.txt
+    ├── images
+    │   ├── classes
+    │   ├── enemies
+    │   ├── game
+    │   ├── menu
+    │   │   ├── load
+    │   │   ├── newgame
+    │   │   └── options
+    │   └── sprites_credits.txt
+    ├── sound
+    └── soundtrack
 ```
 
 
