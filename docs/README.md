@@ -46,7 +46,7 @@ The Hero's Journey is a turn-based rpg, and its plot takes place on a continent 
 
 Clone this project
 ```console
-git clone https://github.com/Fernando-Medeiros/Pygame-RPG.git
+git clone https://github.com/Fernando-Medeiros/The-Hero-Journey.git
 ```
 
 Create the virtual environment
