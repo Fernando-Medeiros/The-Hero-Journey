@@ -5,10 +5,10 @@ def replace(str: str) -> str:
 
 class Log:
 
-    def log_attack(self, c_name: dict, e_name: dict, damage: dict) -> str:
+    def log_attack(self, c_name: str, e_name: str, damage: dict) -> str:
 
-        char_name = replace(c_name['name'])
-        enemy_name = replace(e_name['name'])
+        char_name = replace(c_name)
+        enemy_name = replace(e_name)
 
         match damage['status']:
 
@@ -24,9 +24,9 @@ class Log:
         return f'{char_name} inflicts {damage["damage"]:.1f} damage!'
 
     
-    def log_defense(self, name: dict, defense: bool) -> str:
+    def log_defense(self, name: str, defense: bool) -> str:
 
-        n = replace(name['name'])
+        n = replace(name)
 
         if defense:
             return f'{n} activate defense mode.'
@@ -34,14 +34,14 @@ class Log:
         return f"{n} couldn't defend itself"
 
     
-    def log_flee(self, name: dict, flee: bool) -> str:
+    def log_flee(self, name: str, flee: bool) -> str:
 
-        n = replace(name['name'])
+        n = replace(name)
 
-        if flee:
-            return f'{n} fled the battle.'
+        if not flee:
+            return f'{n} fled the battle'
 
-        return f'{n} failed to flee from battle '
+        return f'{n} failed to flee from battle'
 
     
     def erase_log(self, *args) -> None:

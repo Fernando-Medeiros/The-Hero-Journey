@@ -1,6 +1,6 @@
 import pygame as pg
 
-from app.functiontools import COLORS, draw_status_bar, draw_texts
+from app.tools import COLORS, draw_status_bar, draw_texts
 from paths import FOLDERS
 
 
@@ -11,16 +11,16 @@ class Views:
         self.main_screen = main_screen
         
     def draw_loots(self, args) -> None:
-        pos_x, pos_y = 25, 660
+        
+        pos_x, pos_y = 25, 800
         
         for key, value in args.items():
-            
-            if key in 'xp gold soul':
-                draw_texts(
-                    screen=self.main_screen,
-                    text='{} >>> {}'.format(key.title(), value),
-                    pos_x=pos_x, pos_y=pos_y,
-                    color=COLORS['GREEN'])
+            draw_texts(
+                screen=self.main_screen,
+                text='{} >>> {}'.format(key.title(), value),
+                pos_x=pos_x,
+                pos_y=pos_y,
+                color=COLORS['GREEN'])
 
             pos_y += 15
 
@@ -42,7 +42,8 @@ class Views:
             draw_texts(
                 screen=self.main_screen,
                 text='{} - {}'.format(index, info),
-                pos_x=pos_x, pos_y=pos_y,
+                pos_x=pos_x,
+                pos_y=pos_y,
                 color=color)
 
             pos_y += 30
@@ -50,8 +51,8 @@ class Views:
 
     def draw_enemy_sprite(self, enemy: list, index: int) -> None:
 
-        name = enemy[index].entity['attributes']['name'].title()
-        sprite_img = enemy[index].entity['attributes']['sprite']
+        name = enemy[index].name.title()
+        sprite_img = enemy[index].sprite
         
         sprite = pg.image.load(FOLDERS['enemies'] + sprite_img)
 
@@ -72,9 +73,9 @@ class Views:
         for items in args:
 
             info = [
-                '{:^45_.2f}/{:^45_.2f}'.format(items.entity['current']["hp"], items.entity['secondary']["hp"]),
-                '{:^45_.2f}/{:^45_.2f}'.format(items.entity['current']["mp"], items.entity['secondary']["mp"]),
-                '{:^45_.2f}/{:^45_.2f}'.format(items.entity['current']["stamina"], items.entity['secondary']["stamina"])
+                '{:^45_.2f}/{:^45_.2f}'.format(items.c_health, items.health),
+                '{:^45_.2f}/{:^45_.2f}'.format(items.c_energy, items.energy),
+                '{:^45_.2f}/{:^45_.2f}'.format(items.c_stamina, items.stamina)
             ]
 
             for index in range(len(info)):
@@ -82,7 +83,8 @@ class Views:
                 draw_texts(
                     screen=self.main_screen,
                     text=info[index],
-                    pos_x=pos_x, pos_y=pos_y,
+                    pos_x=pos_x,
+                    pos_y=pos_y,
                     size=10)
 
                 pos_y += 13
@@ -97,14 +99,14 @@ class Views:
         for items in args:
 
             secondary = [
-                items.entity['secondary']['hp'],
-                items.entity['secondary']['mp'],
-                items.entity['secondary']['stamina']
+                items.health,
+                items.energy,
+                items.stamina
             ]
             current = [
-                items.entity['current']['hp'],
-                items.entity['current']['mp'],
-                items.entity['current']['stamina']
+                items.c_health,
+                items.c_energy,
+                items.stamina
             ]
 
             for index in range(len(secondary)):

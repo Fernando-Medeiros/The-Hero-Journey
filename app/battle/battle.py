@@ -63,10 +63,12 @@ class Battle(Log, Views):
         return True if randint(0, 100) <= critical else False
 
     
-    def energy_used_in_battle(self, stamina) -> None:
+    def energy_used_in_battle(self, stamina: dict | object, enemy: bool = False) -> None:
 
-        stamina['stamina'] -= 0.3
-
+        if enemy:
+            stamina.c_stamina -= 0.3
+        else:
+            stamina['stamina'] -= 0.3
     
     def kill_sprite_enemy(self, enemy: list, index: int)  -> None:
 
@@ -74,28 +76,39 @@ class Battle(Log, Views):
         enemy.pop(index)    
 
 
-    def take_damage(self, health: dict, damage: dict, log: list)  -> None:
+    def take_damage(self, health: dict | object, damage: dict, log: list, enemy: bool = False)  -> None:
 
         log = [''] if len(log) == 0 else log
 
-        if not 'defense' in log[-1]:
-
-            health['hp'] -= damage['damage']
-
+        if not 'defense' in log[-1]:            
+            if enemy:
+                health['hp'] -= damage['damage']          
+            else:
+                health.c_health -= damage['damage']
     
-    def take_loots(self, char: dict, char_xp: dict, enemy: dict)  -> None:
+    def take_loots(self, char: dict, char_xp: dict, enemy: object)  -> None:
 
-        char['gold'] += enemy['gold']
-        char['soul'] += enemy['soul']
-        char_xp['xp'] += enemy['xp']
+        char['gold'] += enemy.gold
+        char['soul'] += enemy.soul
+        char_xp['xp'] += enemy.xp
 
 
-    def attack(self, att: dict, defe: dict) -> dict:
+    # I separated the attack of the character and the enemy until I refactored the character
+    def char_attack(self, att: dict, defe: object) -> dict:
 
         return self.damage(
             hit=att['attack'],
+            defense=defe.defense,
+            block=defe.block,
+            dodge=defe.dodge,
+            critical=att['critical'],
+        )
+    def enemy_attack(self, att: object, defe: dict) -> dict:
+
+        return self.damage(
+            hit=att.attack,
             defense=defe['defense'],
             block=defe['block'],
             dodge=defe['dodge'],
-            critical=att['critical'],
+            critical=att.critical,
         )
