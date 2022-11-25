@@ -1,66 +1,33 @@
-from random import randint
-
 import pygame as pg
 
-from app.functiontools import Obj
-
-from ..character.settings import BASIC_ATTRIBUTES
-from .base import BaseEntity
+from .base import Entity
 from .view import Views
 
 
-class Enemy(Obj, BaseEntity, Views):
+class Enemy(Entity, Views):
 
-    show_status = False
-    is_alive = True
+    def __init__(self, data: dict, img: str, pos_x: int, pos_y: int, main_screen: pg.Surface, *groups):
 
-    def __init__(self, data: dict, img, pos_x, pos_y, main_screen: pg.Surface, *groups):
-
-        Obj.__init__(self, img, pos_x, pos_y, *groups)
-        BaseEntity.__init__(self)
+        Entity.__init__(self)
+        
         self.entity['attributes'].update(data)
-        Views.__init__(self, main_screen)
 
-        self.list_of_loots = []
+        Views.__init__(self, main_screen,  img, pos_x, pos_y, *groups)
         
         self.assign_status_secondary()
-        self.assign_current_status()      
-
-
-    def _check_if_the_object_is_dead(self):
-
-        if self.entity['current']['hp'] <= 0.1:
-
-            self.is_alive = False
-
-
-    def _show_status(self, pos_mouse):
-
-        if self.rect.collidepoint(pos_mouse):
-
-            self.show_status = True
-        else:
-            self.show_status = False
-
+        self.assign_current_status()    
 
     def events(self, pos_mouse):
-        self._show_status(pos_mouse)
-
+        self._draw_status(pos_mouse)
 
     def update(self):
 
-        self._check_if_the_object_is_dead()
+        self._is_alive()
 
-        self.check_current_status()
+        self._check_current_status()
 
-        self.level_progression_enemy(self.level_up())
+        self._draw_name_and_level(self.entity)
 
-        self._draw_name_and_level(
-            self.entity['attributes'], self.show_status, self.rect)
+        self._draw_status_on_hover(self.entity)
 
-        self.draw_status_on_hover(
-            self.entity['attributes'], self.entity['status'], self.show_status, self.rect)
-
-        if self.is_alive:
-
-            self.status_regen()
+    

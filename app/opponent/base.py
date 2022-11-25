@@ -1,9 +1,10 @@
 from datetime import datetime
 
-from ..character.settings import BASIC_ATTRIBUTES
 
+class Entity:
 
-class BaseEntity:
+    alive = True
+    
     def __init__(self):
         
         self.entity = {
@@ -19,6 +20,8 @@ class BaseEntity:
                 'resistance': 1,
                 'rank': 1,
                 'xp': 1,
+                'gold': 1,
+                'soul': 1,
                 'sprite': '',
                 },
             'secondary': {
@@ -44,35 +47,15 @@ class BaseEntity:
             },
         }
 
-    def level_up(self) -> bool:
 
-        next_level = self.entity['attributes']['level'] * 15
+    def assign_status_secondary(self) -> None:
 
-        if self.entity['attributes']['xp'] >= next_level:
-            return True
-        return False
-
-
-    def level_progression_enemy(self, level_up):
-
-        if level_up:
-
-            list_attributes = BASIC_ATTRIBUTES
-
-            for attribute in list_attributes:
-
-                self.entity['attributes'][attribute] += 1
-
-            self.entity['attributes']['level'] += 1
-            self.entity['attributes']['xp'] = 1
-
-            self.assign_status_secondary()
-
-
-    def assign_status_secondary(self):
-
-        level, force, agility, vitality, intelligence, resistance = \
-            list(self.entity['attributes'].values())[3:9]
+        level = self.entity['attributes']['level']
+        force = self.entity['attributes']['force']
+        agility = self.entity['attributes']['agility']
+        vitality = self.entity['attributes']['vitality']
+        intelligence = self.entity['attributes']['intelligence']
+        resistance = self.entity['attributes']['resistance']
 
         self.entity['secondary']['hp'] = (vitality / 2) * force + (level / 3)
         self.entity['secondary']['mp'] = (intelligence / 2) * resistance + (level / 3)
@@ -86,14 +69,14 @@ class BaseEntity:
         self.entity['status']['luck'] = level / 10
 
 
-    def assign_current_status(self):
+    def assign_current_status(self) -> None:
 
         self.entity['current']['hp'] = self.entity['secondary']['hp']
         self.entity['current']['mp'] = self.entity['secondary']['mp']
         self.entity['current']['stamina'] = self.entity['secondary']['stamina']
 
 
-    def check_current_status(self):
+    def _check_current_status(self) -> None:
 
         for key, value in self.entity['current'].items():
 
@@ -101,7 +84,7 @@ class BaseEntity:
                 self.entity['current'][key] = 0
 
 
-    def status_regen(self):
+    def regenerate_status(self) -> None:
 
         time = datetime.today().second
 
@@ -111,3 +94,16 @@ class BaseEntity:
                 if value < self.entity['secondary'][status]:
 
                     self.entity['current'][status] += self.entity['secondary']['regen_' + status]
+
+
+    def _is_alive(self) -> None:
+        
+        self.regenerate_status()
+
+        if self.entity['current']['hp'] <= 0.1:
+
+            self.alive = False
+    
+    
+    def __str__(self) -> str:
+        return self.entity['attributes']['name']
