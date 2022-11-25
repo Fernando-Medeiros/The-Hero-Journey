@@ -6,11 +6,11 @@ from paths import FOLDERS
 
 class Views:
     
-    def __init__(self, main_screen):
+    def __init__(self, main_screen: pg.Surface):
 
         self.main_screen = main_screen
         
-    def draw_loots(self, args):
+    def draw_loots(self, args) -> None:
         pos_x, pos_y = 25, 660
         
         for key, value in args.items():
@@ -25,7 +25,7 @@ class Views:
             pos_y += 15
 
 
-    def draw_battle_info(self, log):
+    def draw_battle_info(self, log: list) -> None:
 
         pos_x, pos_y = 25, 540
 
@@ -48,7 +48,7 @@ class Views:
             pos_y += 30
 
 
-    def draw_enemy_sprite(self, enemy, index):
+    def draw_enemy_sprite(self, enemy: list, index: int) -> None:
 
         name = enemy[index].entity['attributes']['name'].title()
         sprite_img = enemy[index].entity['attributes']['sprite']
@@ -65,7 +65,7 @@ class Views:
         self.main_screen.blit(sprite, (171, 461))
 
 
-    def draw_info_status_enemy(self, *args):
+    def draw_info_status_enemy(self, *args) -> None:
 
         pos_x, pos_y = 46, 375
 
@@ -88,7 +88,7 @@ class Views:
                 pos_y += 13
     
 
-    def draw_bar_status(self, *args):
+    def draw_bar_status(self, *args) -> None:
 
         pos_x, pos_y = 46, 375
 

@@ -1,12 +1,14 @@
 from random import choice, randint
 
-from .log import LogBattle
+from .log import Log
 from .view import Views
 
 
-class Battle(LogBattle, Views):
+class Battle(Log, Views):
 
-    
+    def __init__(self, main_screen):
+        Views.__init__(self, main_screen)
+
     def data_character(self, char) -> tuple:
         attribute = char.attributes
         status = char.status
@@ -14,38 +16,29 @@ class Battle(LogBattle, Views):
         others = char.others
 
         return attribute, status, current, others
-
-
-    def data_enemy(self, enemy) -> tuple:
-        attribute = enemy.entity['attributes']
-        status = enemy.entity['status']
-        current = enemy.entity['current']
-
-        return attribute, status, current,
-
     
 
-    def damage(self, hit, defense, block, dodge, critical) -> list:
+    def damage(self, hit:float, defense:float, block:float, dodge:float, critical:float) -> dict:
 
         damage = hit - defense
 
         damage = 0 if damage <= 0 else damage
 
-        if block:
-            return [0, 'block']
-        if dodge:
-            return [0, 'dodge']
-        if critical:
-            return [damage * 2, 'critical']
+        if self.block(block):
+            return {'damage': 0, 'status': 'block'}
+        if self.parry(dodge):
+            return {'damage': 0, 'status': 'dodge'}
+        if self.critical(critical):
+            return {'damage': damage * 2, 'status': 'critical'}
         if damage == 0:
-            return [damage, 'miss']
+            return {'damage': damage, 'status': 'miss'}
         
-        return [damage, '']
+        return {'damage': damage, 'status':''}
 
 
-    def defense(self,) -> bool:
+    def defense(self) -> bool:
 
-        chance = 20
+        chance = 20     # 20/100
 
         return True if randint(0, 100) <= chance else False
 
@@ -55,56 +48,54 @@ class Battle(LogBattle, Views):
         return choice([True, False])
 
     
-    def block(self, block) -> bool:
+    def block(self, block: float) -> bool:
 
         return True if randint(0, 100) <= block else False
 
     
-    def parry(self, dodge) -> bool:
+    def parry(self, dodge: float) -> bool:
 
         return True if randint(0, 100) <= dodge else False
 
     
-    def critical(self, critical) -> bool:
+    def critical(self, critical: float) -> bool:
 
         return True if randint(0, 100) <= critical else False
 
     
-
-    def energy_used_in_battle(self, stamina):
+    def energy_used_in_battle(self, stamina) -> None:
 
         stamina['stamina'] -= 0.3
 
     
-    def kill_sprite_enemy(self, enemy, index):
+    def kill_sprite_enemy(self, enemy: list, index: int)  -> None:
 
         enemy[index].kill()
         enemy.pop(index)    
 
 
-    def take_damage(self, hp, damage, log):
+    def take_damage(self, health: dict, damage: dict, log: list)  -> None:
 
         log = [''] if len(log) == 0 else log
 
         if not 'defense' in log[-1]:
 
-            hp['hp'] -= damage[0]
+            health['hp'] -= damage['damage']
 
     
-    def take_loots(self, gold_soul, xp, enemy_loot):
+    def take_loots(self, char: dict, char_xp: dict, enemy: dict)  -> None:
 
-        gold_soul['gold'] += enemy_loot['gold']
-        gold_soul['soul'] += enemy_loot['soul']
-        xp['xp'] += enemy_loot['xp']
+        char['gold'] += enemy['gold']
+        char['soul'] += enemy['soul']
+        char_xp['xp'] += enemy['xp']
 
 
-    def ATTACK(self, status_att, status_def):
+    def attack(self, att: dict, defe: dict) -> dict:
 
-        hit = status_att['attack']
-        critical = self.critical(status_att['critical'])
-
-        defense = status_def['defense']
-        block = self.block(status_def['block'])
-        dodge = self.parry(status_def['dodge'])
-
-        return self.damage(hit, defense, block, dodge, critical)
+        return self.damage(
+            hit=att['attack'],
+            defense=defe['defense'],
+            block=defe['block'],
+            dodge=defe['dodge'],
+            critical=att['critical'],
+        )

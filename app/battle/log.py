@@ -1,45 +1,49 @@
 
-class LogBattle:
+def replace(str: str) -> str:
+    return str.replace('_', ' ').title()
 
-    def log_attack(self, char_name, enemy_name, damage):
 
-        charName = char_name['name'].replace('_', ' ').title()
-        enemyName = enemy_name['name'].replace('_', ' ').title()
+class Log:
 
-        match damage[1]:
+    def log_attack(self, c_name: dict, e_name: dict, damage: dict) -> str:
+
+        char_name = replace(c_name['name'])
+        enemy_name = replace(e_name['name'])
+
+        match damage['status']:
 
             case 'block':
-                return f'{enemyName} BLOCKED the damage!'
+                return f'{enemy_name} BLOCKED the damage!'
             case 'dodge':
-                return f'{enemyName} DODGED the damage!'
+                return f'{enemy_name} DODGED the damage!'
             case 'critical':
-                return f'{charName} inflicted {damage[0]:.1f} CRITICAL damage!!!'
+                return f'{char_name} inflicted {damage["damage"]:.1f} CRITICAL damage!!!'
             case 'miss':
-                return f'{charName} missed attack!'
-            case '':
-                return f'{charName} inflicts {damage[0]:.1f} damage!'
+                return f'{char_name} missed attack!'
+        
+        return f'{char_name} inflicts {damage["damage"]:.1f} damage!'
 
     
-    def log_defense(self, name, defense) -> str:
+    def log_defense(self, name: dict, defense: bool) -> str:
 
-        name_ = name['name'].replace('_', ' ').title()
+        n = replace(name['name'])
 
         if defense:
-            return f'{name_} activate defense mode.'
+            return f'{n} activate defense mode.'
         
-        return f"{name_} couldn't defend itself"
+        return f"{n} couldn't defend itself"
 
     
-    def log_flee(self, name, flee) -> str:
+    def log_flee(self, name: dict, flee: bool) -> str:
 
-        name = name['name'].replace('_', ' ').title()
+        n = replace(name['name'])
 
-        if not flee:
-            return f'{name} fled the battle.'
-        
-        return f'{name} failed to flee from battle '
+        if flee:
+            return f'{n} fled the battle.'
+
+        return f'{n} failed to flee from battle '
 
     
-    def erase_log(self, *args):
+    def erase_log(self, *args) -> None:
 
         [item.clear() for item in args]
