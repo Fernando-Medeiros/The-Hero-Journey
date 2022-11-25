@@ -11,13 +11,12 @@ class MenuController:
 
     is_active = True
 
+    options_group = pg.sprite.Group()
+    load_group = pg.sprite.Group()
+    new_game_group = pg.sprite.Group()
+    menu_group = pg.sprite.Group()
+
     def __init__(self, main_screen):
-
-        self.options_group = pg.sprite.Group()
-        self.load_group = pg.sprite.Group()
-        self.new_game_group = pg.sprite.Group()
-        self.menu_group = pg.sprite.Group()
-
         self.menu_ = Menu(main_screen, self.menu_group)
         self.new = NewGame(main_screen, self.new_game_group)
         self.load = Load(main_screen, self.load_group)
@@ -78,12 +77,10 @@ class MenuController:
 class GameController:
 
     is_active = True 
+    game_group = pg.sprite.Group()
 
     def __init__(self, main_screen):
-
-        self.game_group = pg.sprite.Group()
         self.game = Game(main_screen, self.game_group)
-
 
     def draw(self, main_screen):
 
@@ -96,7 +93,6 @@ class GameController:
             else:
                 self.is_active = False
                 self.game.is_active = True
-
 
     def events(self, event):
 

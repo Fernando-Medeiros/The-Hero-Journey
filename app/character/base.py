@@ -71,21 +71,7 @@ class BaseEntity:
             self.attributes['xp'] = 1
 
             self.assign_status_secondary()
-
-
-    def level_progression_enemy(self, level_up):
-
-        if level_up:
-
-            for attribute in BASIC_ATTRIBUTES:
-
-                self.attributes[attribute] += 1
-
-            self.attributes['level'] += 1
-            self.attributes['xp'] = 1
-
-            self.assign_status_secondary()
-
+            
 
     def assign_status_secondary(self):
 

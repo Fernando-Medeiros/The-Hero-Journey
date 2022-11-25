@@ -107,7 +107,7 @@ class Character(BaseEntity, View):
         self.show_status = False
 
 
-    def save(self, location):
+    def save(self):
 
         path = '{}{}'.format(
             FOLDERS['save'],
@@ -123,7 +123,7 @@ class Character(BaseEntity, View):
             file.write('{}\n{}\n{}\n'.format(
                 str(self.others['gold']),
                 str(self.others['soul']),
-                str(location).strip() 
+                str(self.location).strip() 
                 ))
 
         self.others['skills'].clear()
