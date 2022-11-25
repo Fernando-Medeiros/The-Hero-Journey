@@ -2,7 +2,7 @@ import os
 
 import pygame as pg
 
-from app.functiontools import COLORS, Obj
+from app.tools import COLORS, Obj
 from paths import *
 
 from .settings import txt_options

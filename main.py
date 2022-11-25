@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pygame as pg
 
-VERSION = '2.6'
+VERSION = '2.7'
 
 GAME_NAME = "The Hero's Journey"
 
@@ -96,7 +96,7 @@ class Main:
 
             if event.type == pg.QUIT:
                 
-                from app.functiontools import save_log_and_exit
+                from app.tools import save_log_and_exit
                 save_log_and_exit()
 
             if self.menu.is_active:

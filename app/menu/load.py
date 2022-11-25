@@ -2,7 +2,7 @@ import os
 
 import pygame as pg
 
-from app.functiontools import COLORS, Obj, check_records, draw_texts
+from app.tools import COLORS, Obj, check_records, draw_texts
 from paths import *
 
 from .settings import title_load

@@ -3,7 +3,7 @@ from time import sleep
 
 import pygame as pg
 
-from app.functiontools import COLORS, Obj, draw_texts
+from app.tools import COLORS, Obj, draw_texts
 from paths import *
 
 from ..character.settings import *

@@ -3,9 +3,7 @@ from datetime import datetime
 from .settings import *
 
 
-class BaseEntity:
-
-    show_status = False
+class Entity:
 
     def __init__(self):
 
@@ -43,20 +41,20 @@ class BaseEntity:
             'critical': 1,
             'luck': 1
         }
+        self.others = {
+            'gold': 0,
+            'soul': 0,
+            'skills': [],
+            'proficiency': [],
+            'inventory': [],
+            'equips': []
+        }
 
-
-    def level_up(self) -> bool:
-
+    def level_progression(self) -> None:
+        
         next_level = self.attributes['level'] * 15
 
         if self.attributes['xp'] >= next_level:
-            return True
-        return False
-
-
-    def level_progression(self, level_up):
-
-        if level_up:
             
             if self.attributes['class'] == 'mage':
                 data_progression = CLASS_PROGRESSION_MAGE
@@ -73,10 +71,14 @@ class BaseEntity:
             self.assign_status_secondary()
             
 
-    def assign_status_secondary(self):
+    def assign_status_secondary(self) -> None:
 
-        level, force, agility, vitality, intelligence, resistance = \
-            list(self.attributes.values())[3:9]
+        level = self.attributes['level']
+        force = self.attributes['force']
+        agility = self.attributes['agility']
+        vitality = self.attributes['vitality']
+        intelligence = self.attributes['intelligence']
+        resistance = self.attributes['resistance']
 
         self.status_secondary['hp'] = (vitality / 2) * force + (level / 3)
         self.status_secondary['mp'] = (intelligence / 2) * resistance + (level / 3)
@@ -90,30 +92,26 @@ class BaseEntity:
         self.status['luck'] = level / 10
 
 
-    def assign_current_status(self):
+    def assign_current_status(self) -> None:
 
         self.current_status['hp'] = self.status_secondary['hp']
         self.current_status['mp'] = self.status_secondary['mp']
         self.current_status['stamina'] = self.status_secondary['stamina']
 
 
-    def check_current_status(self):
-
+    def check_current_status(self) -> None:
+        
         for key, value in self.current_status.items():
+             if value <= 0: self.current_status.update({key: 0})
 
-            if value <= 0:
-
-                self.current_status[key] = 0
-
-
-    def status_regen(self):
-
+    def regenerate_status(self) -> None:
         time = datetime.today().second
-
+        
         if time % 2 == 0:
-
+        
             for status, value in self.current_status.items():
-
                 if value < self.status_secondary[status]:
-
                     self.current_status[status] += self.status_secondary['regen_' + status]
+
+    def __str__(self) -> str:
+        return self.attributes['name']

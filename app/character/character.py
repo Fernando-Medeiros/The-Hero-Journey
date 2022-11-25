@@ -2,36 +2,23 @@ import os
 
 import pygame as pg
 
-from app.functiontools import check_records
+from app.tools import check_records
 from paths import FOLDERS
 
-from .base import BaseEntity
+from .base import Entity
 from .settings import DARK_ELF, FOREST_ELF, GREY_ELF, SKILLS
 from .view import View
 
 
-class Character(BaseEntity, View):
+class Character(Entity, View):
 
     def __init__(self, main_screen):
         super().__init__()
-        BaseEntity.__init__(self)
+        Entity.__init__(self)
         View.__init__(self, main_screen)
         
         self.index = 0
-
         self.location = 'Sea North'
-
-        self.others = {
-            'gold': 0,
-            'soul': 0,
-            'skills': [],
-            'proficiency': [],
-            'inventory': [],
-            'equips': []
-        }
-
-        self.button_status = pg.rect.Rect(15, 190, 373, 30)
-
 
     def _get_index_from_name(self):
         # LOAD THE CHARACTER NAME INTO THE ENV AND RETURN INDEX TO GET THE DATA LIST.
@@ -98,15 +85,6 @@ class Character(BaseEntity, View):
             return folder[class_] + list_with_gold_soul_and_location
 
 
-    def _show_status(self, pos_mouse):
-
-        if self.button_status.collidepoint(pos_mouse):
-            self.show_status = True
-            return
-
-        self.show_status = False
-
-
     def save(self):
 
         path = '{}{}'.format(
@@ -133,7 +111,6 @@ class Character(BaseEntity, View):
 
     def events(self, event, pos_mouse):
         if event.type == pg.MOUSEBUTTONDOWN:
-
             self._show_status(pos_mouse)
 
 
@@ -157,8 +134,7 @@ class Character(BaseEntity, View):
         self._draw_bar_status(self.current_status, self.status_secondary, self.attributes)
         self._draw_sprites(self.attributes)
         self._draw_info_status(self.current_status, self.status_secondary, self.attributes, self.others)
-        self._draw_status(self.attributes, self.status, self.show_status, self.button_status)
+        self._draw_status(self.attributes, self.status)
 
-        # 
-        self.status_regen()
-        self.level_progression(self.level_up())
+        self.regenerate_status()
+        self.level_progression()

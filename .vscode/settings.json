@@ -2,7 +2,7 @@
     "python.linting.enabled": true,
     "python.linting.flake8Enabled": true,
     "python.formatting.provider": "black",
-    "python.analysis.typeCheckingMode": "basic",
+    "python.analysis.typeCheckingMode": "off",
     "[python]": {
         "editor.rulers": [
             88
@@ -12,7 +12,7 @@
             "source.organizeImports": true
         }
     },
-    "workbench.colorTheme": "Dracula Soft",
+    "workbench.colorTheme": "Ayu Mirage",
     "workbench.startupEditor": "readme",
     "python.testing.pytestArgs": [
         "tests"

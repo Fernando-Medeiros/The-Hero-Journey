@@ -30,7 +30,6 @@ class Obj(pg.sprite.Sprite):
         self.rect.width = self.image.get_width()
         self.rect.height = self.image.get_height()
 
-        
 def save_log_and_exit():
 
     datetime_app = getenv('DATETIME_APP')
@@ -99,7 +98,7 @@ def draw_status_bar(
 def draw_rect(
     screen: pg.Surface,
     color: tuple[int, int, int] = COLORS['WHITE'],
-    rect: list[int] = [0,0,0,0],
+    rect: list[int] | pg.Rect = [0,0,0,0],
     width: int = 1,
     border: list[int] = [0,7,7,7,7]) -> None:
 
