@@ -7,17 +7,17 @@ from paths import FOLDERS
 class Views:
     
     def __init__(self, main_screen: pg.Surface):
-
         self.main_screen = main_screen
         
-    def draw_loots(self, args) -> None:
+        
+    def draw_loots(self, loots: dict) -> None:
         
         pos_x, pos_y = 25, 800
         
-        for key, value in args.items():
+        for key, value in loots.items():
             draw_texts(
                 screen=self.main_screen,
-                text='{} >>> {}'.format(key.title(), value),
+                text='{} -> {}'.format(key.title(), value),
                 pos_x=pos_x,
                 pos_y=pos_y,
                 color=COLORS['GREEN'])
@@ -25,7 +25,7 @@ class Views:
             pos_y += 15
 
 
-    def draw_battle_info(self, log: list) -> None:
+    def draw_log(self, log: list) -> None:
 
         pos_x, pos_y = 25, 540
 
@@ -36,7 +36,6 @@ class Views:
             del log[:12]
 
         for index, info in enumerate(log):
-
             color = white if index % 2 == 0 else wood
 
             draw_texts(
@@ -49,76 +48,58 @@ class Views:
             pos_y += 30
 
 
-    def draw_enemy_sprite(self, enemy: list, index: int) -> None:
+    def draw_enemy(self, enemy: object) -> None:
 
-        name = enemy[index].name.title()
-        sprite_img = enemy[index].sprite
-        
-        sprite = pg.image.load(FOLDERS['enemies'] + sprite_img)
+        sprite = pg.image.load(FOLDERS['enemies'] + enemy.sprite)
 
         draw_texts(
             screen=self.main_screen,
-            text=f'{name}',
+            text='{}'.format(enemy.name.title()),
             pos_x=30,
             pos_y=425,
-            size=20
-            )
+            size=20)
+
         self.main_screen.blit(sprite, (171, 461))
 
 
-    def draw_info_status_enemy(self, *args) -> None:
+    def draw_enemy_info_status(self, enemy: object) -> None:
 
         pos_x, pos_y = 46, 375
+        
+        info = [
+            '{:^45_.2f}/{:^45_.2f}'.format(enemy.c_health, enemy.health),
+            '{:^45_.2f}/{:^45_.2f}'.format(enemy.c_energy, enemy.energy),
+            '{:^45_.2f}/{:^45_.2f}'.format(enemy.c_stamina, enemy.stamina)
+        ]
+        for text in info:
+            draw_texts(
+                screen=self.main_screen,
+                text=text,
+                pos_x=pos_x,
+                pos_y=pos_y,
+                size=10)
 
-        for items in args:
-
-            info = [
-                '{:^45_.2f}/{:^45_.2f}'.format(items.c_health, items.health),
-                '{:^45_.2f}/{:^45_.2f}'.format(items.c_energy, items.energy),
-                '{:^45_.2f}/{:^45_.2f}'.format(items.c_stamina, items.stamina)
-            ]
-
-            for index in range(len(info)):
-
-                draw_texts(
-                    screen=self.main_screen,
-                    text=info[index],
-                    pos_x=pos_x,
-                    pos_y=pos_y,
-                    size=10)
-
-                pos_y += 13
+            pos_y += 13
     
 
-    def draw_bar_status(self, *args) -> None:
+    def draw_enemy_bar_status(self, enemy: object) -> None:
+        status = [
+            [enemy.health, enemy.c_health, COLORS['RED']],
+            [enemy.energy, enemy.c_energy, COLORS['BLUE']],
+            [enemy.stamina, enemy.c_stamina, COLORS['GREEN']],
+            ]
 
         pos_x, pos_y = 46, 375
 
-        colors = [COLORS['RED'], COLORS['BLUE'], COLORS['GREEN']]
+        for bar in status:
+            draw_status_bar(
+                screen=self.main_screen,
+                height=13,
+                fixed_value=bar[0],
+                width=310,
+                color=bar[2],
+                rect=(pos_x, pos_y),
+                current_value=bar[1],
+                color_bg=COLORS['BLACK'])
 
-        for items in args:
-
-            secondary = [
-                items.health,
-                items.energy,
-                items.stamina
-            ]
-            current = [
-                items.c_health,
-                items.c_energy,
-                items.stamina
-            ]
-
-            for index in range(len(secondary)):
-
-                draw_status_bar(
-                    screen=self.main_screen,
-                    height=13,
-                    fixed_value=secondary[index],
-                    width=310,
-                    color=colors[index],
-                    rect=(pos_x, pos_y),
-                    current_value=current[index],
-                    color_bg=COLORS['BLACK'])
-
-                pos_y += 13
+            pos_y += 13
