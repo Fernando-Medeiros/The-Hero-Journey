@@ -1,5 +1,5 @@
 
-class EnemyModel():
+class EnemyModel(object):
     
         name: str = '...'
         classe: str = 'tag'

@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pygame import Surface
 
-from ..database.enemies_db import EnemieDB
+from ..database.enemy_db import EnemieDB
 from .model import EnemyModel
 from .view import Views
 
@@ -21,20 +21,18 @@ class Enemy(EnemyModel, Views):
 
         Views.__init__(self, main_screen, pos_x, pos_y, *groups)
         
-        self._assign_status_secondary()
-        self._assign_current_status()           
+        self._assign_status_secondary_and_current()       
 
 
     def _update_entity(self, tag: str) -> None:
-
-        entity: dict = self.db.get_random_enemy_by_tag(tag)
         self.classe = tag
+        entity: dict = self.db.get_random_enemy_by_tag(tag)
 
         for key, value in entity.items():
             setattr(self, key, value)
 
 
-    def _assign_status_secondary(self) -> None:
+    def _assign_status_secondary_and_current(self) -> None:
 
         self.health = (self.vitality / 2) * self.force + (self.level / 3)
         self.energy = (self.intelligence / 2) * self.resistance + (self.level / 3)
@@ -47,11 +45,9 @@ class Enemy(EnemyModel, Views):
         self.critical = self.agility / 20
         self.luck = self.level / 10
 
-
-    def _assign_current_status(self) -> None:
         self.c_health = self.health
         self.c_energy = self.energy
-        self.c_stamina = self.stamina
+        self.c_stamina = self.stamina      
 
 
     def _check_current_status(self) -> None:
@@ -73,8 +69,11 @@ class Enemy(EnemyModel, Views):
 
 
     def _is_alive(self) -> None:     
-        self._regenerate_status()
-        self.alive_ = False if self.c_health <= 0.1 else True
+        
+        if self.c_health >= 0.1:
+            self._regenerate_status()
+        else:
+            self.alive_ = False 
     
 
     def events(self, pos_mouse):
