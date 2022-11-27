@@ -6,7 +6,7 @@
 <br>
 
 <h1 align="center">
-    The Hero's Journey  v.2.7
+    The Hero's Journey  v.2.8
 </h1>
 
 
@@ -83,18 +83,24 @@ python main.py
 │   │   ├── skills.py
 │   │   └── view.py
 │   ├── character
-│   │   ├── base.py
 │   │   ├── character.py
-│   │   ├── settings.py
+│   │   ├── model.py
+│   │   ├── settings
+│   │   │   ├── classe_progression.json
+│   │   │   ├── classes.json
+│   │   │   ├── settings.py
+│   │   │   └── skills.json
 │   │   └── view.py
 │   ├── database
 │   │   ├── base.py
-│   │   ├── enemies_db.py
-│   │   ├── enemies.json
-│   │   ├── map_db.py
-│   │   └── map.json
+│   │   ├── character_db.py
+│   │   ├── db
+│   │   │   ├── characters.json
+│   │   │   ├── enemies.json
+│   │   │   └── maps.json
+│   │   ├── enemy_db.py
+│   │   └── map_db.py
 │   ├── events.py
-│   ├── functiontools.py
 │   ├── game.py
 │   ├── menu
 │   │   ├── load.py
@@ -103,23 +109,21 @@ python main.py
 │   │   ├── options.py
 │   │   └── settings.py
 │   ├── opponent
-│   │   ├── base.py
-│   │   ├── opponent.py
+│   │   ├── enemy.py
+│   │   ├── model.py
 │   │   └── view.py
-│   └── sound.py
+│   ├── sound.py
+│   └── tools.py
 ├── docs
 │   ├── img
 │   ├── log.txt
-│   └── README.md
+│   ├── README.md
+│   └── tasks.md
 ├── LICENSE
 ├── main.py
 ├── paths.py
 ├── requirements.txt
 ├── runtime.txt
-├── save
-│   ├── taliesin
-│   ├── test
-│   └── test2
 └── static
     ├── context_info
     │   ├── dark
@@ -148,6 +152,7 @@ python main.py
     │   └── sprites_credits.txt
     ├── sound
     └── soundtrack
+        └── (97) Orpheus Odyssey - Legends on Strings - YouTube.url
 ```
 
 

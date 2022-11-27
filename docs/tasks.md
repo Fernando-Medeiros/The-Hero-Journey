@@ -1,7 +1,7 @@
 ## Tasks - 2022
 
 - [ ] Refactor
-  - [ ] Character
+  - [x] Character
   - [x] Battle
   - [x] Enemy
   - [X] Events
@@ -11,7 +11,7 @@
 ## To do
 
 - [ ] Create Map Controller 
-- [ ] Change Save mode from .txt to .Json
+- [x] Change Save mode from .txt to .Json
 
 
 <br>
