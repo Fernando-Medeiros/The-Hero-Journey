@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pygame as pg
 
-VERSION = '2.7'
+VERSION = '2.8'
 
 GAME_NAME = "The Hero's Journey"
 
@@ -25,8 +25,7 @@ MIN_FRAMES = 30
 MAX_FRAMES = 60
 
 # CHARACTER SETTINGS
-CHARNAME = '' 
-MAX_RECORDS = 9
+CHARNAME = ''
 MIN_CHARACTERS_NAME = 3
 MAX_CHARACTERS_NAME = 20
 
@@ -41,8 +40,8 @@ class Main:
             (DEFAULT_WIDTH, DEFAULT_HEIGHT),
             pg.SCALED | pg.RESIZABLE
             )
-
-        self.frames = pg.time.Clock()
+        
+        self.clock = pg.time.Clock()
 
         from app.events import GameController, MenuController
 
@@ -63,21 +62,19 @@ class Main:
             'DISPLAY_NONE' : DISPLAY_NONE,
             'FRAMES': FRAMES,
             'MIN_FRAMES': MIN_FRAMES,
-            'MAX_FRAMES': MAX_FRAMES,
-            'MAX_RECORDS': MAX_RECORDS,
-            'CHARNAME': CHARNAME,
+            'MAX_FRAMES': MAX_FRAMES,           
+            'CHARNAME': CHARNAME, 
             'MIN_CHARACTERS_NAME': MIN_CHARACTERS_NAME,
-            'MAX_CHARACTERS_NAME': MAX_CHARACTERS_NAME,        
+            'MAX_CHARACTERS_NAME': MAX_CHARACTERS_NAME,
+            'EVENTS': ''
         }
         for key, value in consts.items():
             os.environ[key] = str(value)
 
-
     def init_game(self):
         pg.init()
         pg.font.init()
-        pg.mixer.init()
-                       
+        pg.mixer.init()                       
 
     def draw(self):
         if self.menu.is_active:
@@ -88,14 +85,12 @@ class Main:
 
         else:
             self.menu.is_active = True
-            self.game.is_active = True
-                    
+            self.game.is_active = True                    
 
     def events(self):
         for event in pg.event.get():
 
-            if event.type == pg.QUIT:
-                
+            if event.type == pg.QUIT:                
                 from app.tools import save_log_and_exit
                 save_log_and_exit()
 
@@ -105,15 +100,13 @@ class Main:
             elif self.game.is_active:
                 self.game.events(event)
 
-
     def update(self):
-        self.frames.tick(int(os.getenv('FRAMES', '30')))
+        self.clock.tick(int(os.getenv('FRAMES', '30')))
         self.draw()
         self.events()
-        pg.display.set_caption('{} | {:.2f}'.format(GAME_NAME, self.frames.get_fps()))
+        pg.display.set_caption('{} | {:.2f}'.format(GAME_NAME, self.clock.get_fps()))
         pg.display.update()
 
-   
 
 if __name__ == '__main__':
     main = Main()

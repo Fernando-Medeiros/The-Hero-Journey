@@ -1,5 +1,5 @@
 from datetime import datetime
-from os import getenv, listdir, remove
+from os import getenv
 from time import sleep
 
 import pygame as pg
@@ -43,21 +43,6 @@ def save_log_and_exit():
     quit()
 
 
-def check_records(folder: str) -> list:
-
-    list_records = [save for save in listdir(folder)]
-    records = []
-
-    for save in list_records:
-        if not open(folder + save, mode='r+', encoding='utf-8').readlines():
-            remove(folder + save)
-
-        with open(folder + save, mode='r+', encoding='utf-8') as file:
-            records.append(file.read().strip().split('\n'))
-
-    return records
-
-
 def draw_texts(
     screen: pg.Surface,
     text: str,
@@ -81,13 +66,14 @@ def draw_status_bar(
     color: tuple[int, int, int],
     rect: tuple[int, int],
     current_value: int,
-    color_bg=COLORS['WHITE']) -> None:
+    color_bg=COLORS['WHITE'],
+    border: list[int] = [0,7,7,7,7]) -> None:
     
+    # BORDER: rounded -> radius, T-left, T-right, B-left, B-right
+
     fixed_width = width
     current_size = fixed_value / fixed_width
-
-    border = 0, 7, 7, 7, 7  # rounded -> radius, T-left, T-right, B-left, B-right
-
+    
     pg.draw.rect(
         screen, color, (*rect, round(current_value / current_size), height), 0, *border)
 
