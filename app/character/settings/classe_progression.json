@@ -1,0 +1,30 @@
+{
+    "duelist": {
+        "force": 1,
+        "agility": 3,
+        "vitality": 1,
+        "intelligence": 1,
+        "resistance": 1
+    },
+    "mage": {
+        "force": 1,
+        "agility": 2,
+        "vitality": 1,
+        "intelligence": 2,
+        "resistance": 1
+    },
+    "warrior": {
+        "force": 2,
+        "agility": 1,
+        "vitality": 2,
+        "intelligence": 1,
+        "resistance": 1
+    },
+    "warden": {
+        "force": 1,
+        "agility": 1,
+        "vitality": 2,
+        "intelligence": 1,
+        "resistance": 2
+    }
+}

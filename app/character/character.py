@@ -1,140 +1,134 @@
 import os
+from datetime import datetime
 
-import pygame as pg
+from pygame import MOUSEBUTTONDOWN, Surface, image
 
-from app.tools import check_records
+from app.database.character_db import CharacterDB
 from paths import FOLDERS
 
-from .base import Entity
-from .settings import DARK_ELF, FOREST_ELF, GREY_ELF, SKILLS
-from .view import View
+from .model import CharacterModel
+from .view import Views
 
 
-class Character(Entity, View):
+class Character(CharacterModel, Views):
+    
+    alive_ = True
+    
+    db = CharacterDB()
 
-    def __init__(self, main_screen):
-        super().__init__()
-        Entity.__init__(self)
-        View.__init__(self, main_screen)
+    def __init__(self, main_screen: Surface, *groups):
         
-        self.index = 0
-        self.location = 'Sea North'
+        CharacterModel.__init__(self)
 
-    def _get_index_from_name(self):
-        # LOAD THE CHARACTER NAME INTO THE ENV AND RETURN INDEX TO GET THE DATA LIST.
-        for index, item in enumerate(check_records('save/')):
-            if os.environ['CHARNAME'] == item[0]:
-                self.index = index
+        Views.__init__(self, main_screen, *groups)
+        
+        self._assign_status_secondary_and_current()
 
 
-    def _unpack_basic_status(self, index) -> tuple:
+    def _assign_status_secondary_and_current(self) -> None:
 
-        name, ethnicity, class_, level = check_records(FOLDERS['save'])[index][:4]
+        self.health = (self.vitality / 2) * self.force + (self.level / 3)
+        self.energy = (self.intelligence / 2) * self.resistance + (self.level / 3)
+        self.stamina = (self.resistance / 2) + self.vitality
 
-        return name, ethnicity, class_, level
+        self.attack = self.force + (self.agility / 3)
+        self.defense = self.resistance + (self.agility / 3)
+        self.dodge = self.agility / 10
+        self.block = self.resistance / 10
+        self.critical = self.agility / 20
+        self.luck = self.level / 10
+        
 
+    def _check_current_status(self) -> None:
+        check = ['c_health', 'c_energy', 'c_stamina']
 
-    def _assign_basic_attributes(self):
-
-        list_keys = [key for key in self.attributes]
-
-        list_values = check_records(FOLDERS['save'])[self.index]
-
-        status = list_values + self._first_game() if len(list_values[:]) < 5 else list_values
-
-        for index, key in enumerate(list_keys):
-
-            item = int(status[index]) if str(status[index]).isnumeric() else status[index]
-
-            self.attributes[key] = item
-
-
-    def _assign_gold_soul(self):
-
-        values = check_records(FOLDERS['save'])[self.index]
-
-        if len(values) >= 14:
-
-            self.others['gold'], self.others['soul'] = int(values[-3]), int(values[-2])
+        for c_status in check:
+            attr = getattr(self, c_status)
+            if attr <= 0:
+                setattr(self, c_status, 0)
 
 
-    def _assign_location(self):
+    def _regenerate_status(self) -> None:       
+        time = datetime.today().second
 
-        if len(check_records(FOLDERS['save'])[self.index]) >= 14:
+        if time % 2 == 0:            
+            if self.c_health < self.health: self.c_health += self.r_health 
+            if self.c_energy < self.energy: self.c_energy += self.r_energy 
+            if self.c_stamina < self.stamina: self.c_stamina += self.r_stamina
+    
 
-            self.location = check_records(FOLDERS['save'])[self.index][-1]
+    def _is_alive(self) -> None:     
+        self.alive_ = True if self.c_health >= 0.1 else False
+            
+
+    def _level_progression(self) -> None:
+        
+        def update_attr(self, classe: str) -> dict:            
+            db = self.db.read_json_db('app/charater/settings/classe_progression.json')    
+            
+            for attr, value in db[classe].items():
+                setattr(self, attr, getattr(self, attr) + value)
+
+        if self.xp >= self.level * 15: # next_level
+            
+            match self.classe:
+                case 'duelist':
+                    update_attr(self.classe)
+                case 'mage':
+                    update_attr(self.classe)
+                case 'warrior':
+                    update_attr(self.classe)
+                case 'warden':
+                    update_attr(self.classe)
+
+            self.level += 1
+            self.xp = 1
+            self.assign_status_secondary()
 
 
-    def _assign_others(self):
+    def save(self) -> None:
+        exclude_attrs = [
+            '_Sprite__g', 'image', 'rect', 'main_screen',
+            'button_status', 'name', 'show_status', 'alive_'
+            ]
+            
+        attrs: dict = self.__dict__.copy()
+    
+        for key in exclude_attrs:
+            attrs.pop(key)
+        
+        self.db.save(self.name, attrs)
+        
 
-        name, ethnicity, class_, level = self._unpack_basic_status(self.index)
+    def load(self) -> None:
+        c_name = os.environ['CHARNAME']
 
-        self.others['skills'].append(SKILLS[ethnicity[0] + '_' + class_])
-
-
-    def _first_game(self):
-
-        name, ethnicity, class_, level = self._unpack_basic_status(self.index)
-
-        folder = DARK_ELF if 'dark' in ethnicity else FOREST_ELF if 'forest' in ethnicity else GREY_ELF
-
-        list_with_gold_soul_and_location = [0, 0, 'Sea North']
-
-        if str(level) == '1':
-
-            return folder[class_] + list_with_gold_soul_and_location
-
-
-    def save(self):
-
-        path = '{}{}'.format(
-            FOLDERS['save'],
-            str(self.attributes['name']).lower()
-            )
-
-        with open(path, mode='w+', encoding='utf-8') as file:
-
-            for value in self.attributes.values():
-
-                file.write('{}\n'.format(str(value).strip()))
-
-            file.write('{}\n{}\n{}\n'.format(
-                str(self.others['gold']),
-                str(self.others['soul']),
-                str(self.location).strip() 
-                ))
-
-        self.others['skills'].clear()
-
-        self.others['gold'], self.others['soul'] = 0, 0
+        if c_name:
+            for key, value in self.db.read(c_name).items():
+                setattr(self, key, value)
+            
+            self.name = c_name
+            self.image = image.load('./{}{}'.format(FOLDERS['classes'], self.sprite))
+            self._assign_status_secondary_and_current()
+            
+            os.environ['CHARNAME'] = ''
 
 
     def events(self, event, pos_mouse):
-        if event.type == pg.MOUSEBUTTONDOWN:
+        if event.type == MOUSEBUTTONDOWN:
             self._show_status(pos_mouse)
-
+      
 
     def update(self):
-        
-        self._get_index_from_name()
+        self.load()
+        self._is_alive()
+        self._regenerate_status()
+        self._check_current_status()
+      
+        self._draw_bar_status()
+        self._draw_info_status()
+        self._draw_status()
+              
 
-        # AFTER LOAD CHARACTER
-        if not self.others['skills']:
-
-            self._assign_basic_attributes()
-            self.assign_status_secondary()
-            self.assign_current_status()
-            self._assign_gold_soul()
-            self._assign_location()
-            self._assign_others()
-
-        self.check_current_status()
-
-        # VIEW
-        self._draw_bar_status(self.current_status, self.status_secondary, self.attributes)
-        self._draw_sprites(self.attributes)
-        self._draw_info_status(self.current_status, self.status_secondary, self.attributes, self.others)
-        self._draw_status(self.attributes, self.status)
-
-        self.regenerate_status()
-        self.level_progression()
+    def __str__(self) -> str:
+        return self.name           

@@ -1,0 +1,44 @@
+{
+    "dark-elf": {
+        "assassin": {
+            "supernatural dodge": "When an enemy you can see hits you with an attack, you can use your reaction to halve the damage taken.",
+            "luckt strike": "If one of your attacks fails, you can turn that failure into a hit, and get a second chance. (critical damage)"
+        },
+        "duelist": {
+            "duelism": "When you wield a melee weapon in one hand,and no other weapons,you gain 25% bonus damage with that weapon.",
+            "combat with two weapons": "When you are engaged in a two-weapon fight,you may occasionally land a second blow."
+        },
+        "mage": {
+            "conjuration": "As a student of arcane magic, you possess a spellbook (or grimoire), that reveals the first glimpses of your true power.(receives a fixed element)",
+            "arcana recovery": "You learned how to recover some of your magical energy by studying your spellbook.(mana regeneration)"
+        }
+    },
+    "forest-elf": {
+        "mage": {
+            "circle spells": "Your mystical connection to the land infuses you with the ability to cast certain spells. random bonus depending on the terrain.",
+            "natural recovery": "You can recover some of your magical energy by stopping to meditate and commune with nature.(hp and mp regeneration)"
+        },
+        "warrior": {
+            "wild combat form": "You assume a savage form adding a 3% damage bonus for each free gear slot.",
+            "wild form of elemental": "Occasionally you summon an elemental form of pure essence to aid in the attack. The elemental's strength varies according to its level."
+        },
+        "warden": {
+            "dodge fortification": "Warden are experts in defense, and know how to maximize the potential of their armor, you receive a 5% bonus for each medium armor piece of equipment.",
+            "hybrid defense": "When using two weapons or two-handed weapons you add a 15% bonus to your total dodge attack."
+        }
+    },
+    "grey-elf": {
+        "mage": {
+            "overload": "You can increase the power of your simpler spells. Occasionally your magic negates the opponent's defense.",
+            "arcana recovery": "You learned how to recover some of your magical energy by studying your spellbook.(mana regeneration)"
+        },
+        "warrior": {
+            "get your breath back": "You have a pool of stamina and can use it to protect yourself from harm.",
+            "combat with big weapons": "When you are equipped with a two-handed weapon, you can occasionally use your vitality to increase % damage."
+        },
+        "warden": {
+            "fortification": "Warden are experts in defense, and know how to maximize the potential of their armor, you receive a 5% bonus for each piece of heavy armor equipment.",
+            "defense specialist": "Your accumulated fortification, every 5 hits received, regenerates 8% of your health."
+        }
+    }
+}
