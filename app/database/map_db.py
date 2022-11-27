@@ -3,7 +3,7 @@ from .base import Base
 
 class MapDB(Base):
 
-    db = 'app/database/map.json'
+    db = 'app/database/db/maps.json'
     
     def get_map_info(self, json_name: str = db) -> dict:
 
