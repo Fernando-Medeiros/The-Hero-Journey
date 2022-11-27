@@ -22,15 +22,16 @@ class Menu:
         
         self.main_screen = main_screen
         
-        self.background = Obj(IMG_MENU['bg'], 0, 0, *groups)
-
         self.guides = []
+
+        self.background = Obj(IMG_MENU['bg'], 0, 0, *groups)
 
         self.objects = {
             'select': Obj(IMG_MENU['select'], 0, DISPLAY_NONE, *groups),
             'info_credit': Obj(IMG_MENU['info_c'], 0, DISPLAY_NONE, *groups),
             'return': Obj(IMG_MENU['return'], 206, DISPLAY_NONE, *groups)
         }
+        
         self._draw_guides()
 
 
@@ -119,15 +120,12 @@ class Menu:
         for object in self.guides:
 
             if object.collidepoint(pos_mouse):
-
                 topleft = object.topleft
 
         self.objects['select'].rect.topleft = topleft
 
 
-    def events_menu(self, event):
-
-        pos_mouse = pg.mouse.get_pos()
+    def events(self, event, pos_mouse):
 
         if event.type == pg.MOUSEBUTTONDOWN:
 
@@ -164,5 +162,4 @@ class Menu:
             )
 
         if not self.block:
-
             self._draw_guides()

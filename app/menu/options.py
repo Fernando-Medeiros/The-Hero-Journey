@@ -58,9 +58,7 @@ class Options:
         for key, value in self.objects.items():
 
             if value.rect.collidepoint(pos_mouse):
-
                 match key:
-
                     case 'full_screen':
                         pg.display.set_mode((1080, DEFAULT_HEIGHT), pg.SCALED | pg.FULLSCREEN)
 
@@ -85,9 +83,7 @@ class Options:
     def _check_options(self):
         
         for item in self.objects:
-
             match item:
-
                 case 'full_screen':
                     result = self.active if pg.display.get_window_size()[0] >= 1920 else self.inactive
 
@@ -130,7 +126,6 @@ class Options:
     def _return_menu(self, pos_mouse):
 
         if self.return_icon.rect.collidepoint(pos_mouse):
-
             self.is_active = False
           
 
@@ -159,14 +154,11 @@ class Options:
         self.main_screen.blits(draw)
 
 
-    def events(self, event):
-
-        pos_mouse = pg.mouse.get_pos()
+    def events(self, event, pos_mouse):
 
         self._check_options()
 
         if event.type == pg.MOUSEBUTTONDOWN:
-
             self._return_menu(pos_mouse)
             self._select_options(pos_mouse)
 

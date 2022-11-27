@@ -2,130 +2,105 @@ import os
 
 import pygame as pg
 
-from app.tools import COLORS, Obj, check_records, draw_texts
-from paths import *
+from paths import FOLDERS, IMG_LOAD, IMG_MENU, IMG_NEW_GAME
 
+from ..database.character_db import CharacterDB
+from ..tools import COLORS, Obj, draw_texts
 from .settings import title_load
 
 DISPLAY_NONE = int(os.getenv('DISPLAY_NONE', '-1080'))
-MAX_RECORDS = int(os.getenv('MAX_RECORDS', '9'))
+
 
 class Load:
 
     is_active = True
-    check = ''
+    db = CharacterDB()
 
     def __init__(self, main_screen, *groups):
         
         self.main_screen = main_screen
+        self.box = []
+        self.icon_del = []
+        self.icon_add = []
 
-        pos_x_y = [
+        rect = [
             (29, 74), (305, 74), (581, 74),
             (29, 389), (305, 389), (581, 389),
             (29, 703), (305, 703), (581, 703)
         ]
 
         self.bg = Obj(IMG_LOAD['bg'], 0, 0, *groups)
-
-        self.box = []
-        self.icon_del = []
-        self.icon_add = []
         
-        for records in range(MAX_RECORDS):
-
-            self.box.append(Obj(IMG_LOAD['box'], pos_x_y[records][0], pos_x_y[records][1], *groups))
+        for pos in rect:
+            self.box.append(Obj(IMG_LOAD['box'], pos[0], pos[1], *groups))
             self.icon_del.append(Obj(IMG_LOAD['del'], DISPLAY_NONE, DISPLAY_NONE, *groups))
             self.icon_add.append(Obj(IMG_NEW_GAME['add'], DISPLAY_NONE, DISPLAY_NONE, *groups))
 
         self.return_icon = Obj(IMG_MENU['return'], 100, 970, *groups)
 
 
-    def _draw_records(self):
-        """
-        USES TWO AUXILIARY FUNCTIONS
-        FOR EACH RECORD, DRAW CLASS IMAGE, STATUS AND ICON.
-        CHECK ETHNICITY TO ASSIGN IMAGE, AND USE RECT TO SET POSITION
-        """
-        number_of_records = check_records(FOLDERS['save'])
+    def _draw_records(self) -> None:
+
+        records = self.db.get_all()       
         black = COLORS['BLACK']
+        include_attrs = ['name', 'level', 'ethnicity', 'classe', 'location']
 
-        for index in range(len(number_of_records)):
-
-            name, ethnicity, class_, level = number_of_records[index][:4]
-
-            idd = 'ed_' if 'dark' in ethnicity else 'ef_' if 'forest' in ethnicity else 'eg_'
-
-            self.box[index].image = pg.image.load(IMG_CLASSES[idd + class_])
+        for index, name in enumerate(records):
+            
+            character = records[name]
+            
+            self.box[index].image = pg.image.load('{}{}'.format(FOLDERS['classes'], character['sprite']))
 
             pos_x, pos_y = self.box[index].rect.bottomleft
 
-            self.icon_del[index].rect.topleft = (pos_x, pos_y + 90)
-            self.icon_add[index].rect.topleft = (pos_x + 85, pos_y + 90)
+            for attr in include_attrs:
 
-            draw_texts(
-                screen=self.main_screen,
-                text='> {}'.format(name.title()),
-                pos_x=pos_x,
-                pos_y=pos_y + 10,
-                color=black
-                )
-            draw_texts(
-                screen=self.main_screen,
-                text='> {}'.format(ethnicity.title()),
-                pos_x=pos_x,
-                pos_y=pos_y + 30,
-                color=black
-                )
-            draw_texts(
-                screen=self.main_screen,
-                text='> {}'.format(class_.title()),
-                pos_x=pos_x,
-                pos_y=pos_y + 50,
-                color=black
-                )
-            draw_texts(
-                screen=self.main_screen,
-                text='> lvl {}'.format(level.title()),
-                pos_x=pos_x,
-                pos_y=pos_y + 70,
-                color=black)
+                att = attr.title() if attr != 'location' else ''
+
+                draw_texts(
+                    screen=self.main_screen,
+                    text='> {} - {}'.format(att, character[attr]),
+                    pos_x=pos_x,
+                    pos_y=pos_y + 10,
+                    color=black
+                    )
+                pos_y += 20
+
+            self.icon_del[index].rect.topleft = (pos_x, pos_y + 20)
+            self.icon_add[index].rect.topleft = (pos_x + 85, pos_y + 20)
 
 
-    def _erase_record(self, pos_mouse):
-        """
-        FUNCTION TO CHECK THE OBJECT POSITION AND DELETE THE FILE
-        """
-        file = [save for save in os.listdir(FOLDERS['save'])]
+    def _delete(self, pos_mouse) -> None:
 
-        for item in range(len(file)):
+        records = self.db.get_all()
 
-            if self.icon_del[item].rect.collidepoint(pos_mouse):
+        for index, name in enumerate(records.keys()):
 
-                os.remove(FOLDERS['save'] + file[item])
+            if self.icon_del[index].rect.collidepoint(pos_mouse):
+                self.db.delete(name)
 
-                self.icon_add[len(file) - 1].rect.y = DISPLAY_NONE
-                self.icon_del[len(file) - 1].rect.y = DISPLAY_NONE
-                self.box[len(file) - 1].image = pg.image.load(IMG_LOAD['box'])           
+                self.icon_add[index].rect.y = DISPLAY_NONE
+                self.icon_del[index].rect.y = DISPLAY_NONE
+                self.box[index].image = pg.image.load(IMG_LOAD['box'])           
 
 
-    def _loading(self, pos_mouse):
+    def _load(self, pos_mouse) -> None:
+    
+        records = self.db.get_all()       
 
         for icon in range(len(self.icon_add)):
-
             if self.icon_add[icon].rect.collidepoint(pos_mouse):
 
-                self.check = 'loading'
-                os.environ['CHARNAME'] = check_records(FOLDERS['save'])[icon][0]
+                os.environ['EVENTS'] = 'loading'
+                os.environ['CHARNAME'] = list(records.keys())[icon]
 
 
-    def _return_menu(self, pos_mouse):
-
+    def _return_menu(self, pos_mouse) -> None:
         if self.return_icon.rect.collidepoint(pos_mouse):
-
             self.is_active = False
 
 
-    def _get_mouse_events_to_show_interactive(self, pos_mouse):
+    def _get_mouse_events_to_show_interactive(self, pos_mouse) -> None:
 
         for index in range(len(self.icon_del)):
 
@@ -151,15 +126,12 @@ class Load:
         self.return_icon.image = pg.image.load(IMG_MENU[img_return])
 
 
-    def events_load(self, evento):
+    def events(self, event, pos_mouse):
+        if event.type == pg.MOUSEBUTTONDOWN:
 
-        pos_mouse = pg.mouse.get_pos()
-
-        if evento.type == pg.MOUSEBUTTONDOWN:
-
-            self._erase_record(pos_mouse)
+            self._delete(pos_mouse)
+            self._load(pos_mouse)
             self._return_menu(pos_mouse)
-            self._loading(pos_mouse)
 
         self._get_mouse_events_to_show_interactive(pos_mouse)
 
