@@ -2,11 +2,7 @@ import os
 
 STATIC: str = os.getenv('STATIC', 'static/')
 
-"""
-PATHS
-"""
 FOLDERS = {
-    'save': 'save/',
     'menu': STATIC + 'images/menu/',
     'new_game': STATIC + 'images/menu/newgame/',
     'load': STATIC + 'images/menu/load/',
@@ -93,16 +89,4 @@ IMG_GAME = {
     'select_b_flee': FOLDERS['game'] + 'select_b_flee.png',
     'select_b_skills': FOLDERS['game'] + 'select_b_skills.png',
     'select_b_items': FOLDERS['game'] + 'select_b_items.png'
-}
-
-IMG_CLASSES = {
-    'ed_duelist': FOLDERS['classes'] + 'ed_duelist.png',
-    'ed_mage': FOLDERS['classes'] + 'ed_mage.png',
-    'ed_assassin': FOLDERS['classes'] + 'ed_assassin.png',
-    'ef_warrior': FOLDERS['classes'] + 'ef_warrior.png',
-    'ef_mage': FOLDERS['classes'] + 'ef_mage.png',
-    'ef_warden': FOLDERS['classes'] + 'ef_warden.png',
-    'eg_warrior': FOLDERS['classes'] + 'eg_warrior.png',
-    'eg_mage': FOLDERS['classes'] + 'eg_mage.png',
-    'eg_warden': FOLDERS['classes'] + 'eg_warden.png'
 }
