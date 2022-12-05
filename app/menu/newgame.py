@@ -3,12 +3,12 @@ from time import sleep
 
 import pygame as pg
 
+from app.character.settings.settings import (INFO_HERALDRY, INFO_SKILLS,
+                                             LIST_CLASSES)
+from app.database.character_db import CharacterDB
 from app.tools import COLORS, Obj, draw_rect, draw_texts
 from paths import *
 
-from ..character.settings.settings import (INFO_HERALDRY, INFO_SKILLS,
-                                           LIST_CLASSES)
-from ..database.character_db import CharacterDB
 from .settings import INFO_MAX_RECORDS, list_ethnicities, title_new_game
 
 DISPLAY_NONE = int(os.getenv('DISPLAY_NONE', '-1080'))
@@ -18,21 +18,20 @@ MAX_CHARACTERS_NAME = int(os.getenv('MAX_CHARACTERS_NAME', '20'))
 
 
 class NewGame:
-
     ETHNICITY = ''
     CLASSE = ''
     NAME = ''
-     
+
     is_active = True
     block = False
     inbox = False
-    
+
     db = CharacterDB()
 
     def __init__(self, main_screen, *groups):
-        
+
         self.main_screen = main_screen
-        
+
         self.ethnicity = []
         self.class_ = []
 
@@ -57,36 +56,32 @@ class NewGame:
         self.index_list_class = LIST_CLASSES[0]
 
 
-    def _select_guides(self, pos_mouse):
-
+    def _select_guides(self, pos_mouse) -> None:
         self._list_ethnicity_and_classes(self.ethnicity[0], 'dark-elf', 'info_dark', pos_mouse)
         self._list_ethnicity_and_classes(self.ethnicity[1], 'forest-elf', 'info_forest', pos_mouse)
         self._list_ethnicity_and_classes(self.ethnicity[2], 'grey-elf', 'info_grey', pos_mouse)
 
 
-    def _return_menu(self, pos_mouse):
-
+    def _return_menu(self, pos_mouse) -> None:
         if self.return_icon.rect.collidepoint(pos_mouse):
             self.is_active = False
             self._reset_changes()
 
 
-    def register_character(self, pos_mouse):
+    def register_character(self, pos_mouse) -> None:
         if not self.block:
             if self.add_icon.rect.collidepoint(pos_mouse):
-                if (len(self.NAME) >= MIN_CHARACTERS_NAME):
-
+                if len(self.NAME) >= MIN_CHARACTERS_NAME:
                     self.db.create(self.NAME, self.ETHNICITY, self.CLASSE)
-                    
+
                     sleep(1)
                     os.environ['EVENTS'] = 'loading'
-                    os.environ['CHARNAME'] = self.NAME
+                    os.environ['CHAR_NAME'] = self.NAME
 
 
-    def _active_input_box(self, pos_mouse):
+    def _active_input_box(self, pos_mouse) -> None:
 
         if not self.block:
-
             if self.boxes[2].collidepoint(pos_mouse):
                 self.inbox = True
             else:
@@ -95,7 +90,7 @@ class NewGame:
             COLORS['ACTIVE'] = COLORS['WHITE'] if self.inbox else COLORS['BLACK']
 
 
-    def _receives_character_name(self, event):
+    def _receives_character_name(self, event) -> None:
         """
         NAME RECEIVES THE PRESSED CHARACTERS, REMOVED FROM THE KEY/EVENT.UNICODE
         PREVENTS TEXT FROM BEING GREATER THAN MAX_C CHARACTERS
@@ -115,25 +110,25 @@ class NewGame:
         self.NAME = self.NAME[:-1] if len(self.NAME) >= MAX_CHARACTERS_NAME else self.NAME
 
 
-    def _get_mouse_events_to_show_interactive(self, pos_mouse):
+    def _get_mouse_events_to_show_interactive(self, pos_mouse) -> None:
 
-        topleft = -1080, -1080
+        topleft = DISPLAY_NONE, DISPLAY_NONE
         img_return = 'return'
 
         if self.return_icon.rect.collidepoint(pos_mouse):
             img_return = 'select_return'
 
-        for object in self.ethnicity + self.class_:
+        for obj in self.ethnicity + self.class_:
 
-            if object.collidepoint(pos_mouse):
-                topleft = object.topleft
+            if obj.collidepoint(pos_mouse):
+                topleft = obj.topleft
 
         self.interactive_[2].rect.topleft = topleft
 
         self.return_icon.image = pg.image.load(IMG_MENU[img_return])
 
 
-    def _enable_icon_to_save_record(self):
+    def _enable_icon_to_save_record(self) -> None:
 
         img_add = 'add'
 
@@ -143,8 +138,7 @@ class NewGame:
         self.add_icon.image = pg.image.load(IMG_LOAD[img_add])
 
 
-    def _draw_box(self):
-
+    def _draw_box(self) -> None:
         # DRAW USER TEXT INPUT
         draw_texts(
             screen=self.main_screen,
@@ -156,27 +150,26 @@ class NewGame:
 
         # DRAW THE BOX FOR TEXT INPUT
         draw_rect(self.main_screen, COLORS['ACTIVE'], self.boxes[2], 2)
-        
 
-    def _draw_info_max_records(self):
+
+    def _draw_info_max_records(self) -> None:
 
         if self.block:
 
             pos_y = 500
             for line in INFO_MAX_RECORDS.split('|'):
-
                 draw_texts(
                     screen=self.main_screen,
                     text='{}'.format(line.replace('|', '\n').title().strip()),
                     pos_x=230,
                     pos_y=pos_y,
                     size=20,
-                    color=COLORS['BLACK'])
-
+                    color=COLORS['BLACK']
+                    )
                 pos_y += 30
 
 
-    def _draw_subtitles(self):
+    def _draw_subtitles(self) -> None:
 
         pos_x_txt = [75, 324, 573]
         pos_x_rect = [0, 249, 498]
@@ -190,8 +183,7 @@ class NewGame:
                 pos_x=pos_x_txt[item],
                 pos_y=pos_y_etn + 10,
                 size=20
-                )
-            
+            )
             self.ethnicity.append(pg.rect.Rect(pos_x_rect[item], pos_y_etn, 249, 41))
 
             # TEXT AND BOX FOR CLASSES
@@ -201,18 +193,17 @@ class NewGame:
                 pos_x=pos_x_txt[item] + 20,
                 pos_y=pos_y_clas + 10,
                 size=20
-                )
+            )
 
             self.class_.append(pg.rect.Rect(pos_x_rect[item], pos_y_clas, 249, 41))
 
 
-    def _draw_info_ethnicity(self):
+    def _draw_info_ethnicity(self) -> None:
 
         if self.ETHNICITY != '':
             pos_y = 240
 
             for line in INFO_HERALDRY[self.ETHNICITY].replace('\n', '').split('\r'):
-
                 draw_texts(
                     screen=self.main_screen,
                     text='{}'.format(line),
@@ -223,10 +214,10 @@ class NewGame:
                 pos_y += 30 if len(INFO_HERALDRY[self.ETHNICITY]) < 600 else 15
 
 
-    def _draw_info_classes(self):
+    def _draw_info_classes(self) -> None:
 
         draw_rect(self.main_screen, COLORS['BLACK'], [185, 610, 550, 300], 1)
-        
+
         if self.CLASSE:
 
             # SPRITE
@@ -241,10 +232,9 @@ class NewGame:
                 pos_y=620,
                 color=COLORS['BLACK'],
                 size=20
-                )
-                
+            )
             # ATTRIBUTES
-            classes: dict[str,dict] = self.db.read_json_db('app/character/settings/classes.json')
+            classes: dict[str, dict] = self.db.read_json('app/character/settings/classes.json')
             pos_y = 680
             for attr, value in classes[self.ETHNICITY][self.CLASSE].items():
                 if attr != 'skills':
@@ -255,25 +245,24 @@ class NewGame:
                         pos_y=pos_y,
                         color=COLORS['BLACK'],
                         size=18
-                        )
+                    )
+                    pos_y += 30
 
-                    pos_y += 30        
-            
-            # SKILLS
+                    # SKILLS
             pos_y = 680
             skills = INFO_SKILLS[f'{self.ETHNICITY}-{self.CLASSE}'].replace('\n', '').split('\r')
-            for line in skills:   
+            for line in skills:
                 draw_texts(
-                        screen=self.main_screen,
-                        text='{}'.format(line),
-                        pos_x=375,
-                        pos_y=pos_y,
-                        color=COLORS['BLACK']
-                        )
+                    screen=self.main_screen,
+                    text='{}'.format(line),
+                    pos_x=375,
+                    pos_y=pos_y,
+                    color=COLORS['BLACK']
+                )
                 pos_y += 20
 
 
-    def _list_ethnicity_and_classes(self, ethnicity: object, name: str, background_img: str, pos_mouse):
+    def _list_ethnicity_and_classes(self, ethnicity: object, name: str, background_img: str, pos_mouse) -> None:
 
         classes = LIST_CLASSES[0] if 'dark' in name else LIST_CLASSES[1]
 
@@ -285,7 +274,6 @@ class NewGame:
 
             self.index_list_class = classes
             self.ETHNICITY = name.casefold()
-          
 
         if self.interactive_[0].rect.x == ethnicity.x:
 
@@ -294,9 +282,9 @@ class NewGame:
                     self.interactive_[1].rect.x = self.class_[index].x
 
                     self.CLASSE = classes[index].casefold()
-                   
 
-    def _reset_changes(self):
+
+    def _reset_changes(self) -> None:
 
         self.NAME, self.ETHNICITY, self.CLASSE = '', '', ''
 
@@ -305,7 +293,7 @@ class NewGame:
             self.boxes[0].image = pg.image.load(IMG_NEW_GAME['HERALDRY_BOX'])
 
 
-    def events(self, event, pos_mouse):
+    def events(self, event, pos_mouse) -> None:
 
         if event.type == pg.MOUSEBUTTONDOWN:
             self._return_menu(pos_mouse)
@@ -320,7 +308,7 @@ class NewGame:
         self._receives_character_name(event)
 
 
-    def update(self):
+    def update(self) -> None:
 
         self._enable_icon_to_save_record()
         self._draw_info_max_records()
@@ -337,11 +325,11 @@ class NewGame:
                 pos_x=300 + len(title_new_game[0]),
                 pos_y=15,
                 size=27
-                )
+            )
             draw_texts(
                 screen=self.main_screen,
                 text='{}'.format(title_new_game[1]),
                 pos_x=300 + len(title_new_game[1]),
                 pos_y=510,
                 size=27
-                )
+            )

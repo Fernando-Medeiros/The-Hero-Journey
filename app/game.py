@@ -2,14 +2,14 @@ from random import choice
 
 import pygame as pg
 
-from app.battle.battle import Battle
-from app.character.character import Character
-from app.database.map_db import MapDB
-from app.opponent.enemy import Enemy
-from app.tools import COLORS, Obj, draw_rect, draw_texts, save_log_and_exit
+from app.sound import SONGS
 from paths import *
 
-from .sound import SONGS
+from .battle.battle import Battle
+from .character.character import Character
+from .database.map_db import MapDB
+from .opponent.enemy import Enemy
+from .tools import COLORS, Obj, draw_rect, draw_texts, save_log_and_exit
 
 SONGS['orpheus'].play()
 
@@ -19,7 +19,6 @@ class Events:
     def __init__(self, *groups):
 
         self.bg = Obj(IMG_GAME['bg'], 0, 0, *groups)
-        
         self.tools = {
             'map': Obj(IMG_GAME['map'], 432, 180, *groups),
             'gps': Obj(IMG_GAME['gps'], 511, 184, *groups)
@@ -47,20 +46,14 @@ class Events:
         }
 
     def _save_and_exit(self, pos_mouse):
-    
         if self.icons['save'].rect.collidepoint(pos_mouse):
-
             self.character.save()
             save_log_and_exit()
 
     def _return_menu(self, pos_mouse):
-
         if self.icons['options'].rect.collidepoint(pos_mouse):
-
             self.character.save()
-            
             self._enemies_in_the_area()
-
             self.battle.erase_log(self.log_battle, self.loots_for_enemy)
 
             self.is_active = False
@@ -70,70 +63,49 @@ class Events:
         index = self.map['name'].index(self.location)
 
         if self.character.c_stamina >= 0.5:
-
             if self.icons['next'].rect.collidepoint(pos_mouse):
 
                 index = index if index + 1 >= len(self.map['name']) else index + 1
 
                 self.respawn_enemies = True
-
-                self.character.c_stamina -= 0.5        
+                self.character.c_stamina -= 0.5
 
             elif self.icons['previous'].rect.collidepoint(pos_mouse):
 
                 index = 0 if index - 1 <= 0 else index - 1
 
                 self.respawn_enemies = True
-
                 self.character.c_stamina -= 0.5
-              
 
         self.tools['gps'].rect.topleft = (self.map['pos'][index])
-
         self.location = self.map['name'][index]
-
         self.character.location = self.location
 
     def _select_enemy(self, pos_mouse):
-
         for index, obj in enumerate(self.l_enemies_in_the_area):
-
             if obj.rect.collidepoint(pos_mouse):
-
                 self.battle.erase_log(self.log_battle, self.loots_for_enemy)
                 self.index_battle = index
                 self.block_battle = True
                 break
-    
-    def _get_mouse_events_to_show_interactive(self, pos_mouse):
-        
-        for key in self.icons.keys():
-            if self.icons[key].rect.collidepoint(pos_mouse):
-                img = 'select_' + key
-            else:
-                img = key
 
-            self.icons[key].image = pg.image.load(IMG_GAME[img])
+    def _draw_icons_on_hover(self, pos_mouse):
+        def inner(objs: dict):
+            for obj in objs.keys():
+                sprite = obj
+                if objs[obj].rect.collidepoint(pos_mouse):
+                    sprite = 'select_' + obj
+                objs[obj].image = pg.image.load(IMG_GAME[sprite])
 
-        for key in self.commands_battle.keys():
-            if self.commands_battle[key].rect.collidepoint(pos_mouse):
-                img = 'select_' + key
-            else:
-                img = key
-
-            self.commands_battle[key].image = pg.image.load(IMG_GAME[img])
+        inner(self.icons)
+        inner(self.commands_battle)
 
 
 class Game(Events):
-
     is_active = True
-
     block_battle = False
-
     respawn_enemies = False
-
     turn_enemy = False
-
     index_battle = 0
 
     group_character = pg.sprite.Group()
@@ -141,55 +113,47 @@ class Game(Events):
     map_db = MapDB()
 
     def __init__(self, main_screen: pg.Surface, *groups):
-        
+
         Events.__init__(self, *groups)
-        
+
         self.main_screen = main_screen
-        
+
         self.battle = Battle(main_screen)
-
         self.character = Character(main_screen, self.group_character)
-        
-        self.l_enemies_in_the_area: list[object] = []
 
-        self.location: str  = self.character.location
-
+        self.location: str = self.character.location
         self.map: dict = self.map_db.get_map_info()
 
         self.log_battle = []
-
         self.loots_for_enemy = {}
+        self.l_enemies_in_the_area: list[object] = []
 
-        self._enemies_in_the_area() 
-                
+        self._enemies_in_the_area()
 
     def _enemies_in_the_area(self) -> None:
-    
+
         tag = [tag for tag in self.map['tag'] if tag in self.location.casefold()]
 
         del self.l_enemies_in_the_area[::]
 
         [self.group_opponent.remove(sprite) for sprite in self.group_opponent.sprites()]
-                    
+
         pos_y = 430
-        
-        for cnt in range(6):                    
+
+        for cnt in range(6):
             unpack = [*tag, 430, pos_y, self.main_screen, self.group_opponent]
             self.l_enemies_in_the_area.append(Enemy(*unpack))
-        
-            pos_y += 95   
 
+            pos_y += 95
 
     def _update_location(self) -> None:
-        
+
         self.location = self.character.location
 
         if self.index_battle >= len(self.l_enemies_in_the_area):
-
             self.index_battle -= 1
 
         if len(self.l_enemies_in_the_area) <= 0:
-
             self._enemies_in_the_area()
 
         draw_texts(
@@ -198,7 +162,6 @@ class Game(Events):
             pos_x=404,
             pos_y=104,
             size=25)
-
 
     def _change_command(self, pos_mouse):
 
@@ -225,7 +188,6 @@ class Game(Events):
                     self.turn_enemy = True
                     self.battle.erase_log(self.loots_for_enemy)
 
-
     def _commands_attack(self):
 
         damage: dict = self.battle.attack(
@@ -238,13 +200,11 @@ class Game(Events):
 
         self.log_battle.append(self.battle.log_attack(self.character.name, self.enemy.name, damage))
 
-
     def _commands_defense(self):
 
         self.battle.energy_used_in_battle(self.character)
 
         self.log_battle.append(self.battle.log_defense(self.character.name, self.battle.defense()))
-
 
     def _commands_flee(self):
 
@@ -253,7 +213,6 @@ class Game(Events):
         self.battle.energy_used_in_battle(self.character)
 
         self.log_battle.append(self.battle.log_flee(self.character.name, self.block_battle))
-
 
     def _commands_enemy_battle(self):
 
@@ -273,33 +232,27 @@ class Game(Events):
                     self.log_battle.append(self.battle.log_attack(self.enemy.name, self.character.name, damage_enemy))
 
                 case 'defense':
-                  
+
                     self.battle.energy_used_in_battle(self.enemy)
 
                     self.log_battle.append(self.battle.log_defense(self.enemy.name, self.battle.defense()))
 
-
     def _battle(self):
+        self.enemy = self.l_enemies_in_the_area[self.index_battle]
 
         self._draw_battle()
-
         self._commands_enemy_battle()
 
         if self.enemy.c_health <= 0:
-
-            self.loots_for_enemy = {'xp':self.enemy.xp, 'gold':self.enemy.gold, 'soul': self.enemy.soul}
+            self.loots_for_enemy = {'xp': self.enemy.xp, 'gold': self.enemy.gold, 'soul': self.enemy.soul}
 
             self.battle.take_loots(self.character, self.enemy)
-
             self.battle.erase_log(self.log_battle)
 
             self.block_battle = False
-
             self.battle.kill_sprite_enemy(self.l_enemies_in_the_area, self.index_battle)
 
         self.turn_enemy = False
-
-
 
     def _draw_battle(self):
 
@@ -320,7 +273,6 @@ class Game(Events):
             color=color_block,
             rect=[15, 370, 373, 590]
         )
-      
 
     def events(self, event, pos_mouse):
 
@@ -333,26 +285,21 @@ class Game(Events):
                 self._save_and_exit(pos_mouse)
                 self._return_menu(pos_mouse)
 
-        self._get_mouse_events_to_show_interactive(pos_mouse)
+        self._draw_icons_on_hover(pos_mouse)
 
         self.character.events(event, pos_mouse)
 
         [enemy.events(pos_mouse) for enemy in self.l_enemies_in_the_area]
 
-
     def update(self):
-        
+
         if self.respawn_enemies:
             self._enemies_in_the_area()
             self.battle.erase_log(self.log_battle, self.loots_for_enemy)
             self.respawn_enemies = False
 
-        self.enemy = self.l_enemies_in_the_area[self.index_battle]
-
         self._battle()
-        
         self._update_location()
-
         self.character.update()
 
         self.group_character.draw(self.main_screen)

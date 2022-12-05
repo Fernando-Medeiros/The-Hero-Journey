@@ -10,7 +10,6 @@ from .menu.options import Options
 
 
 class MenuController:
-
     is_active = True
 
     group_options = pg.sprite.Group()
@@ -24,9 +23,8 @@ class MenuController:
         self.load = Load(main_screen, self.group_load)
         self.options = Options(main_screen, self.group_options)
 
-
     def draw(self, main_screen):
-        if  os.environ['EVENTS'] == '' and self.is_active:
+        if os.environ['EVENTS'] == '' and self.is_active:
 
             if self.menu_.is_active:
                 self.group_menu.draw(main_screen)
@@ -55,9 +53,8 @@ class MenuController:
             self.menu_.check = ''
             self.is_active = False
 
-
     def events(self, event):
-        
+
         pos_mouse = pg.mouse.get_pos()
 
         if self.is_active:
@@ -76,8 +73,7 @@ class MenuController:
 
 
 class GameController:
-
-    is_active = True 
+    is_active = True
     group_game = pg.sprite.Group()
 
     def __init__(self, main_screen):
@@ -90,15 +86,14 @@ class GameController:
             if self.game.is_active:
                 self.group_game.draw(main_screen)
                 self.game.update()
-               
+
             else:
                 self.is_active = False
                 self.game.is_active = True
 
     def events(self, event):
-        
+
         pos_mouse = pg.mouse.get_pos()
 
         if self.is_active and self.game.is_active:
-            
             self.game.events(event, pos_mouse)

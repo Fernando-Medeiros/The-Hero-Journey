@@ -21,9 +21,8 @@ MAX_CHARACTERS_NAME = int(os.getenv('MAX_CHARACTERS_NAME', '20'))
 
 
 class Options:
-
     is_active = True
- 
+
     def __init__(self, main_screen, *groups):
 
         self.main_screen = main_screen
@@ -53,10 +52,9 @@ class Options:
         self.return_icon = Obj(IMG_MENU['return'], 206, 942, *groups)
 
 
-    def _select_options(self, pos_mouse):
+    def _select_options(self, pos_mouse) -> None:
 
         for key, value in self.objects.items():
-
             if value.rect.collidepoint(pos_mouse):
                 match key:
                     case 'full_screen':
@@ -74,14 +72,14 @@ class Options:
                     case 'on':
                         pg.mixer.unpause()
                         os.environ['MIXER'] = str('mixer_is_active')
-                        
+
                     case 'off':
                         pg.mixer.pause()
                         os.environ['MIXER'] = str('mixer_is_stopped')
 
 
-    def _check_options(self):
-        
+    def _check_options(self) -> None:
+
         for item in self.objects:
             match item:
                 case 'full_screen':
@@ -89,7 +87,7 @@ class Options:
 
                 case 'default':
                     result = self.active if pg.display.get_window_size()[0] <= DEFAULT_WIDTH else self.inactive
-                
+
                 case '30fps':
                     result = self.active if int(os.environ['FRAMES']) <= 30 else self.inactive
 
@@ -108,13 +106,12 @@ class Options:
             self.objects[item].image = result
 
 
-    def _draw_options(self):
+    def _draw_options(self) -> None:
         """
         DRAW ICONS AND CONFIGURATION TEXTS
         """
         pos_y = 240
         for item in self.objects:
-
             self.objects[item].rect.y = pos_y
             pos_y += 40
 
@@ -123,24 +120,22 @@ class Options:
         self._draw_txt_in_options(self.caption[2], self.sound, pos=360)
 
 
-    def _return_menu(self, pos_mouse):
-
+    def _return_menu(self, pos_mouse) -> None:
         if self.return_icon.rect.collidepoint(pos_mouse):
             self.is_active = False
-          
 
-    def _get_mouse_events_to_show_interactives(self, pos_mouse):
+
+    def _get_mouse_events_to_show_interactives(self, pos_mouse) -> None:
 
         img_return = 'return'
-
         if self.return_icon.rect.collidepoint(pos_mouse):
             img_return = 'select_return'
 
         self.return_icon.image = pg.image.load(IMG_MENU[img_return])
 
 
-    def _draw_txt_in_options(self, caption, args, gap=40, pos=200):
-        
+    def _draw_txt_in_options(self, caption, args, gap=40, pos=200) -> None:
+
         font = pg.font.SysFont('arial', 15, True)
         color = COLORS['WHITE']
 
@@ -150,12 +145,10 @@ class Options:
             (font.render(f'{args[0]}', True, color), (self.center + 30, pos + gap)),
             (font.render(f'{args[1]}', True, color), (self.center + 30, pos + gap * 2)),
         ]
-
         self.main_screen.blits(draw)
 
 
-    def events(self, event, pos_mouse):
-
+    def events(self, event, pos_mouse) -> None:
         self._check_options()
 
         if event.type == pg.MOUSEBUTTONDOWN:
@@ -165,5 +158,5 @@ class Options:
         self._get_mouse_events_to_show_interactives(pos_mouse)
 
 
-    def update(self):
+    def update(self) -> None:
         self._draw_options()

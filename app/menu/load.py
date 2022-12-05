@@ -2,22 +2,22 @@ import os
 
 import pygame as pg
 
+from app.database.character_db import CharacterDB
+from app.tools import COLORS, Obj, draw_texts
 from paths import FOLDERS, IMG_LOAD, IMG_MENU, IMG_NEW_GAME
 
-from ..database.character_db import CharacterDB
-from ..tools import COLORS, Obj, draw_texts
 from .settings import title_load
 
 DISPLAY_NONE = int(os.getenv('DISPLAY_NONE', '-1080'))
 
 
 class Load:
-
     is_active = True
     db = CharacterDB()
 
+
     def __init__(self, main_screen, *groups):
-        
+
         self.main_screen = main_screen
         self.box = []
         self.icon_del = []
@@ -30,7 +30,7 @@ class Load:
         ]
 
         self.bg = Obj(IMG_LOAD['bg'], 0, 0, *groups)
-        
+
         for pos in rect:
             self.box.append(Obj(IMG_LOAD['box'], pos[0], pos[1], *groups))
             self.icon_del.append(Obj(IMG_LOAD['del'], DISPLAY_NONE, DISPLAY_NONE, *groups))
@@ -41,20 +41,19 @@ class Load:
 
     def _draw_records(self) -> None:
 
-        records = self.db.get_all()       
+        records = self.db.get_all()
         black = COLORS['BLACK']
         include_attrs = ['name', 'level', 'ethnicity', 'classe', 'location']
 
         for index, name in enumerate(records):
-            
+
             character = records[name]
-            
+
             self.box[index].image = pg.image.load('{}{}'.format(FOLDERS['classes'], character['sprite']))
 
             pos_x, pos_y = self.box[index].rect.bottomleft
 
             for attr in include_attrs:
-
                 att = attr.title() if attr != 'location' else ''
 
                 draw_texts(
@@ -63,7 +62,7 @@ class Load:
                     pos_x=pos_x,
                     pos_y=pos_y + 10,
                     color=black
-                    )
+                )
                 pos_y += 20
 
             self.icon_del[index].rect.topleft = (pos_x, pos_y + 20)
@@ -81,18 +80,17 @@ class Load:
 
                 self.icon_add[index].rect.y = DISPLAY_NONE
                 self.icon_del[index].rect.y = DISPLAY_NONE
-                self.box[index].image = pg.image.load(IMG_LOAD['box'])           
+                self.box[index].image = pg.image.load(IMG_LOAD['box'])
 
 
     def _load(self, pos_mouse) -> None:
-    
-        records = self.db.get_all()       
+
+        records = self.db.get_all()
 
         for icon in range(len(self.icon_add)):
             if self.icon_add[icon].rect.collidepoint(pos_mouse):
-
                 os.environ['EVENTS'] = 'loading'
-                os.environ['CHARNAME'] = list(records.keys())[icon]
+                os.environ['CHAR_NAME'] = list(records.keys())[icon]
 
 
     def _return_menu(self, pos_mouse) -> None:
@@ -120,7 +118,6 @@ class Load:
         img_return = 'return'
 
         if self.return_icon.rect.collidepoint(pos_mouse):
-
             img_return = 'select_return'
 
         self.return_icon.image = pg.image.load(IMG_MENU[img_return])
@@ -128,7 +125,6 @@ class Load:
 
     def events(self, event, pos_mouse):
         if event.type == pg.MOUSEBUTTONDOWN:
-
             self._delete(pos_mouse)
             self._load(pos_mouse)
             self._return_menu(pos_mouse)

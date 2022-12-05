@@ -3,15 +3,17 @@ LIST_CLASSES = [
     ['warrior', 'mage', 'warden']
 ]
 
+
 def read(name, file):
     with open(f'static/context_info/{name}/{file}.txt', mode='r+', encoding='utf-8') as file:
         return '\r'.join(file.readlines())
 
+
 INFO_HERALDRY = {
     'dark-elf': read('dark', 'heraldry'),
     'forest-elf': read('forest', 'heraldry'),
-    'grey-elf': read('grey', 'heraldry'), 
-    }
+    'grey-elf': read('grey', 'heraldry'),
+}
 
 INFO_SKILLS = {
     'dark-elf-duelist': read('dark', 'duelist'),
@@ -24,5 +26,5 @@ INFO_SKILLS = {
 
     'grey-elf-warrior': read('grey', 'warrior'),
     'grey-elf-mage': read('grey', 'mage'),
-    'grey-elf-warden':read('grey', 'warden')
+    'grey-elf-warden': read('grey', 'warden')
 }

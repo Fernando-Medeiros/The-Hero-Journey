@@ -3,7 +3,7 @@ from datetime import datetime
 
 import pygame as pg
 
-VERSION = '2.8'
+VERSION = '2.9'
 
 GAME_NAME = "The Hero's Journey"
 
@@ -25,7 +25,7 @@ MIN_FRAMES = 30
 MAX_FRAMES = 60
 
 # CHARACTER SETTINGS
-CHARNAME = ''
+CHAR_NAME = ''
 MIN_CHARACTERS_NAME = 3
 MAX_CHARACTERS_NAME = 20
 
@@ -39,31 +39,30 @@ class Main:
         self.main_screen = pg.display.set_mode(
             (DEFAULT_WIDTH, DEFAULT_HEIGHT),
             pg.SCALED | pg.RESIZABLE
-            )
-        
+        )
+
         self.clock = pg.time.Clock()
 
         from app.events import GameController, MenuController
 
         self.menu = MenuController(self.main_screen)
         self.game = GameController(self.main_screen)
-        
 
     def init_const(self):
-        consts = {        
+        consts = {
             'VERSION': VERSION,
             'GAME_NAME': GAME_NAME,
             'URL_CREDIT': URL_CREDIT,
             'DATETIME_APP': DATETIME_APP,
             'MIXER': MIXER,
             'STATIC': STATIC,
-            'DEFAULT_HEIGHT' : DEFAULT_HEIGHT,
-            'DEFAULT_WIDTH' : DEFAULT_WIDTH, 
-            'DISPLAY_NONE' : DISPLAY_NONE,
+            'DEFAULT_HEIGHT': DEFAULT_HEIGHT,
+            'DEFAULT_WIDTH': DEFAULT_WIDTH,
+            'DISPLAY_NONE': DISPLAY_NONE,
             'FRAMES': FRAMES,
             'MIN_FRAMES': MIN_FRAMES,
-            'MAX_FRAMES': MAX_FRAMES,           
-            'CHARNAME': CHARNAME, 
+            'MAX_FRAMES': MAX_FRAMES,
+            'CHAR_NAME': CHAR_NAME,
             'MIN_CHARACTERS_NAME': MIN_CHARACTERS_NAME,
             'MAX_CHARACTERS_NAME': MAX_CHARACTERS_NAME,
             'EVENTS': ''
@@ -74,7 +73,7 @@ class Main:
     def init_game(self):
         pg.init()
         pg.font.init()
-        pg.mixer.init()                       
+        pg.mixer.init()
 
     def draw(self):
         if self.menu.is_active:
@@ -85,12 +84,12 @@ class Main:
 
         else:
             self.menu.is_active = True
-            self.game.is_active = True                    
+            self.game.is_active = True
 
     def events(self):
         for event in pg.event.get():
 
-            if event.type == pg.QUIT:                
+            if event.type == pg.QUIT:
                 from app.tools import save_log_and_exit
                 save_log_and_exit()
 

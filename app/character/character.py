@@ -3,29 +3,27 @@ from datetime import datetime
 
 from pygame import MOUSEBUTTONDOWN, Surface, image
 
-from app.database.character_db import CharacterDB
 from paths import FOLDERS
 
+from ..database.character_db import CharacterDB
 from .model import CharacterModel
 from .view import Views
 
 
 class Character(CharacterModel, Views):
-    
     alive_ = True
-    
     db = CharacterDB()
 
     def __init__(self, main_screen: Surface, *groups):
-        
+
         CharacterModel.__init__(self)
 
         Views.__init__(self, main_screen, *groups)
-        
-        self._assign_status_secondary_and_current()
+
+        self._assign_status_secondary()
 
 
-    def _assign_status_secondary_and_current(self) -> None:
+    def _assign_status_secondary(self) -> None:
 
         self.health = (self.vitality / 2) * self.force + (self.level / 3)
         self.energy = (self.intelligence / 2) * self.resistance + (self.level / 3)
@@ -37,7 +35,7 @@ class Character(CharacterModel, Views):
         self.block = self.resistance / 10
         self.critical = self.agility / 20
         self.luck = self.level / 10
-        
+
 
     def _check_current_status(self) -> None:
         check = ['c_health', 'c_energy', 'c_stamina']
@@ -48,29 +46,29 @@ class Character(CharacterModel, Views):
                 setattr(self, c_status, 0)
 
 
-    def _regenerate_status(self) -> None:       
+    def _regenerate_status(self) -> None:
         time = datetime.today().second
 
-        if time % 2 == 0:            
-            if self.c_health < self.health: self.c_health += self.r_health 
-            if self.c_energy < self.energy: self.c_energy += self.r_energy 
+        if time % 2 == 0:
+            if self.c_health < self.health: self.c_health += self.r_health
+            if self.c_energy < self.energy: self.c_energy += self.r_energy
             if self.c_stamina < self.stamina: self.c_stamina += self.r_stamina
-    
 
-    def _is_alive(self) -> None:     
+
+    def _is_alive(self) -> None:
         self.alive_ = True if self.c_health >= 0.1 else False
-            
+
 
     def _level_progression(self) -> None:
-        
-        def update_attr(self, classe: str) -> dict:            
-            db = self.db.read_json_db('app/charater/settings/classe_progression.json')    
-            
+
+        def update_attr(classe: str):
+            db = self.db.read_json('app/character/settings/classe_progression.json')
+
             for attr, value in db[classe].items():
                 setattr(self, attr, getattr(self, attr) + value)
 
-        if self.xp >= self.level * 15: # next_level
-            
+        if self.xp >= self.level * 15:  # next_level
+
             match self.classe:
                 case 'duelist':
                     update_attr(self.classe)
@@ -90,45 +88,47 @@ class Character(CharacterModel, Views):
         exclude_attrs = [
             '_Sprite__g', 'image', 'rect', 'main_screen',
             'button_status', 'name', 'show_status', 'alive_'
-            ]
-            
+        ]
+
         attrs: dict = self.__dict__.copy()
-    
+
         for key in exclude_attrs:
             attrs.pop(key)
-        
+
         self.db.save(self.name, attrs)
-        
+
 
     def load(self) -> None:
-        c_name = os.environ['CHARNAME']
+        c_name = os.environ['CHAR_NAME']
 
         if c_name:
             for key, value in self.db.read(c_name).items():
                 setattr(self, key, value)
-            
+
             self.name = c_name
             self.image = image.load('./{}{}'.format(FOLDERS['classes'], self.sprite))
-            self._assign_status_secondary_and_current()
-            
-            os.environ['CHARNAME'] = ''
+            self._assign_status_secondary()
+
+            os.environ['CHAR_NAME'] = ''
 
 
     def events(self, event, pos_mouse):
         if event.type == MOUSEBUTTONDOWN:
             self._show_status(pos_mouse)
-      
+
 
     def update(self):
         self.load()
         self._is_alive()
         self._regenerate_status()
         self._check_current_status()
-      
+
         self._draw_bar_status()
-        self._draw_info_status()
-        self._draw_status()
-              
+        self._draw_status_secondary()
+        self._draw_button_status()
+        self._draw_gold_and_soul()
+        self._draw_name_and_level()
+    
 
     def __str__(self) -> str:
-        return self.name           
+        return self.name
