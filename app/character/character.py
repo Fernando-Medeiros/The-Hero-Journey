@@ -81,7 +81,7 @@ class Character(CharacterModel, Views):
 
             self.level += 1
             self.xp = 1
-            self.assign_status_secondary()
+            self._assign_status_secondary()
 
 
     def save(self) -> None:
@@ -122,6 +122,7 @@ class Character(CharacterModel, Views):
         self._is_alive()
         self._regenerate_status()
         self._check_current_status()
+        self._level_progression()
 
         self._draw_bar_status()
         self._draw_status_secondary()
