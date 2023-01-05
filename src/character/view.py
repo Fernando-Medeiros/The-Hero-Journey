@@ -122,7 +122,7 @@ class Views(Obj, DrawBarStatus, DrawStatus, DrawButton):
 
     def __init__(self, main_screen, *groups):
 
-        self.show_status = False
+        self.show_status = True
 
         img = './{}{}'.format(FOLDERS['classes'], 'dark-elf-assassin.png')
         pos_x: int = 20
@@ -137,6 +137,4 @@ class Views(Obj, DrawBarStatus, DrawStatus, DrawButton):
 
     def _show_status(self, pos_mouse) -> None:
         if self.button_status.collidepoint(pos_mouse):
-            self.show_status = True
-        else:
-            self.show_status = False
+            self.show_status = True if not self.show_status else False

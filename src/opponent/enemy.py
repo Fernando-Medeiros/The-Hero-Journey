@@ -1,17 +1,16 @@
 from datetime import datetime
 
-from pygame import Surface
-
 from ..database.enemy_db import EnemyDB
 from .model import EnemyModel
 from .view import Views
 
+database = EnemyDB()
+
 
 class Enemy(EnemyModel, Views):
     alive_ = True
-    db = EnemyDB()
 
-    def __init__(self, tag: str, pos_x: int, pos_y: int, main_screen: Surface, *groups):
+    def __init__(self, tag: str, pos_x: int, pos_y: int, main_screen, *groups):
 
         self._update_entity(tag)
 
@@ -23,7 +22,7 @@ class Enemy(EnemyModel, Views):
 
     def _update_entity(self, tag: str) -> None:
         self.classe = tag
-        entity: dict = self.db.get_random_enemy_by_tag(tag)
+        entity: dict = database.get_random_enemy_by_tag(tag)
 
         for key, value in entity.items():
             setattr(self, key, value)

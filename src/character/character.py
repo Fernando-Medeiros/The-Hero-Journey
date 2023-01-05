@@ -1,7 +1,7 @@
 import os
 from datetime import datetime
 
-from pygame import MOUSEBUTTONDOWN, Surface, image
+from pygame import MOUSEBUTTONDOWN, image
 
 from paths import FOLDERS
 
@@ -9,12 +9,13 @@ from ..database.character_db import CharacterDB
 from .model import CharacterModel
 from .view import Views
 
+database = CharacterDB()
+
 
 class Character(CharacterModel, Views):
     alive_ = True
-    db = CharacterDB()
 
-    def __init__(self, main_screen: Surface, *groups):
+    def __init__(self, main_screen, *groups):
 
         CharacterModel.__init__(self)
 
@@ -62,7 +63,7 @@ class Character(CharacterModel, Views):
     def _level_progression(self) -> None:
 
         def update_attr(classe: str):
-            db = self.db.read_json('app/character/settings/classe_progression.json')
+            db = database.read_json('app/character/settings/classe_progression.json')
 
             for attr, value in db[classe].items():
                 setattr(self, attr, getattr(self, attr) + value)
@@ -95,14 +96,14 @@ class Character(CharacterModel, Views):
         for key in exclude_attrs:
             attrs.pop(key)
 
-        self.db.save(self.name, attrs)
+        database.save(self.name, attrs)
 
 
     def load(self) -> None:
         c_name = os.environ['CHAR_NAME']
 
         if c_name:
-            for key, value in self.db.read(c_name).items():
+            for key, value in database.read(c_name).items():
                 setattr(self, key, value)
 
             self.name = c_name
