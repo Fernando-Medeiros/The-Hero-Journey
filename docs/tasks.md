@@ -1,12 +1,12 @@
 ## Tasks - 2022
 
-- [ ] Refactor
+- [x] Refactor
   - [x] Character
   - [x] Battle
   - [x] Enemy
   - [X] Events
-  - [ ] Game
-  - [ ] Menu
+  - [x] Game
+  - [x] Menu
 
 ## To do
 

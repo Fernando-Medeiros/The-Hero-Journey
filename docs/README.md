@@ -15,6 +15,21 @@
     <img windth="500" src="img/gif2.gif">
 </div>
 
+
+## Summary
+- [Summary](#summary)
+- [About](#about)
+- [The current scope:](#the-current-scope)
+- [Menu](#menu)
+- [Create and Load the Character](#create-and-load-the-character)
+- [Exploring the World](#exploring-the-world)
+- [Run game](#run-game)
+- [Structure](#structure)
+- [Credits](#credits)
+- [License](#license)
+
+> [Tasks](tasks.md)
+
 ## About
 
 This is my first personal project \o/
@@ -40,6 +55,69 @@ The Hero's Journey is a turn-based rpg, and its plot takes place on a continent 
 > - You can watch it here - [Youtube - Menu](https://youtu.be/v-M-O1niVuk)
 > - You can watch it here - [Youtube - Game](https://youtu.be/LTYqAjMrrDI)
 
+
+## Menu
+
+When starting the Game you have the following options:
+
+- New game
+- Load game
+- Credits
+- Configuration
+- Quit
+
+
+ Basic system settings:
+
+- Standard screen 747 x 1050 or Full Screen
+- Increase game speed from 30 FPS to 60 FPS
+- Mute
+
+
+<div align="center">
+    <img windth="470" height="300" src="img/menu.png">
+    <img windth="470" height="300" src="img/credits.png">
+    <img windth="470" height="300" src="img/options.png">
+</div>
+
+
+## Create and Load the Character
+
+The game allows a maximum of 9 save games
+
+When creating a new game:
+
+- Each elf ethnicity has its history and characteristics.
+- Each ethnicity has three classes
+- Each class has unique abilities.
+
+
+<div align="center">
+    <img windth="470" height="300" src="img/newgame.png">
+    <img windth="470" height="300" src="img/classes.png">
+    <img windth="470" height="300" src="img/load.png">
+</div>
+
+
+## Exploring the World
+
+The game currently has 55 areas
+
+Each area has an average of 10 unique opponents with randomly generated stats
+
+The battle system:
+
+- Basic Actions (Attack, Defend, Evade)
+- Intuitive battle log
+- Stamina consumption for stocks
+- Automatic health, energy and stamina regeneration
+
+
+<div align="center">
+    <img windth="470" height="300" src="img/game-world.png">
+    <img windth="470" height="300" src="img/game-battle.png">
+    <img windth="470" height="300" src="img/sprites.png">
+</div>
 
 
 ## Run game
@@ -154,71 +232,6 @@ python main.py
     └── soundtrack
         └── (97) Orpheus Odyssey - Legends on Strings - YouTube.url
 ```
-
-
-## Menu
-
-When starting the Game you have the following options:
-
-- New game
-- Load game
-- Credits
-- Configuration
-- Quit
-
-
- Basic system settings:
-
-- Standard screen 747 x 1050 or Full Screen
-- Increase game speed from 30 FPS to 60 FPS
-- Mute
-
-
-<div align="center">
-    <img windth="470" height="300" src="img/menu.png">
-    <img windth="470" height="300" src="img/credits.png">
-    <img windth="470" height="300" src="img/options.png">
-</div>
-
-
-## Create and Load the Character
-
-The game allows a maximum of 9 save games
-
-When creating a new game:
-
-- Each elf ethnicity has its history and characteristics.
-- Each ethnicity has three classes
-- Each class has unique abilities.
-
-
-<div align="center">
-    <img windth="470" height="300" src="img/newgame.png">
-    <img windth="470" height="300" src="img/classes.png">
-    <img windth="470" height="300" src="img/load.png">
-</div>
-
-
-## Exploring the World
-
-The game currently has 55 areas
-
-Each area has an average of 10 unique opponents with randomly generated stats
-
-The battle system:
-
-- Basic Actions (Attack, Defend, Evade)
-- Intuitive battle log
-- Stamina consumption for stocks
-- Automatic health, energy and stamina regeneration
-
-
-<div align="center">
-    <img windth="470" height="300" src="img/game-world.png">
-    <img windth="470" height="300" src="img/game-battle.png">
-    <img windth="470" height="300" src="img/sprites.png">
-</div>
-
 
 ## Credits
 
