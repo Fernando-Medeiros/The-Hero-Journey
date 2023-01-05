@@ -3,12 +3,12 @@ from time import sleep
 
 import pygame as pg
 
-from app.character.settings.settings import (INFO_HERALDRY, INFO_SKILLS,
-                                             LIST_CLASSES)
-from app.database.character_db import CharacterDB
-from app.tools import COLORS, Obj, draw_rect, draw_texts
 from paths import *
 
+from ..character.settings.settings import (INFO_HERALDRY, INFO_SKILLS,
+                                           LIST_CLASSES)
+from ..database.character_db import CharacterDB
+from ..tools import COLORS, Obj, draw_rect, draw_texts
 from .settings import INFO_MAX_RECORDS, list_ethnicities, title_new_game
 
 DISPLAY_NONE = int(os.getenv('DISPLAY_NONE', '-1080'))
@@ -234,7 +234,7 @@ class NewGame:
                 size=20
             )
             # ATTRIBUTES
-            classes: dict[str, dict] = self.db.read_json('app/character/settings/classes.json')
+            classes: dict[str, dict] = self.db.read_json('src/character/settings/classes.json')
             pos_y = 680
             for attr, value in classes[self.ETHNICITY][self.CLASSE].items():
                 if attr != 'skills':

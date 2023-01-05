@@ -2,7 +2,7 @@ import os
 
 import pygame as pg
 
-from app.tools import Obj, draw_texts, save_log_and_exit
+from ..tools import Obj, draw_texts, save_log_and_exit
 from paths import *
 
 from .settings import list_guides_menu

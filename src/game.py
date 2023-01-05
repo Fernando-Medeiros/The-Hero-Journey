@@ -2,13 +2,13 @@ from random import choice
 
 import pygame as pg
 
-from app.sound import SONGS
 from paths import *
 
 from .battle.battle import Battle
 from .character.character import Character
 from .database.map_db import MapDB
 from .opponent.enemy import Enemy
+from .sound import SONGS
 from .tools import COLORS, Obj, draw_rect, draw_texts, save_log_and_exit
 
 SONGS['orpheus'].play()

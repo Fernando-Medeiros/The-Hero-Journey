@@ -2,7 +2,7 @@ from datetime import datetime
 
 from pygame import Surface
 
-from app.database.enemy_db import EnemyDB
+from ..database.enemy_db import EnemyDB
 from .model import EnemyModel
 from .view import Views
 

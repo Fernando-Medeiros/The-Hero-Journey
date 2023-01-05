@@ -2,8 +2,8 @@ import os
 
 import pygame as pg
 
-from app.database.character_db import CharacterDB
-from app.tools import COLORS, Obj, draw_texts
+from ..database.character_db import CharacterDB
+from ..tools import COLORS, Obj, draw_texts
 from paths import FOLDERS, IMG_LOAD, IMG_MENU, IMG_NEW_GAME
 
 from .settings import title_load

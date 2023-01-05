@@ -1,5 +1,6 @@
-from app.tools import COLORS, Obj, draw_rect, draw_texts
 from paths import FOLDERS
+
+from ..tools import COLORS, Obj, draw_rect, draw_texts
 
 
 class Views(Obj):

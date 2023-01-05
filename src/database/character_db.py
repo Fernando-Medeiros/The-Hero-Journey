@@ -2,8 +2,8 @@ from .base import Base
 
 
 class CharacterDB(Base):
-    classes = 'app/character/settings/classes.json'
-    path = 'app/database/db/characters.json'
+    classes = 'src/character/settings/classes.json'
+    path = 'src/database/db/characters.json'
 
 
     def create_model(self, name: str, ethnicity: str, classe: str) -> dict:

@@ -2,9 +2,9 @@ import os
 
 import pygame as pg
 
-from app.tools import COLORS, Obj
 from paths import *
 
+from ..tools import COLORS, Obj
 from .settings import txt_options
 
 DISPLAY_NONE = int(os.getenv('DISPLAY_NONE', '-1080'))

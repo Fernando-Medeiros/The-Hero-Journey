@@ -1,7 +1,7 @@
 import pygame as pg
 
-from app.tools import COLORS, draw_status_bar, draw_texts
 from paths import FOLDERS
+from src.tools import COLORS, draw_status_bar, draw_texts
 
 
 class DrawLog:

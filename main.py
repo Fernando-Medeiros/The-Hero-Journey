@@ -43,7 +43,7 @@ class Main:
 
         self.clock = pg.time.Clock()
 
-        from app.events import GameController, MenuController
+        from src.events import GameController, MenuController
 
         self.menu = MenuController()
         self.game = GameController()

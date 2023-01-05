@@ -15,7 +15,7 @@ def replace(n: str, c=list("./_-(),^|<>;:`´")) -> str:
 
 
 class EnemyDB(Base):
-    db = 'app/database/db/enemies.json'
+    db = 'src/database/db/enemies.json'
 
     def create_model(self, name: str, level: int, img_name: str) -> dict:
         level = int(level)
