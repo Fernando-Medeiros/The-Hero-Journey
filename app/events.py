@@ -17,11 +17,11 @@ class MenuController:
     group_new_game = pg.sprite.Group()
     group_menu = pg.sprite.Group()
 
-    def __init__(self, main_screen):
-        self.menu_ = Menu(main_screen, self.group_menu)
-        self.new = NewGame(main_screen, self.group_new_game)
-        self.load = Load(main_screen, self.group_load)
-        self.options = Options(main_screen, self.group_options)
+    def __init__(self):
+        self.menu_ = Menu(self.group_menu)
+        self.new = NewGame(self.group_new_game)
+        self.load = Load(self.group_load)
+        self.options = Options(self.group_options)
 
     def draw(self, main_screen):
         if os.environ['EVENTS'] == '' and self.is_active:
@@ -76,8 +76,8 @@ class GameController:
     is_active = True
     group_game = pg.sprite.Group()
 
-    def __init__(self, main_screen):
-        self.game = Game(main_screen, self.group_game)
+    def __init__(self):
+        self.game = Game(self.group_game)
 
     def draw(self, main_screen):
 

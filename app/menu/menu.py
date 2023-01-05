@@ -8,7 +8,7 @@ from paths import *
 from .settings import list_guides_menu
 
 VERSION = os.environ.get('VERSION')
-GAME_NAME = os.environ.get('GAME_NAME')
+TITLE = os.environ.get('TITLE')
 DISPLAY_NONE = int(os.getenv('DISPLAY_NONE', '-1080'))
 
 
@@ -17,9 +17,9 @@ class Menu:
     block = False
     check = ''
 
-    def __init__(self, main_screen, *groups):
+    def __init__(self, *groups):
 
-        self.main_screen = main_screen
+        self.main_screen = pg.display.get_surface()
 
         self.guides = []
 
@@ -129,8 +129,8 @@ class Menu:
     def update(self) -> None:
         draw_texts(
             screen=self.main_screen,
-            text=GAME_NAME,
-            pos_x=self.main_screen.get_width() / 2 - len(GAME_NAME) * 6.5,
+            text=TITLE,
+            pos_x=self.main_screen.get_width() / 2 - len(TITLE) * 6.5,
             pos_y=100,
             size=25
         )

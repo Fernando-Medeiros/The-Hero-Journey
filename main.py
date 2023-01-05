@@ -3,9 +3,9 @@ from datetime import datetime
 
 import pygame as pg
 
-VERSION = '2.9'
+VERSION = '3.0'
 
-GAME_NAME = "The Hero's Journey"
+TITLE = "The Hero's Journey"
 
 URL_CREDIT = 'https://github.com/Fernando-Medeiros'
 
@@ -45,13 +45,13 @@ class Main:
 
         from app.events import GameController, MenuController
 
-        self.menu = MenuController(self.main_screen)
-        self.game = GameController(self.main_screen)
+        self.menu = MenuController()
+        self.game = GameController()
 
     def init_const(self):
         consts = {
             'VERSION': VERSION,
-            'GAME_NAME': GAME_NAME,
+            'TITLE': TITLE,
             'URL_CREDIT': URL_CREDIT,
             'DATETIME_APP': DATETIME_APP,
             'MIXER': MIXER,
@@ -103,7 +103,7 @@ class Main:
         self.clock.tick(int(os.getenv('FRAMES', '30')))
         self.draw()
         self.events()
-        pg.display.set_caption('{} | {:.2f}'.format(GAME_NAME, self.clock.get_fps()))
+        pg.display.set_caption('{} | {:.2f}'.format(TITLE, self.clock.get_fps()))
         pg.display.update()
 
 

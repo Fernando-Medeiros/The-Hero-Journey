@@ -23,9 +23,9 @@ MAX_CHARACTERS_NAME = int(os.getenv('MAX_CHARACTERS_NAME', '20'))
 class Options:
     is_active = True
 
-    def __init__(self, main_screen, *groups):
+    def __init__(self, *groups):
 
-        self.main_screen = main_screen
+        self.main_screen = pg.display.get_surface()
 
         self.center = self.main_screen.get_width() / 2
 

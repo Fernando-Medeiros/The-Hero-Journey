@@ -6,7 +6,7 @@
 <br>
 
 <h1 align="center">
-    The Hero's Journey  v.2.8
+    The Hero's Journey  v.3.0
 </h1>
 
 

@@ -120,14 +120,14 @@ class Game(Events):
     group_opponent = pg.sprite.Group()
     map_db = MapDB()
 
-    def __init__(self, main_screen: pg.Surface, *groups):
+    def __init__(self, *groups):
 
         Events.__init__(self, *groups)
 
-        self.main_screen = main_screen
+        self.main_screen = pg.display.get_surface()
 
-        self.battle = Battle(main_screen)
-        self.character = Character(main_screen, self.group_character)
+        self.battle = Battle(self.main_screen)
+        self.character = Character(self.main_screen, self.group_character)
 
         self.location: str = self.character.location
         self.map: dict = self.map_db.get_map_info()
