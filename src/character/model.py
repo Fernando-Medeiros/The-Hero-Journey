@@ -1,7 +1,7 @@
 class CharacterModel(object):
-    name: str = '...'
-    ethnicity: str = '...'
-    classe: str = 'tag'
+    name: str = "..."
+    ethnicity: str = "..."
+    classe: str = "tag"
     level: int = 1
 
     force: float = 1
@@ -13,8 +13,8 @@ class CharacterModel(object):
     xp: float = 1
     gold: int = 1
     soul: int = 1
-    location: str = 'Sea North'
-    sprite: str = '...'
+    location: str = "Sea North"
+    sprite: str = "..."
 
     health: float = 1
     energy: float = 1

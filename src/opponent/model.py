@@ -1,6 +1,6 @@
 class EnemyModel(object):
-    name: str = '...'
-    classe: str = 'tag'
+    name: str = "..."
+    classe: str = "tag"
     level: int = 1
 
     force: float = 1
@@ -12,7 +12,7 @@ class EnemyModel(object):
     xp: float = 1
     gold: int = 1
     soul: int = 1
-    sprite: str = '...'
+    sprite: str = "..."
 
     health: float = 1
     energy: float = 1

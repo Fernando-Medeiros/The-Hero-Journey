@@ -1,7 +1,7 @@
 {
     "dark-elf": {
         "duelist": {
-            "force": 3,
+            "force": 4,
             "agility": 4,
             "vitality": 4,
             "intelligence": 2,
@@ -12,7 +12,7 @@
             ]
         },
         "mage": {
-            "force": 2,
+            "force": 3,
             "agility": 3,
             "vitality": 4,
             "intelligence": 5,
@@ -23,7 +23,7 @@
             ]
         },
         "assassin": {
-            "force": 3,
+            "force": 4,
             "agility": 5,
             "vitality": 4,
             "intelligence": 2,
@@ -36,7 +36,7 @@
     },
     "forest-elf": {
         "warrior": {
-            "force": 3,
+            "force": 4,
             "agility": 4,
             "vitality": 4,
             "intelligence": 2,
@@ -47,7 +47,7 @@
             ]
         },
         "mage": {
-            "force": 2,
+            "force": 3,
             "agility": 2,
             "vitality": 5,
             "intelligence": 5,
@@ -58,7 +58,7 @@
             ]
         },
         "warden": {
-            "force": 2,
+            "force": 3,
             "agility": 4,
             "vitality": 4,
             "intelligence": 2,
@@ -71,7 +71,7 @@
     },
     "grey-elf": {
         "warrior": {
-            "force": 5,
+            "force": 6,
             "agility": 2,
             "vitality": 5,
             "intelligence": 2,
@@ -82,7 +82,7 @@
             ]
         },
         "mage": {
-            "force": 2,
+            "force": 3,
             "agility": 2,
             "vitality": 5,
             "intelligence": 5,
@@ -93,7 +93,7 @@
             ]
         },
         "warden": {
-            "force": 2,
+            "force": 3,
             "agility": 2,
             "vitality": 4,
             "intelligence": 2,

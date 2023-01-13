@@ -45,7 +45,7 @@ class Enemy(EnemyModel, Views):
         self.c_stamina = self.stamina
 
     def _check_current_status(self) -> None:
-        check = ['c_health', 'c_energy', 'c_stamina']
+        check = ["c_health", "c_energy", "c_stamina"]
 
         for c_status in check:
             attr = getattr(self, c_status)
@@ -56,9 +56,12 @@ class Enemy(EnemyModel, Views):
         time = datetime.today().second
 
         if time % 2 == 0:
-            if self.c_health < self.health: self.c_health += self.r_health
-            if self.c_energy < self.energy: self.c_energy += self.r_energy
-            if self.c_stamina < self.stamina: self.c_stamina += self.r_stamina
+            if self.c_health < self.health:
+                self.c_health += self.r_health
+            if self.c_energy < self.energy:
+                self.c_energy += self.r_energy
+            if self.c_stamina < self.stamina:
+                self.c_stamina += self.r_stamina
 
     def _is_alive(self) -> None:
         if self.c_health >= 0.1:
@@ -67,13 +70,12 @@ class Enemy(EnemyModel, Views):
             self.alive_ = False
 
     def events(self, pos_mouse):
-        self._draw_status(pos_mouse)
+        super().events(pos_mouse)
 
-    def update(self):
+    def update(self, *args, **kwargs):
+        super().update(*args, **kwargs)
         self._is_alive()
         self._check_current_status()
-        self._draw_name_and_level()
-        self._draw_status_on_hover()
 
     def __str__(self) -> str:
         return self.name
