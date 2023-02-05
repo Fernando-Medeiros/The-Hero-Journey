@@ -1,7 +1,7 @@
 {
     "dark-elf": {
         "duelist": {
-            "force": 4,
+            "force": 5,
             "agility": 4,
             "vitality": 4,
             "intelligence": 2,
@@ -15,7 +15,7 @@
             "force": 3,
             "agility": 3,
             "vitality": 4,
-            "intelligence": 5,
+            "intelligence": 6,
             "resistance": 2,
             "skills": [
                 "conjuration",
@@ -24,7 +24,7 @@
         },
         "assassin": {
             "force": 4,
-            "agility": 5,
+            "agility": 6,
             "vitality": 4,
             "intelligence": 2,
             "resistance": 2,
@@ -36,7 +36,7 @@
     },
     "forest-elf": {
         "warrior": {
-            "force": 4,
+            "force": 5,
             "agility": 4,
             "vitality": 4,
             "intelligence": 2,
@@ -50,7 +50,7 @@
             "force": 3,
             "agility": 2,
             "vitality": 5,
-            "intelligence": 5,
+            "intelligence": 6,
             "resistance": 2,
             "skills": [
                 "circle spells",
@@ -62,7 +62,7 @@
             "agility": 4,
             "vitality": 4,
             "intelligence": 2,
-            "resistance": 4,
+            "resistance": 5,
             "skills": [
                 "dodge fortification",
                 "hybrid defense"
@@ -71,7 +71,7 @@
     },
     "grey-elf": {
         "warrior": {
-            "force": 6,
+            "force": 7,
             "agility": 2,
             "vitality": 5,
             "intelligence": 2,
@@ -85,7 +85,7 @@
             "force": 3,
             "agility": 2,
             "vitality": 5,
-            "intelligence": 5,
+            "intelligence": 6,
             "resistance": 2,
             "skills": [
                 "overload",
@@ -97,7 +97,7 @@
             "agility": 2,
             "vitality": 4,
             "intelligence": 2,
-            "resistance": 6,
+            "resistance": 7,
             "skills": [
                 "fortification",
                 "defense specialist"

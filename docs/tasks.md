@@ -1,4 +1,4 @@
-## Tasks - 2022
+# Tasks - 2022
 
 - [x] Refactor
   - [x] Character
@@ -10,14 +10,11 @@
 
 ## To do
 
-- [ ] Create Map Controller 
 - [x] Change Save mode from .txt to .Json
 
+>
 
-<br>
-
-
-## Tasks - 2023
+## New features
 
 - [ ] Equipment
 - [ ] Inventory

@@ -1,7 +1,7 @@
 {
     "duelist": {
         "force": 1,
-        "agility": 3,
+        "agility": 4,
         "vitality": 1,
         "intelligence": 1,
         "resistance": 1
@@ -10,11 +10,11 @@
         "force": 1,
         "agility": 2,
         "vitality": 1,
-        "intelligence": 2,
+        "intelligence": 3,
         "resistance": 1
     },
     "warrior": {
-        "force": 2,
+        "force": 3,
         "agility": 1,
         "vitality": 2,
         "intelligence": 1,
@@ -25,6 +25,6 @@
         "agility": 1,
         "vitality": 2,
         "intelligence": 1,
-        "resistance": 2
+        "resistance": 3
     }
 }

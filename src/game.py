@@ -14,7 +14,7 @@ from .tools import COLORS, Obj, draw_rect, draw_texts, save_log_and_exit
 SONGS["orpheus"].play()
 
 
-class Events:
+class View:
     def __init__(self, *groups):
 
         self.bg = Obj(IMG_GAME["bg"], 0, 0, *groups)
@@ -43,6 +43,37 @@ class Events:
             },
         }
 
+
+class Game(View):
+    is_active = True
+    block_battle = False
+    respawn_enemies = False
+    turn_enemy = False
+    index_battle = 0
+
+    group_character = pg.sprite.Group()
+    group_opponent = pg.sprite.Group()
+    map_db = MapDB()
+
+    main_screen = pg.display.get_surface()
+
+    def __init__(self, *groups):
+
+        View.__init__(self, *groups)
+
+        self.battle = Battle()
+        self.character = Character(self.group_character)
+
+        self.location: str = self.character.location
+        self.map: dict = self.map_db.get_map_info()
+
+        self.log_battle = []
+        self.loots_for_enemy = {}
+        self.l_enemies_in_the_area: list[object] = []
+
+        self._enemies_in_the_area()
+
+    # GAME EVENTS
     def _save_and_exit(self, pos_mouse):
         if self.objects["icons"]["save"].rect.collidepoint(pos_mouse):
             self.character.save()
@@ -98,36 +129,7 @@ class Events:
         inner(self.objects["icons"])
         inner(self.objects["commands"])
 
-
-class Game(Events):
-    is_active = True
-    block_battle = False
-    respawn_enemies = False
-    turn_enemy = False
-    index_battle = 0
-
-    group_character = pg.sprite.Group()
-    group_opponent = pg.sprite.Group()
-    map_db = MapDB()
-
-    main_screen = pg.display.get_surface()
-
-    def __init__(self, *groups):
-
-        Events.__init__(self, *groups)
-
-        self.battle = Battle()
-        self.character = Character(self.group_character)
-
-        self.location: str = self.character.location
-        self.map: dict = self.map_db.get_map_info()
-
-        self.log_battle = []
-        self.loots_for_enemy = {}
-        self.l_enemies_in_the_area: list[object] = []
-
-        self._enemies_in_the_area()
-
+    # GAME CONTROL
     def _enemies_in_the_area(self) -> None:
 
         tag = [tag for tag in self.map["tag"] if tag in self.location.casefold()]
