@@ -9,20 +9,19 @@
     The Hero's Journey  v.3.0
 </h1>
 
-
 <div align="center">
     <img windth="500" src="img/gif1.gif">
     <img windth="500" src="img/gif2.gif">
 </div>
 
+<br>
 
-## Summary
-- [Summary](#summary)
 - [About](#about)
 - [The current scope:](#the-current-scope)
 - [Menu](#menu)
 - [Create and Load the Character](#create-and-load-the-character)
 - [Exploring the World](#exploring-the-world)
+- [Dependencies](#dependencies)
 - [Run game](#run-game)
 - [Structure](#structure)
 - [Credits](#credits)
@@ -40,7 +39,6 @@ It's in the first version, I'll add and refine it over time, but for now you can
 
 The Hero's Journey is a turn-based rpg, and its plot takes place on a continent in chaos between factions, kingdoms, races and even worlds.
 
-
 ## The current scope:
 
 - Choose from three ethnicities of Elves
@@ -55,7 +53,6 @@ The Hero's Journey is a turn-based rpg, and its plot takes place on a continent 
 > - You can watch it here - [Youtube - Menu](https://youtu.be/v-M-O1niVuk)
 > - You can watch it here - [Youtube - Game](https://youtu.be/LTYqAjMrrDI)
 
-
 ## Menu
 
 When starting the Game you have the following options:
@@ -66,20 +63,17 @@ When starting the Game you have the following options:
 - Configuration
 - Quit
 
-
- Basic system settings:
+Basic system settings:
 
 - Standard screen 747 x 1050 or Full Screen
 - Increase game speed from 30 FPS to 60 FPS
 - Mute
-
 
 <div align="center">
     <img windth="470" height="300" src="img/menu.png">
     <img windth="470" height="300" src="img/credits.png">
     <img windth="470" height="300" src="img/options.png">
 </div>
-
 
 ## Create and Load the Character
 
@@ -91,13 +85,11 @@ When creating a new game:
 - Each ethnicity has three classes
 - Each class has unique abilities.
 
-
 <div align="center">
     <img windth="470" height="300" src="img/newgame.png">
     <img windth="470" height="300" src="img/classes.png">
     <img windth="470" height="300" src="img/load.png">
 </div>
-
 
 ## Exploring the World
 
@@ -112,46 +104,71 @@ The battle system:
 - Stamina consumption for stocks
 - Automatic health, energy and stamina regeneration
 
-
 <div align="center">
     <img windth="470" height="300" src="img/game-world.png">
     <img windth="470" height="300" src="img/game-battle.png">
     <img windth="470" height="300" src="img/sprites.png">
 </div>
 
+## Dependencies
+
+- Git
+- Python
+- Pip
+- Virtualenv -> Optional
+- IDE -> Recommend vsCode
 
 ## Run game
 
 Clone this project
-```console
+
+Open your terminal
+
+```sh
 git clone https://github.com/Fernando-Medeiros/The-Hero-Journey.git
 ```
 
+Access the project folder
+
+```sh
+cd The-Hero-Journey
+```
+
 Create the virtual environment
-```console
+
+```sh
 virtualenv .venv
+
+# or
+python3 -m venv .venv
 ```
 
 Activate .venv
-```console
+
+```sh
 # Linux
 source .venv/bin/activate
-# Windows Power Shell
+
+# Windows
 ./.venv/bin/activate.ps1
 ```
 
 Install dependencies
-```console
+
+```sh
 pip install -r requirements.txt
 ```
 
 Start the game
-```console
-python main.py
+
+```sh
+python3 main.py
 ```
 
+> Some modules are necessary for Linux users.
 
 ## Structure
+
 ```console
 .
 ├── app
@@ -240,7 +257,6 @@ All opponent and character sprites are authored by the
 
 The game map is authored by
 [Rarameth](https://www.deviantart.com/rarameth/art/Terras-Novas-Arkan-Mapa-para-RPG-de-mesa-659378593)
-
 
 ## License
 
