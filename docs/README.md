@@ -16,6 +16,8 @@
 
 <br>
 
+> ***This is my first project with programming, so the code doesn't follow the best organization and object orientation practices.***
+
 - [About](#about)
 - [The current scope:](#the-current-scope)
 - [Menu](#menu)
