@@ -6,7 +6,7 @@
 <br>
 
 <h1 align="center">
-    The Hero's Journey  v.3.0
+    The Hero's Journey
 </h1>
 
 > ***[2024] -> I am testing the development of 2D games with C#, SFML and I recommend using graphic libraries and languages ​​more suitable for games, preferably a library that supports compilation for many platforms, for example, Mono Game;***
