@@ -9,6 +9,9 @@
     The Hero's Journey  v.3.0
 </h1>
 
+> ***[2024] -> I am testing the development of 2D games with C#, SFML and I recommend using graphic libraries and languages ​​more suitable for games, preferably a library that supports compilation for many platforms, for example, Mono Game;***
+> [MVP - RPG/Sandbox](https://github.com/Fernando-Medeiros/BlockGrid)
+
 <div align="center">
     <img windth="500" src="img/gif1.gif">
     <img windth="500" src="img/gif2.gif">
